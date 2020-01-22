@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './common/_base.scss';
+import './App.scss';
 
 // third party imports
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
