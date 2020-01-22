@@ -2,6 +2,9 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+// third party imports
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 function App() {
   return (
     <div className="App">
