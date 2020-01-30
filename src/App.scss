@@ -1,7 +1,16 @@
 @import './common/_grid';
 @import './common/_color';
 
+html,
+body,
+#root {
+    height: 100%;
+}
+
 .App {
     max-width: $cont_width;
     margin: auto;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
 }

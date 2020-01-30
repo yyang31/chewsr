@@ -1,0 +1,47 @@
+@import '../common/_grid';
+@import '../common/_color';
+
+#board {
+    flex-grow: 1;
+    padding: 10px;
+    display: flex;
+    flex-flow: column;
+}
+
+#cards {
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+
+    .swipe-card {
+        display: flex;
+        flex-flow: column;
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        max-height: 700px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 1%;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        transform: translateX(-50%) translateY(-50%);
+
+        .place-photos-cont {
+            flex-grow: 1;
+
+            .place-photo {
+                height: 100%;
+                display: flex;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
