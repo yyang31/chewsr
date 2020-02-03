@@ -1,11 +1,19 @@
 @import './common/_grid';
 @import './common/_color';
 
-html,
-body,
-#root {
+html {
+    display: flex;
+    flex-flow: column;
     min-height: 100vh;
     min-height: -webkit-fill-available;
+}
+
+body,
+#root {
+    height: 100%;
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
 }
 
 * {
@@ -14,10 +22,10 @@ body,
 
 .App {
     max-width: $cont_width;
-    margin: auto;
     display: flex;
     flex-flow: column;
     height: 100%;
+    flex-grow: 1;
 }
 
 .text-input {
