@@ -4,7 +4,37 @@ import './google_map_api.scss'
 import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLocationArrow } from '@fortawesome/free-solid-svg-icons'
+
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
+
+class CurrentLocation extends React.Component {
+    getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.showPosition);
+        } else {
+            console.log("Geolocation is not supported by this browser");
+        }
+    }
+
+    showPosition = (position) => {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+
+        console.log("Latitude: " + lat + " Longitude: " + lng);
+
+        this.props.fetchNearby("", lat, lng);
+    }
+
+    render() {
+        return (
+            <button id="currentLocation" onClick={this.getLocation}>
+                <FontAwesomeIcon icon={faLocationArrow} />
+            </button>
+        );
+    }
+}
 
 class GoogleSuggest extends React.Component {
     state = {
@@ -35,19 +65,21 @@ class GoogleSuggest extends React.Component {
 
     handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
         console.log(geocodedPrediction, originalPrediction) // eslint-disable-line
+
         this.props.fetchNearby(
             geocodedPrediction.formatted_address,
             geocodedPrediction.geometry.location.lat(),
             geocodedPrediction.geometry.location.lng()
         );
+
         this.setState({
             search: "",
             value: geocodedPrediction.formatted_address,
-        })
+        });
     }
 
     handleNoResult = () => {
-        console.log("No results for ", this.state.search)
+        console.log("No results for ", this.state.search);
     }
 
     handleStatusUpdate = status => {
@@ -94,13 +126,17 @@ class GoogleSuggest extends React.Component {
                                 </div>
                             )}
                         >
-                            <input
-                                type="text"
-                                value={value}
-                                placeholder="location"
-                                onChange={this.handleInputChange}
-                                className="text-input"
-                            />
+                            <div id="locationCont">
+                                <input
+                                    type="text"
+                                    value={value}
+                                    placeholder="location"
+                                    onChange={this.handleInputChange}
+                                    className="text-input"
+                                />
+
+                                <CurrentLocation fetchNearby={this.props.fetchNearby} />
+                            </div>
                         </ReactGooglePlacesSuggest>
                     )
                 }

@@ -7,7 +7,7 @@ class CustomNavbar extends Component {
         return (
             <div id="customNavbar">
                 <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="#home">Chews<span className="navbar-brand-r">r</span></Navbar.Brand>
+                    <Navbar.Brand>Chews<span className="navbar-brand-r">r</span></Navbar.Brand>
                 </Navbar>
             </div>
         );

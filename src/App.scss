@@ -7,7 +7,7 @@ body,
     height: 100%;
 }
 
-input {
+* {
     outline-width: 0;
 }
 
@@ -21,14 +21,18 @@ input {
 
 .text-input {
     width: 100%;
-    border: none;
+    border: 1px solid rgba($black, 0.2);
     border-radius: 25px;
     padding: 10px 20px;
-    box-shadow: 0 0 6px rgba($black, 0.2);
-    color: $light_blue;
+    color: $blue;
     font-size: 20px;
 
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 6px rgba($black, 0.2);
+    }
+
     &::placeholder {
-        color: $light_blue;
+        color: $blue;
     }
 }
