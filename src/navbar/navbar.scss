@@ -3,4 +3,13 @@
 
 .navbar {
     background-color: transparent !important;
+
+    .navbar-brand {
+        font-weight: bold;
+        color: $light_blue;
+
+        .navbar-brand-r {
+            color: $light_red;
+        }
+    }
 }

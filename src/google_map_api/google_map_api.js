@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import './google_map_api.scss'
 
 import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
@@ -9,10 +10,27 @@ class GoogleSuggest extends React.Component {
     state = {
         search: "",
         value: "",
+        status: "",
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        // status change
+        if (prevState.status !== this.state.status && this.state.status != "" && document.getElementsByClassName('sc-EHOje').length > 0) {
+            if (this.state.status == window.google.maps.places.PlacesServiceStatus.OK) {
+                document.getElementsByClassName('sc-EHOje')[0].classList.remove('invalid');
+            } else {
+                document.getElementsByClassName('sc-EHOje')[0].classList.add('invalid');
+            }
+        }
     }
 
     handleInputChange = e => {
-        this.setState({ search: e.target.value, value: e.target.value })
+        console.log(e);
+
+        this.setState({
+            search: e.target.value,
+            value: e.target.value
+        });
     }
 
     handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
@@ -33,7 +51,13 @@ class GoogleSuggest extends React.Component {
     }
 
     handleStatusUpdate = status => {
-        console.log(status)
+        console.log(status);
+
+        if (status != this.state.status) {
+            this.setState({
+                status: status,
+            });
+        }
     }
 
     getLatLng = () => {
@@ -73,8 +97,9 @@ class GoogleSuggest extends React.Component {
                             <input
                                 type="text"
                                 value={value}
-                                placeholder="Search a location"
+                                placeholder="location"
                                 onChange={this.handleInputChange}
+                                className="text-input"
                             />
                         </ReactGooglePlacesSuggest>
                     )
@@ -127,7 +152,7 @@ class NearbySearch extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="NearbySearch" className={this.state.nearbyResult.length > 0 ? "d-none" : ""}>
                 <GoogleSuggest fetchNearby={this.fetchNearby} />
             </div>
         )

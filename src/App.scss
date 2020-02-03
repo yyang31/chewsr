@@ -7,10 +7,28 @@ body,
     height: 100%;
 }
 
+input {
+    outline-width: 0;
+}
+
 .App {
     max-width: $cont_width;
     margin: auto;
     display: flex;
     flex-flow: column;
     height: 100%;
+}
+
+.text-input {
+    width: 100%;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    box-shadow: 0 0 6px rgba($black, 0.2);
+    color: $light_blue;
+    font-size: 20px;
+
+    &::placeholder {
+        color: $light_blue;
+    }
 }

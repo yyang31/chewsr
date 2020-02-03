@@ -51,7 +51,7 @@ class SwipeBoard extends React.Component {
         return (
             <div id="board">
                 <NearbySearch radius={this.state.radius} updateNearbyResult={this.updateNearbyResult} />
-                <div id="cards">
+                <div id="cards" className={this.state.nearbyResult.length > 0 ? "" : "d-none"}>
                     {this.state.nearbyResult.map((place) => {
                         return <SwipeCard key={place.place_id} place={place} />
                     })}
