@@ -17,6 +17,7 @@
         height: 40px;
         display: flex;
         justify-content: center;
+        transition: 0.25s;
 
         &:hover {
             background-color: $dark_blue;

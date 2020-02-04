@@ -3,6 +3,25 @@ import './swipe_board.scss'
 
 import NearbySearch from '../google_map_api/google_map_api';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+
+class BoardControl extends React.Component {
+    render() {
+        return (
+            <div id="boardControl" className={this.props.display}>
+                <div id="boardDislike" className="board-control-main-btn">
+                    <FontAwesomeIcon icon={faThumbsDown} />
+                </div>
+                <div id="boardLike" className="board-control-main-btn">
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                </div>
+            </div>
+        );
+    };
+}
+
 class SwipeCard extends React.Component {
     render() {
 
@@ -41,7 +60,7 @@ class SwipeBoard extends React.Component {
 
     updateNearbyResult = (result) => {
         console.log(result);
-        // console.log(result[0].photos[0].getUrl());
+
         this.setState({
             nearbyResult: result,
         })
@@ -56,9 +75,7 @@ class SwipeBoard extends React.Component {
                         return <SwipeCard key={place.place_id} place={place} />
                     })}
                 </div>
-                {/* <div id="nearbySearchResult">
-                    {this.state.nearbyResult.map(restaurant => <div key={restaurant.place_id}>{restaurant.name}</div>)}
-                </div> */}
+                <BoardControl display={this.state.nearbyResult.length > 0 ? "" : "d-none"} />
             </div >
         );
     }
