@@ -65,7 +65,7 @@ class SwipeCard extends React.Component {
     }
 
     panstart = (ev) => {
-
+        console.log(ev.type);
     }
 
     pancancel = (ev) => {
@@ -73,7 +73,15 @@ class SwipeCard extends React.Component {
     }
 
     panend = (ev) => {
-        this.updateTransform(0, 0);
+        console.log(ev);
+
+        var xloc = ev.deltaX + this.state.initialPosition.x;
+
+        if (xloc > 100 || xloc < -100) {
+            $(ReactDOM.findDOMNode(this)).fadeOut();
+        } else {
+            this.updateTransform(0, 0);
+        }
     }
 
     panmove = (ev) => {
@@ -87,15 +95,6 @@ class SwipeCard extends React.Component {
     */
     handleSwipe = (ev) => {
         console.log(ev.type);
-    }
-
-    calculatePosition = (deltaX, deltaY) => {
-        const { initialPosition: { x, y } } = this.state;
-
-        return {
-            x: (x + deltaX),
-            y: (y + deltaY)
-        }
     }
 
     updateTransform = (x = 0, y = 0) => {
