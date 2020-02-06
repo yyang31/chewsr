@@ -2,6 +2,9 @@ import React, { Component } from "react"
 import './swipe_board.scss'
 
 import NearbySearch from '../google_map_api/google_map_api';
+import Hammer from 'hammerjs'
+import ReactDOM from "react-dom";
+import $ from 'jquery';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons'
@@ -23,9 +26,85 @@ class BoardControl extends React.Component {
 }
 
 class SwipeCard extends React.Component {
+    state = {
+        x: 0,
+        y: 0,
+        initialPosition: { x: 0, y: 0 }
+    }
+
+    componentDidMount() {
+        this.setInitialPosition();
+
+        this.hammer = new Hammer.Manager(ReactDOM.findDOMNode(this));
+        this.hammer.add(new Hammer.Pan({ threshold: 2 }));
+
+        this.hammer.on('panstart pancancel panmove panend', this.handlePan);
+        this.hammer.on('swipestart swipeend swipecancel swipemove', this.handleSwipe);
+
+        // this.resetPosition()
+        // window.addEventListener('resize', this.resetPosition)
+    }
+
+    setInitialPosition() {
+        const card = $(ReactDOM.findDOMNode(this));
+        const initialPosition = {
+            x: Math.round(($(window).innerWidth() - card.outerWidth(true)) / 2),
+            y: Math.round(($(window).innerHeight() - card.outerHeight(true)) / 2),
+        };
+
+        this.setState({ initialPosition });
+    }
+
+    /*
+     * pan handlers
+    */
+    handlePan = (ev) => {
+        ev.preventDefault();
+        this[ev.type](ev);
+        return false;
+    }
+
+    panstart = (ev) => {
+
+    }
+
+    pancancel = (ev) => {
+        console.log(ev.type);
+    }
+
+    panend = (ev) => {
+        this.updateTransform(0, 0);
+    }
+
+    panmove = (ev) => {
+        console.log(ev.type);
+
+        this.updateTransform(ev.deltaX + this.state.initialPosition.x, 0);
+    }
+
+    /*
+     * swipe handlers
+    */
+    handleSwipe = (ev) => {
+        console.log(ev.type);
+    }
+
+    calculatePosition = (deltaX, deltaY) => {
+        const { initialPosition: { x, y } } = this.state;
+
+        return {
+            x: (x + deltaX),
+            y: (y + deltaY)
+        }
+    }
+
+    updateTransform = (x = 0, y = 0) => {
+        var card = $(ReactDOM.findDOMNode(this));
+
+        card.css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)');
+    }
+
     render() {
-
-
         return (
             <div className="swipe-card">
                 <h1 className="place-name">{this.props.place.name}</h1>
