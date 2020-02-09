@@ -111,7 +111,10 @@ class SwipeCard extends React.Component {
     }
 
     updateTransform = (x = 0, y = 0) => {
-        this.card.css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)');
+        this.card.css({
+            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)',
+            'opacity': 1 - (Math.abs(x) / 1000)
+        });
     }
 
     render() {
