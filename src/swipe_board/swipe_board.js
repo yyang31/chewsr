@@ -33,6 +33,8 @@ class SwipeCard extends React.Component {
     }
 
     componentDidMount() {
+        this.card = $(ReactDOM.findDOMNode(this));
+
         this.setInitialPosition();
 
         this.hammer = new Hammer.Manager(ReactDOM.findDOMNode(this));
@@ -46,10 +48,9 @@ class SwipeCard extends React.Component {
     }
 
     setInitialPosition() {
-        const card = $(ReactDOM.findDOMNode(this));
         const initialPosition = {
-            x: Math.round(($(window).innerWidth() - card.outerWidth(true)) / 2),
-            y: Math.round(($(window).innerHeight() - card.outerHeight(true)) / 2),
+            x: Math.round(($(window).innerWidth() - this.card.outerWidth(true)) / 2),
+            y: Math.round(($(window).innerHeight() - this.card.outerHeight(true)) / 2),
         };
 
         this.setState({ initialPosition });
@@ -60,7 +61,9 @@ class SwipeCard extends React.Component {
     */
     handlePan = (ev) => {
         ev.preventDefault();
-        this[ev.type](ev);
+        if (!this.swiping) {
+            this[ev.type](ev);
+        }
         return false;
     }
 
@@ -73,14 +76,17 @@ class SwipeCard extends React.Component {
     }
 
     panend = (ev) => {
-        console.log(ev);
+        console.log(ev.type);
+
+        // add smooth transition duration
+        this.card.css('transition-duration', '0.3s');
 
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
-        if (xloc > 100) {
+        if (xloc > 150) {
             this.updateTransform(600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut();
-        } else if (xloc < -100) {
+        } else if (xloc < -150) {
             this.updateTransform(-600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut();
         } else {
@@ -90,6 +96,9 @@ class SwipeCard extends React.Component {
 
     panmove = (ev) => {
         console.log(ev.type);
+
+        // remove transition duration
+        this.card.css('transition-duration', '0s');
 
         this.updateTransform(ev.deltaX + this.state.initialPosition.x, 0);
     }
@@ -102,9 +111,7 @@ class SwipeCard extends React.Component {
     }
 
     updateTransform = (x = 0, y = 0) => {
-        let card = $(ReactDOM.findDOMNode(this));
-
-        card.stop().css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)');
+        this.card.css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)');
     }
 
     render() {
