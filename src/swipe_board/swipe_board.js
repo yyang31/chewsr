@@ -122,35 +122,56 @@ class SwipeCard extends React.Component {
 
     updateTransform = (x = 0, y = 0) => {
         this.card.css({
-            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)',
-            'opacity': 1 - (Math.abs(x) / 1000)
+            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)'
         });
+
+        this.card.find('.card-info').css({
+            'opacity': 1 - (Math.abs(x) / 100)
+        });
+
+        let swipe_direction_cont = this.card.find('.card-swipe-direction');
+        if (x > 0 && !swipe_direction_cont.hasClass('right')) {
+            swipe_direction_cont.removeClass("left");
+            swipe_direction_cont.addClass('right');
+        } else if (x < 0 && !swipe_direction_cont.hasClass('left')) {
+            swipe_direction_cont.removeClass("right");
+            swipe_direction_cont.addClass('left');
+        } else if (x == 0) {
+            swipe_direction_cont.removeClass("right left");
+        }
     }
 
     render() {
         return (
             <div className="swipe-card" style={{ zIndex: this.props.index }}>
-                <h1 className="place-name">{this.props.place.name}</h1>
-                {this.props.place.photos ? (
-                    <div className="place-photos-cont">
-                        {this.props.place.photos.map((photo, i) => {
-                            var key = "photo-" + this.props.place.place_id;
-
-                            return (
-                                <div key={key} className="place-photo">
-                                    <img src={photo.getUrl()} alt={this.props.place.name} />
-                                </div>
-                            );
-                        })}
-                    </div>
-                ) : (
+                <div className="card-info">
+                    <h1 className="place-name">{this.props.place.name}</h1>
+                    {this.props.place.photos ? (
                         <div className="place-photos-cont">
-                            no photo
-                        </div>
-                    )}
-                <div className="place-rating">{this.props.place.rating}</div>
+                            {this.props.place.photos.map((photo, i) => {
+                                var key = "photo-" + this.props.place.place_id;
 
-                <BoardControl triggerSwipe={this.triggerSwipe} />
+                                return (
+                                    <div key={key} className="place-photo">
+                                        <img src={photo.getUrl()} alt={this.props.place.name} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                            <div className="place-photos-cont">
+                                no photo
+                        </div>
+                        )}
+                    <div className="place-rating">{this.props.place.rating}</div>
+
+                    <BoardControl triggerSwipe={this.triggerSwipe} />
+                </div>
+
+                <div className="card-swipe-direction">
+                    <FontAwesomeIcon icon={faThumbsDown} className="direction-left" />
+                    <FontAwesomeIcon icon={faThumbsUp} className="direction-right" />
+                </div>
             </div>
         );
     }
