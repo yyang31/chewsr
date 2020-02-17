@@ -14,10 +14,10 @@ class BoardControl extends React.Component {
     render() {
         return (
             <div id="boardControl" className={this.props.display}>
-                <div id="boardDislike" className="board-control-main-btn">
+                <div id="boardDislike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'left')}>
                     <FontAwesomeIcon icon={faThumbsDown} />
                 </div>
-                <div id="boardLike" className="board-control-main-btn">
+                <div id="boardLike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'right')}>
                     <FontAwesomeIcon icon={faThumbsUp} />
                 </div>
             </div>
@@ -29,7 +29,8 @@ class SwipeCard extends React.Component {
     state = {
         x: 0,
         y: 0,
-        initialPosition: { x: 0, y: 0 }
+        initialPosition: { x: 0, y: 0 },
+        swipeThreshold: 150,
     }
 
     componentDidMount() {
@@ -54,6 +55,15 @@ class SwipeCard extends React.Component {
         };
 
         this.setState({ initialPosition });
+    }
+
+    triggerSwipe = (direction) => {
+        let ev = {
+            type: "panend",
+            deltaX: direction == 'left' ? (-1 * (this.state.swipeThreshold + 10)) : this.state.swipeThreshold + 10,
+        }
+
+        this.panend(ev);
     }
 
     /*
@@ -83,10 +93,10 @@ class SwipeCard extends React.Component {
 
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
-        if (xloc > 150) {
+        if (xloc >= this.state.swipeThreshold) {
             this.updateTransform(600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut();
-        } else if (xloc < -150) {
+        } else if (xloc <= (this.state.swipeThreshold * -1)) {
             this.updateTransform(-600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut();
         } else {
@@ -139,6 +149,8 @@ class SwipeCard extends React.Component {
                         </div>
                     )}
                 <div className="place-rating">{this.props.place.rating}</div>
+
+                <BoardControl triggerSwipe={this.triggerSwipe} />
             </div>
         );
     }
@@ -170,7 +182,6 @@ class SwipeBoard extends React.Component {
                         return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} />
                     })}
                 </div>
-                <BoardControl display={this.state.nearbyResult.length > 0 ? "" : "d-none"} />
             </div >
         );
     }

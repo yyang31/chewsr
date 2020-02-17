@@ -59,7 +59,8 @@
 #boardControl {
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    position: relative;
+    margin-top: auto;
 
     .board-control-main-btn {
         height: 60px;
@@ -68,8 +69,9 @@
         display: flex;
         justify-content: center;
         font-size: 25px;
-        border: 2px solid rgba($black, 0.2);
         transition: 0.25s;
+        background-color: $white;
+        box-shadow: 0 3px 0 rgba($black, 0.2);
 
         &>svg {
             margin: auto;
