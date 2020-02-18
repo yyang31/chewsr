@@ -1,5 +1,9 @@
 @import './common/_grid';
-@import './common/_color';
+@import './common/_base';
+
+* {
+    outline-width: 0;
+}
 
 html {
     display: flex;
@@ -16,17 +20,24 @@ body,
     flex-flow: column;
 }
 
-* {
-    outline-width: 0;
+body {
+    background-color: rgba($light_gray, 0.2);
 }
 
 .App {
-    max-width: $cont_width;
     max-height: $cont_height;
     display: flex;
     flex-flow: column;
     height: 100%;
     flex-grow: 1;
+    min-width: 300px;
+    background-color: $white;
+
+    @media (min-width: $sm) {
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: $deep_shadow;
+    }
 }
 
 .text-input {
