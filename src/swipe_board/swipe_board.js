@@ -9,6 +9,7 @@ import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faCookieBite } from '@fortawesome/free-solid-svg-icons'
 
 class BoardControl extends React.Component {
     render() {
@@ -93,13 +94,17 @@ class SwipeCard extends React.Component {
 
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
-        if (xloc >= this.state.swipeThreshold) {
-            this.updateTransform(600, 0);
-            $(ReactDOM.findDOMNode(this)).fadeOut();
-        } else if (xloc <= (this.state.swipeThreshold * -1)) {
-            this.updateTransform(-600, 0);
-            $(ReactDOM.findDOMNode(this)).fadeOut();
-        } else {
+        if (xloc >= this.state.swipeThreshold) {        // swipe right
+            this.updateTransform(500, 0);
+            $(ReactDOM.findDOMNode(this)).fadeOut(() => {
+                this.props.placeSelection("right");
+            });
+        } else if (xloc <= (this.state.swipeThreshold * -1)) {      // swipe left
+            this.updateTransform(-500, 0);
+            $(ReactDOM.findDOMNode(this)).fadeOut(() => {
+                this.props.placeSelection("left");
+            });
+        } else {        // center
             this.updateTransform(0, 0);
         }
     }
@@ -159,8 +164,9 @@ class SwipeCard extends React.Component {
                             })}
                         </div>
                     ) : (
-                            <div className="place-photos-cont">
-                                no photo
+                            <div className="place-photos-cont no-image">
+                                <FontAwesomeIcon icon={faCookieBite} />
+                                no image avaiable
                         </div>
                         )}
                     <div className="place-rating">{this.props.place.rating}</div>
@@ -199,13 +205,25 @@ class SwipeBoard extends React.Component {
         })
     }
 
+    placeSelection = (swipe_direction) => {
+        let nearbyResult = this.state.nearbyResult;
+
+        if (swipe_direction == "left") {
+            nearbyResult.splice(0, 1);
+        }
+
+        this.setState({
+            nearbyResult: nearbyResult
+        });
+    }
+
     render() {
         return (
             <div id="board">
                 <NearbySearch placesRequest={this.state.placesRequest} radius={this.state.radius} updateNearbyResult={this.updateNearbyResult} />
                 <div id="cards" className={this.state.nearbyResult.length > 0 ? "" : "d-none"}>
                     {this.state.nearbyResult.map((place, index) => {
-                        return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} />
+                        return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} placeSelection={this.placeSelection} />
                     })}
                 </div>
             </div >

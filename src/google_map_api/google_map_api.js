@@ -164,6 +164,13 @@ class NearbySearch extends React.Component {
         console.log(placesRequest);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
+            // remove all results that does not have a photo
+            response.forEach((element, index) => {
+                if (!element.photos) {
+                    response.splice(index, 1);
+                }
+            });
+
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 this.setState({
                     value: value,
