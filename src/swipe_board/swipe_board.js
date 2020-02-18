@@ -95,12 +95,12 @@ class SwipeCard extends React.Component {
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
         if (xloc >= this.state.swipeThreshold) {        // swipe right
-            this.updateTransform(500, 0);
+            this.updateTransform(600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut(() => {
                 this.props.placeSelection("right");
             });
         } else if (xloc <= (this.state.swipeThreshold * -1)) {      // swipe left
-            this.updateTransform(-500, 0);
+            this.updateTransform(-600, 0);
             $(ReactDOM.findDOMNode(this)).fadeOut(() => {
                 this.props.placeSelection("left");
             });
