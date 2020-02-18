@@ -106,6 +106,7 @@ class SwipeCard extends React.Component {
             });
         } else {        // center
             this.updateTransform(0, 0);
+            this.card.find('#boardControl').fadeIn();
         }
     }
 
@@ -134,6 +135,7 @@ class SwipeCard extends React.Component {
             'opacity': 1 - (Math.abs(x) / 100)
         });
 
+        // switch between like and dislike background
         let swipe_direction_cont = this.card.find('.card-swipe-direction');
         if (x > 0 && !swipe_direction_cont.hasClass('right')) {
             swipe_direction_cont.removeClass("left");
@@ -144,6 +146,9 @@ class SwipeCard extends React.Component {
         } else if (x == 0) {
             swipe_direction_cont.removeClass("right left");
         }
+
+        // hide the button controls
+        this.card.find('#boardControl').fadeOut();
     }
 
     render() {
