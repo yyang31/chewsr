@@ -182,6 +182,11 @@ class SwipeBoard extends React.Component {
         radius: 24140.2,    // ~ 15 miles
         nearbyResult: [],
         indexCount: 1,
+        placesRequest: {
+            type: ['restaurant'],
+            radius: 24140.2,        // default to ~ 15 miles
+            keyword: 'Chinese'
+        },
     }
 
     updateNearbyResult = (result) => {
@@ -197,7 +202,7 @@ class SwipeBoard extends React.Component {
     render() {
         return (
             <div id="board">
-                <NearbySearch radius={this.state.radius} updateNearbyResult={this.updateNearbyResult} />
+                <NearbySearch placesRequest={this.state.placesRequest} radius={this.state.radius} updateNearbyResult={this.updateNearbyResult} />
                 <div id="cards" className={this.state.nearbyResult.length > 0 ? "" : "d-none"}>
                     {this.state.nearbyResult.map((place, index) => {
                         return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} />

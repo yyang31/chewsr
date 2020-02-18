@@ -147,8 +147,6 @@ class GoogleSuggest extends React.Component {
 
 class NearbySearch extends React.Component {
     state = {
-        radius: this.props.radius ? this.props.radius : 24140.2,    // default to ~ 15 miles
-        type: "restaurant",
         value: "",
         lat: 0,
         lng: 0,
@@ -164,12 +162,9 @@ class NearbySearch extends React.Component {
     fetchNearby = (value, lat, lng) => {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         const google = window.google;
-
-        const placesRequest = {
-            location: new window.google.maps.LatLng(lat, lng),
-            type: ['restaurant'],
-            radius: this.state.radius,
-        };
+        let placesRequest = this.props.placesRequest;
+        placesRequest.location = new window.google.maps.LatLng(lat, lng);
+        console.log(placesRequest);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
