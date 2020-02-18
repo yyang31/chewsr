@@ -1,33 +1,10 @@
-@import '../common/_color';
-
-#locationCont {
-    margin-top: 20%;
-    position: relative;
-
-    #currentLocation {
-        position: absolute;
-        border: none;
-        right: 6px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: $white;
-        background-color: $blue;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        transition: 0.25s;
-
-        &:hover {
-            background-color: $dark_blue;
-        }
-    }
-}
+@import '../common/_base';
 
 #NearbySearch {
     height: 100%;
     display: flex;
+    flex-flow: column;
+    margin-top: 20%;
 
     .bpzdHV {
         display: flex;
@@ -36,7 +13,7 @@
         .text-input {
             text-align: center;
             transition: 0.25s;
-            padding: 10px 50px 10px 10px;
+            padding: 10px;
         }
 
         .hijnLS {
@@ -48,7 +25,7 @@
             margin: 20px auto;
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 3px 6px rgba($black, 0.2);
+            box-shadow: $shadow;
             transition: 0.25s;
 
             &.invalid {
@@ -66,6 +43,32 @@
                     background-color: rgba($black, 0.1);
                 }
             }
+        }
+    }
+
+    #currentLocation {
+        border: none;
+        color: $white;
+        background-color: $blue;
+        border-radius: 25px;
+        display: flex;
+        justify-content: center;
+        transition: 0.25s;
+        padding: 12px;
+        font-size: 20px;
+        margin-top: 20px;
+        position: relative;
+
+        &:hover {
+            background-color: $dark_blue;
+            box-shadow: $shadow;
+        }
+
+        svg {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
         }
     }
 }

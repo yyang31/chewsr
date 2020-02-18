@@ -29,7 +29,8 @@ class CurrentLocation extends React.Component {
 
     render() {
         return (
-            <button id="currentLocation" onClick={this.getLocation}>
+            <button id="currentLocation" className="btn" onClick={this.getLocation}>
+                locate me
                 <FontAwesomeIcon icon={faLocationArrow} />
             </button>
         );
@@ -126,17 +127,13 @@ class GoogleSuggest extends React.Component {
                                 </div>
                             )}
                         >
-                            <div id="locationCont">
-                                <input
-                                    type="text"
-                                    value={value}
-                                    placeholder="location"
-                                    onChange={this.handleInputChange}
-                                    className="text-input"
-                                />
-
-                                <CurrentLocation fetchNearby={this.props.fetchNearby} />
-                            </div>
+                            <input
+                                type="text"
+                                value={value}
+                                placeholder="enter location"
+                                onChange={this.handleInputChange}
+                                className="text-input"
+                            />
                         </ReactGooglePlacesSuggest>
                     )
                 }
@@ -185,6 +182,7 @@ class NearbySearch extends React.Component {
         return (
             <div id="NearbySearch" className={this.state.nearbyResult.length > 0 ? "d-none" : ""}>
                 <GoogleSuggest fetchNearby={this.fetchNearby} />
+                <CurrentLocation fetchNearby={this.fetchNearby} />
             </div>
         )
     }

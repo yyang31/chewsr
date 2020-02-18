@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
+@import "_color";
 
 * {
     font-family: 'Montserrat';
 }
+
+/******************** Custom SCSS Variables ************************/
+$shadow: 0 3px 6px rgba($black, 0.2);
 
 /************************** Custom CSS *****************************/
 .cursor-pointer {
