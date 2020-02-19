@@ -148,11 +148,12 @@ class NearbySearch extends React.Component {
         lat: 0,
         lng: 0,
         nearbyResult: [],
+        pagination: null
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.nearbyResult !== this.state.nearbyResult && typeof this.props.updateNearbyResult === 'function') {
-            this.props.updateNearbyResult(this.state.nearbyResult);
+            this.props.updateNearbyResult(this.state.nearbyResult, this.state.pagination);
         }
     }
 
@@ -164,6 +165,8 @@ class NearbySearch extends React.Component {
         console.log(placesRequest);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
+            console.log(pagination);
+
             // remove all results that does not have a photo
             response.forEach((element, index) => {
                 if (!element.photos) {
@@ -177,6 +180,7 @@ class NearbySearch extends React.Component {
                     lat: lat,
                     lng: lng,
                     nearbyResult: response,
+                    pagination: pagination.hasNextPage ? pagination : null,
                 });
                 // pagination.nextPage();
             } else {

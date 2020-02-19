@@ -190,23 +190,24 @@ class SwipeCard extends React.Component {
 
 class SwipeBoard extends React.Component {
     state = {
-        radius: 24140.2,    // ~ 15 miles
         nearbyResult: [],
         indexCount: 1,
         placesRequest: {
             type: ['restaurant'],
-            radius: 24140.2,        // default to ~ 15 miles
+            radius: 32186.9,        // 32186.9 meters ~ 20 miles
             keyword: 'Chinese'
         },
     }
 
-    updateNearbyResult = (result) => {
-        console.log(result);
-        console.log(result.length);
+    updateNearbyResult = (result, pagination) => {
+        // console.log("updateNearbyResult");
+        // console.log(result);
+        // console.log(result.length);
 
         this.setState({
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
+            pagination: pagination != null && pagination.hasNextPage ? pagination : null,
         })
     }
 
@@ -217,20 +218,29 @@ class SwipeBoard extends React.Component {
             nearbyResult.splice(0, 1);
         }
 
+        if (nearbyResult.length == 0 && this.state.pagination != null && this.state.pagination.hasNextPage) {
+            // this.state.pagination.nextPage();
+            // console.log(this.state.pagination.nextPage());
+            nearbyResult = this.state.pagination.nextPage();
+        }
+
         this.setState({
             nearbyResult: nearbyResult
         });
     }
 
     render() {
+
         return (
             <div id="board">
-                <NearbySearch placesRequest={this.state.placesRequest} radius={this.state.radius} updateNearbyResult={this.updateNearbyResult} />
-                <div id="cards" className={this.state.nearbyResult.length > 0 ? "" : "d-none"}>
-                    {this.state.nearbyResult.map((place, index) => {
-                        return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} placeSelection={this.placeSelection} />
-                    })}
-                </div>
+                <NearbySearch placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+                {(this.state.nearbyResult && this.state.nearbyResult.length > 0) ? (
+                    <div id="cards">
+                        {this.state.nearbyResult.map((place, index) => {
+                            return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} placeSelection={this.placeSelection} />
+                        })}
+                    </div>
+                ) : (null)}
             </div >
         );
     }
