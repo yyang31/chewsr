@@ -191,7 +191,7 @@ class NearbySearch extends React.Component {
 
     render() {
         return (
-            <div id="NearbySearch" className={this.state.nearbyResult.length > 0 ? "d-none" : ""}>
+            <div id="NearbySearch" className={(this.state.nearbyResult.length > 0 || this.props.guid != null) ? "d-none" : ""}>
                 <GoogleSuggest fetchNearby={this.fetchNearby} />
                 <CurrentLocation fetchNearby={this.fetchNearby} />
             </div>

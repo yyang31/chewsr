@@ -6,10 +6,10 @@ import Hammer from 'hammerjs'
 import ReactDOM from "react-dom";
 import $ from 'jquery';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThumbsDown } from '@fortawesome/free-solid-svg-icons'
-import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-import { faCookieBite } from '@fortawesome/free-solid-svg-icons'
+import Spinner from 'react-bootstrap/Spinner';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsDown, faThumbsUp, faCookieBite, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 class BoardControl extends React.Component {
     render() {
@@ -188,23 +188,79 @@ class SwipeCard extends React.Component {
     }
 }
 
+class Cards extends React.Component {
+    render() {
+        if (this.props.guid) {    // if swiping
+            if (this.props.nearbyResult && this.props.nearbyResult.length > 0) {  // if have cards to swipe
+                return (
+                    <div id="cards">
+                        {this.props.nearbyResult.map((place, index) => {
+                            return <SwipeCard key={place.place_id} place={place} index={this.props.indexCount + this.props.nearbyResult.length - index} placeSelection={this.props.placeSelection} />
+                        })}
+                    </div>
+                );
+            } else if (this.props.pagination && this.props.pagination.hasNextPage) {  // if still have more pages
+                return (
+                    <div id="cardLoader">
+                        <Spinner animation="border" />
+                        <div>loading more places</div>
+                    </div>
+                );
+            } else { // no more card to swipe
+                return (
+                    <div id="noCards">
+                        <FontAwesomeIcon icon={faCheck} />
+                        <div>you are done!</div>
+                    </div>
+                );
+            }
+        } else {
+            return null;
+        }
+
+
+
+        // if (this.props.nearbyResult && this.props.nearbyResult.length > 0) {
+        //     return (
+        //         <div id="cards">
+        //             {this.props.nearbyResult.map((place, index) => {
+        //                 return <SwipeCard key={place.place_id} place={place} index={this.props.indexCount + this.props.nearbyResult.length - index} placeSelection={this.props.placeSelection} />
+        //             })}
+        //         </div>
+        //     );
+        // } else if (this.props.guid) {
+        //     if(this.props.hasNextPage){
+        //         return (
+        //             <div id="cardLoader">
+        //                 <Spinner animation="border" />
+        //                 <div>Loading More Places</div>
+        //             </div>
+        //         );
+        //     }else{
+        //         return 
+        //     }
+        // } else {
+        //     return null;
+        // }
+    }
+}
+
 class SwipeBoard extends React.Component {
     state = {
+        guid: null,
         nearbyResult: [],
         indexCount: 1,
         placesRequest: {
             type: ['restaurant'],
-            radius: 32186.9,        // 32186.9 meters ~ 20 miles
+            // radius: 32186.9,        // 32186.9 meters ~ 20 miles
+            radius: 10000,
             keyword: 'Chinese'
         },
     }
 
     updateNearbyResult = (result, pagination) => {
-        // console.log("updateNearbyResult");
-        // console.log(result);
-        // console.log(result.length);
-
         this.setState({
+            guid: 'TEST',   // temporarily set guid for testing purpose
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
@@ -219,8 +275,6 @@ class SwipeBoard extends React.Component {
         }
 
         if (nearbyResult.length == 0 && this.state.pagination != null && this.state.pagination.hasNextPage) {
-            // this.state.pagination.nextPage();
-            // console.log(this.state.pagination.nextPage());
             nearbyResult = this.state.pagination.nextPage();
         }
 
@@ -230,19 +284,12 @@ class SwipeBoard extends React.Component {
     }
 
     render() {
-
         return (
             <div id="board">
-                <NearbySearch placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
-                {(this.state.nearbyResult && this.state.nearbyResult.length > 0) ? (
-                    <div id="cards">
-                        {this.state.nearbyResult.map((place, index) => {
-                            return <SwipeCard key={place.place_id} place={place} index={this.state.indexCount + this.state.nearbyResult.length - index} placeSelection={this.placeSelection} />
-                        })}
-                    </div>
-                ) : (null)}
-            </div >
-        );
+                <Cards guid={this.state.guid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
+                <NearbySearch guid={this.state.guid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+            </div>
+        )
     }
 }
 
