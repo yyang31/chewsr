@@ -4,10 +4,31 @@ import './google_map_api.scss'
 import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
 
+import Button from 'react-bootstrap/Button';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationArrow } from '@fortawesome/free-solid-svg-icons'
+import { faLocationArrow, faUsers } from '@fortawesome/free-solid-svg-icons'
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
+
+class JoinGroup extends React.Component {
+    render() {
+        return (
+            <div id="joinGroup" >
+                <h1>
+                    <FontAwesomeIcon icon={faUsers} />
+                </h1>
+                <input type="text" className="text-input" placeholder="enter group number" />
+                <Button variant="primary">
+                    join
+                </Button>
+                <Button variant="secondary" onClick={this.props.toggleGetGroup}>
+                    cancel
+                </Button>
+            </div >
+        );
+    }
+}
 
 class CurrentLocation extends React.Component {
     getLocation = () => {
@@ -29,7 +50,7 @@ class CurrentLocation extends React.Component {
 
     render() {
         return (
-            <button id="currentLocation" className="btn" onClick={this.getLocation}>
+            <button id="currentLocation" className="btn btn-primary" onClick={this.getLocation}>
                 locate me
                 <FontAwesomeIcon icon={faLocationArrow} />
             </button>
@@ -148,7 +169,8 @@ class NearbySearch extends React.Component {
         lat: 0,
         lng: 0,
         nearbyResult: [],
-        pagination: null
+        pagination: null,
+        getGroup: false,
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -182,18 +204,34 @@ class NearbySearch extends React.Component {
                     nearbyResult: response,
                     pagination: pagination.hasNextPage ? pagination : null,
                 });
-                // pagination.nextPage();
             } else {
                 console.log("GOOGLE_MAP_API ERROR: " + status);
             }
         }));
     }
 
+    toggleGetGroup = () => {
+        this.setState({
+            getGroup: this.state.getGroup ? false : true
+        });
+    }
+
     render() {
         return (
             <div id="NearbySearch" className={(this.state.nearbyResult.length > 0 || this.props.guid != null) ? "d-none" : ""}>
-                <GoogleSuggest fetchNearby={this.fetchNearby} />
-                <CurrentLocation fetchNearby={this.fetchNearby} />
+                {this.state.getGroup ? (
+                    <JoinGroup toggleGetGroup={this.toggleGetGroup} />
+                ) : (
+                        <>
+                            <GoogleSuggest fetchNearby={this.fetchNearby} />
+                            <CurrentLocation fetchNearby={this.fetchNearby} />
+                            <Button variant="primary" onClick={this.toggleGetGroup}>
+                                join group
+                                <FontAwesomeIcon icon={faUsers} />
+                            </Button>
+                        </>
+                    )
+                }
             </div>
         )
     }

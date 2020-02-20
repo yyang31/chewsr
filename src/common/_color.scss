@@ -1,3 +1,4 @@
+/******************** Color ************************/
 // generic
 $black: #000;
 
@@ -55,3 +56,7 @@ $light_teal: #a4e3fc;
 $dark_yellow: #e8ba02;
 $yellow: #fcd617;
 $light_yellow: #fce46a;
+
+/******************** Shadow ************************/
+$shadow: 0 3px 6px rgba($black, 0.2);
+$deep_shadow: 0 5px 10px rgba($black, 0.4);

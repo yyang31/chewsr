@@ -190,7 +190,7 @@ class SwipeCard extends React.Component {
 
 class Cards extends React.Component {
     render() {
-        if (this.props.guid) {    // if swiping
+        if (this.props.uuid) {    // if swiping
             if (this.props.nearbyResult && this.props.nearbyResult.length > 0) {  // if have cards to swipe
                 return (
                     <div id="cards">
@@ -217,37 +217,12 @@ class Cards extends React.Component {
         } else {
             return null;
         }
-
-
-
-        // if (this.props.nearbyResult && this.props.nearbyResult.length > 0) {
-        //     return (
-        //         <div id="cards">
-        //             {this.props.nearbyResult.map((place, index) => {
-        //                 return <SwipeCard key={place.place_id} place={place} index={this.props.indexCount + this.props.nearbyResult.length - index} placeSelection={this.props.placeSelection} />
-        //             })}
-        //         </div>
-        //     );
-        // } else if (this.props.guid) {
-        //     if(this.props.hasNextPage){
-        //         return (
-        //             <div id="cardLoader">
-        //                 <Spinner animation="border" />
-        //                 <div>Loading More Places</div>
-        //             </div>
-        //         );
-        //     }else{
-        //         return 
-        //     }
-        // } else {
-        //     return null;
-        // }
     }
 }
 
 class SwipeBoard extends React.Component {
     state = {
-        guid: null,
+        uuid: null,
         nearbyResult: [],
         indexCount: 1,
         placesRequest: {
@@ -260,7 +235,7 @@ class SwipeBoard extends React.Component {
 
     updateNearbyResult = (result, pagination) => {
         this.setState({
-            guid: 'TEST',   // temporarily set guid for testing purpose
+            uuid: 'TEST',   // temporarily set uuid for testing purpose
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
@@ -286,8 +261,8 @@ class SwipeBoard extends React.Component {
     render() {
         return (
             <div id="board">
-                <Cards guid={this.state.guid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
-                <NearbySearch guid={this.state.guid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+                <Cards uuid={this.state.uuid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
+                <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
             </div>
         )
     }

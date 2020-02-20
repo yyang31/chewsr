@@ -1,4 +1,12 @@
-@import '../common/_base';
+@import '../common/_color';
+
+#joinGroup {
+    h1 {
+        text-align: center;
+        font-size: 60px;
+        color: $blue;
+    }
+}
 
 #NearbySearch {
     height: 100%;
@@ -9,12 +17,6 @@
     .bpzdHV {
         display: flex;
         flex-flow: column;
-
-        .text-input {
-            text-align: center;
-            transition: 0.25s;
-            padding: 10px;
-        }
 
         .hijnLS {
             width: 100%;
@@ -43,32 +45,6 @@
                     background-color: rgba($black, 0.1);
                 }
             }
-        }
-    }
-
-    #currentLocation {
-        border: none;
-        color: $white;
-        background-color: $blue;
-        border-radius: 25px;
-        display: flex;
-        justify-content: center;
-        transition: 0.25s;
-        padding: 12px;
-        font-size: 20px;
-        margin-top: 20px;
-        position: relative;
-
-        &:hover {
-            background-color: $dark_blue;
-            box-shadow: $shadow;
-        }
-
-        svg {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
         }
     }
 }

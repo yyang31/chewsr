@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import './common/_grid';
-@import './common/_base';
+@import './common/_color';
 
 * {
     outline-width: 0;
+    font-family: 'Montserrat';
 }
 
 html {
@@ -41,13 +43,59 @@ body {
     }
 }
 
+/************************** Custom CSS *****************************/
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/*********************** Bootstrap Redesign ************************/
+.btn-primary,
+.btn-secondary {
+    margin: 10px auto;
+    width: 100%;
+    border-radius: 25px;
+    font-size: 20px;
+    padding: 12px;
+    border: none;
+    position: relative;
+
+    svg {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+.btn-primary {
+    background-color: $blue;
+
+    &:hover {
+        background-color: $dark_blue;
+        box-shadow: $shadow;
+    }
+}
+
+.btn-secondary {
+    background-color: $red;
+
+    &:hover {
+        background-color: $dark_red;
+        box-shadow: $shadow;
+    }
+}
+
 .text-input {
     width: 100%;
-    border: 2px solid rgba($black, 0.2);
+    border: 1px solid rgba($black, 0.2);
     border-radius: 25px;
     padding: 10px 20px;
     color: $blue;
     font-size: 20px;
+    margin: 10px auto;
+    text-align: center;
+    transition: 0.25s;
+    padding: 11px;
 
     &:hover,
     &:focus {
