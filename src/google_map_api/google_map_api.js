@@ -7,14 +7,14 @@ import ReactGooglePlacesSuggest from "react-google-places-suggest"
 import Button from 'react-bootstrap/Button';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationArrow, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faLocationArrow, faUsers, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 class JoinGroup extends React.Component {
     render() {
         return (
-            <div id="joinGroup" >
+            <>
                 <h1>
                     <FontAwesomeIcon icon={faUsers} />
                 </h1>
@@ -25,7 +25,7 @@ class JoinGroup extends React.Component {
                 <Button variant="secondary" onClick={this.props.toggleGetGroup}>
                     cancel
                 </Button>
-            </div >
+            </>
         );
     }
 }
@@ -223,6 +223,9 @@ class NearbySearch extends React.Component {
                     <JoinGroup toggleGetGroup={this.toggleGetGroup} />
                 ) : (
                         <>
+                            <h1>
+                                <FontAwesomeIcon icon={faMapMarkedAlt} />
+                            </h1>
                             <GoogleSuggest fetchNearby={this.fetchNearby} />
                             <CurrentLocation fetchNearby={this.fetchNearby} />
                             <Button variant="primary" onClick={this.toggleGetGroup}>

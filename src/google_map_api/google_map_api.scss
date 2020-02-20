@@ -1,18 +1,16 @@
 @import '../common/_color';
 
-#joinGroup {
+#NearbySearch {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    margin-top: 10%;
+
     h1 {
         text-align: center;
         font-size: 60px;
         color: $blue;
     }
-}
-
-#NearbySearch {
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    margin-top: 20%;
 
     .bpzdHV {
         display: flex;
