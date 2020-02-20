@@ -227,8 +227,7 @@ class SwipeBoard extends React.Component {
         indexCount: 1,
         placesRequest: {
             type: ['restaurant'],
-            // radius: 32186.9,        // 32186.9 meters ~ 20 miles
-            radius: 10000,
+            radius: 32186.9,        // 32186.9 meters ~ 20 miles
             keyword: 'Chinese'
         },
     }

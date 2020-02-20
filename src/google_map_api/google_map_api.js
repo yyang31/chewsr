@@ -218,7 +218,7 @@ class NearbySearch extends React.Component {
 
     render() {
         return (
-            <div id="NearbySearch" className={(this.state.nearbyResult.length > 0 || this.props.guid != null) ? "d-none" : ""}>
+            <div id="NearbySearch" className={(this.state.nearbyResult.length > 0 || this.props.uuid != null) ? "d-none" : ""}>
                 {this.state.getGroup ? (
                     <JoinGroup toggleGetGroup={this.toggleGetGroup} />
                 ) : (
