@@ -12,6 +12,7 @@ import Toast from 'react-bootstrap/Toast';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationArrow, faUsers, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
+import { Row, Col } from "react-bootstrap";
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
@@ -74,24 +75,38 @@ class JoinGroup extends React.Component {
                     <Toast.Body>{this.state.message}</Toast.Body>
                 </Toast>
 
-                <h1>
-                    <FontAwesomeIcon icon={faUsers} />
-                </h1>
-                <input
-                    type="number"
-                    className="text-input"
-                    placeholder={"enter " + this.state.groupIDLength + " digit group id"}
-                    onChange={this.handleInputChange}
-                    value={this.state.group_id}
-                    required
-                    autoComplete="off"
-                    maxLength={this.state.groupIDLength}
-                />
-                <input type="submit" className="btn-primary" value="join" />
-                <Button variant="secondary" onClick={this.props.toggleGetGroup}>
-                    cancel
-                </Button>
-            </form>
+                <Row>
+                    <Col>
+                        <Row>
+                            <Col>
+                                <h1>
+                                    <FontAwesomeIcon icon={faUsers} />
+                                </h1>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={12}>
+                                <input
+                                    type="number"
+                                    className="text-input"
+                                    placeholder={"enter " + this.state.groupIDLength + " digit group id"}
+                                    onChange={this.handleInputChange}
+                                    value={this.state.group_id}
+                                    required
+                                    autoComplete="off"
+                                    maxLength={this.state.groupIDLength}
+                                />
+                            </Col>
+                            <Col md={12}>
+                                <input type="submit" className="btn-primary" value="join" />
+                            </Col>
+                            <Col md={12}>
+                                <Button variant="secondary" onClick={this.props.toggleGetGroup}>cancel</Button>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </form >
         );
     }
 }
@@ -284,24 +299,36 @@ class NearbySearch extends React.Component {
 
     render() {
         return (
-            <div id="NearbySearch" className={this.props.uuid != null ? "d-none" : ""}>
+            <Row id="NearbySearch" className={this.props.uuid != null ? "d-none" : ""}>
                 {this.state.getGroup ? (
-                    <JoinGroup toggleGetGroup={this.toggleGetGroup} fetchNearby={this.fetchNearby} />
+                    <Col>
+                        <JoinGroup toggleGetGroup={this.toggleGetGroup} fetchNearby={this.fetchNearby} />
+                    </Col>
                 ) : (
-                        <>
-                            <h1>
-                                <FontAwesomeIcon icon={faMapMarkedAlt} />
-                            </h1>
-                            <GoogleSuggest fetchNearby={this.fetchNearby} />
-                            <CurrentLocation fetchNearby={this.fetchNearby} />
-                            <Button variant="primary" onClick={this.toggleGetGroup}>
-                                join group
+                        <Col>
+                            <Row>
+                                <Col md={12}>
+                                    <h1>
+                                        <FontAwesomeIcon icon={faMapMarkedAlt} />
+                                    </h1>
+                                </Col>
+                                <Col md={12}>
+                                    <GoogleSuggest fetchNearby={this.fetchNearby} />
+                                </Col>
+                                <Col md={12}>
+                                    <CurrentLocation fetchNearby={this.fetchNearby} />
+                                </Col>
+                                <Col md={12}>
+                                    <Button variant="primary" onClick={this.toggleGetGroup}>
+                                        join group
                                 <FontAwesomeIcon icon={faUsers} />
-                            </Button>
-                        </>
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Col>
                     )
                 }
-            </div>
+            </Row>
         )
     }
 }

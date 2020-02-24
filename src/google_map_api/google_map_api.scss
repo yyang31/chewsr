@@ -1,9 +1,6 @@
 @import '../common/_color';
 
 #NearbySearch {
-    height: 100%;
-    display: flex;
-    flex-flow: column;
     margin-top: 10%;
 
     h1 {
@@ -13,9 +10,6 @@
     }
 
     .bpzdHV {
-        display: flex;
-        flex-flow: column;
-
         .hijnLS {
             width: 100%;
             position: relative;
