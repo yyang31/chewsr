@@ -234,6 +234,14 @@ class SwipeBoard extends React.Component {
         },
     }
 
+    componentDidUpdate = () => {
+        if ((this.state.nearbyResult && this.state.nearbyResult.length == 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
+            this.setState({
+                nearbyResult: this.state.pagination.nextPage()
+            })
+        }
+    }
+
     resetBoard = () => {
         this.setState({
             uuid: null,
@@ -249,8 +257,6 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (result, pagination) => {
-        console.log(JSON.stringify(result));
-
         this.setState({
             uuid: 'TEST',   // temporarily set uuid for testing purpose
             nearbyResult: result,
@@ -264,10 +270,6 @@ class SwipeBoard extends React.Component {
 
         if (swipe_direction == "left") {
             nearbyResult.splice(0, 1);
-        }
-
-        if (nearbyResult.length == 0 && this.state.pagination != null && this.state.pagination.hasNextPage) {
-            nearbyResult = this.state.pagination.nextPage();
         }
 
         this.setState({
