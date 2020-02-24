@@ -274,9 +274,12 @@ class SwipeBoard extends React.Component {
                 return this.setGroupID(lat, lng);
             } else {
                 let ref2 = Firebase.database().ref(uuid);
+                let date = new Date();
+
                 ref2.set({
                     lat: lat,
                     lng: lng,
+                    created_on: date.toLocaleString(),
                 });
 
                 // return uuid;
