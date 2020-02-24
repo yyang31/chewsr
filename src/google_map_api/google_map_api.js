@@ -1,6 +1,9 @@
 import React, { Component } from "react"
 import './google_map_api.scss'
 
+import Firebase from "firebase";
+import firebaseConfig from "../config";
+
 import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
 
@@ -12,20 +15,62 @@ import { faLocationArrow, faUsers, faMapMarkedAlt } from '@fortawesome/free-soli
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 class JoinGroup extends React.Component {
+    constructor(props) {
+        super(props);
+        Firebase.initializeApp(firebaseConfig);
+
+        this.state = {
+            groupIDLength: 5,
+            groupID: ''
+        };
+    }
+
+    getGroupNumber = (e) => {
+        e.preventDefault(process.env.REACT_APP_FIREBASE_PRIVATE_KEY);
+
+        if (this.state.groupID.length == this.state.groupIDLength) {
+            let ref = Firebase.database().ref("/" + this.state.groupID);
+
+            ref.on("value", snapshot => {
+                const val = snapshot.val();
+                if (val == null) {
+                    console.log("dont exist");
+                } else {
+                    this.props.fetchNearby("", val.lat, val.lng);
+                }
+            });
+        } else {
+            console.log("invalid number of digits");
+        }
+    }
+
+    handleInputChange = (e) => {
+        this.setState({
+            groupID: e.target.value
+        });
+    }
+
     render() {
         return (
-            <>
+            <form onSubmit={this.getGroupNumber}>
                 <h1>
                     <FontAwesomeIcon icon={faUsers} />
                 </h1>
-                <input type="text" className="text-input" placeholder="enter group number" />
-                <Button variant="primary">
-                    join
-                </Button>
+                <input
+                    type="number"
+                    className="text-input"
+                    placeholder={"enter " + this.state.groupIDLength + " digit group id"}
+                    onChange={this.handleInputChange}
+                    value={this.state.group_id}
+                    required
+                    autoComplete="off"
+                    maxLength={this.state.groupIDLength}
+                />
+                <input type="submit" className="btn-primary" value="join" />
                 <Button variant="secondary" onClick={this.props.toggleGetGroup}>
                     cancel
                 </Button>
-            </>
+            </form>
         );
     }
 }
@@ -220,7 +265,7 @@ class NearbySearch extends React.Component {
         return (
             <div id="NearbySearch" className={(this.state.nearbyResult.length > 0 || this.props.uuid != null) ? "d-none" : ""}>
                 {this.state.getGroup ? (
-                    <JoinGroup toggleGetGroup={this.toggleGetGroup} />
+                    <JoinGroup toggleGetGroup={this.toggleGetGroup} fetchNearby={this.fetchNearby} />
                 ) : (
                         <>
                             <h1>

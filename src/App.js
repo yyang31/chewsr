@@ -6,13 +6,15 @@ import CustomNavbar from './navbar/navbar';
 
 import SwipeBoard from './swipe_board/swipe_board';
 
-function App() {
-  return (
-    <div className="App">
-      <CustomNavbar />
-      <SwipeBoard />
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <CustomNavbar />
+        <SwipeBoard />
+      </div>
+    );
+  }
 }
 
 export default App;

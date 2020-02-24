@@ -233,6 +233,8 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (result, pagination) => {
+        console.log(JSON.stringify(result));
+
         this.setState({
             uuid: 'TEST',   // temporarily set uuid for testing purpose
             nearbyResult: result,
