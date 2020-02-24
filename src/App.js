@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 class App extends React.Component {
   render() {
     return (
-      <Row className="App justify-content-md-center">
+      <Row className="App justify-content-md-center no-gutters">
         <Col md={12} lg={6}>
           <SwipeBoard />
         </Col>
