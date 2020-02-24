@@ -43,6 +43,7 @@ class JoinGroup extends React.Component {
 
             ref.on("value", snapshot => {
                 const val = snapshot.val();
+                console.log(val);
                 if (val == null) {
                     this.setShow("error", "The group ID does not exist.");
                 } else {

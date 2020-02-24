@@ -49,12 +49,9 @@ class SwipeCard extends React.Component {
 
         this.hammer.on('panstart pancancel panmove panend', this.handlePan);
         this.hammer.on('swipestart swipeend swipecancel swipemove', this.handleSwipe);
-
-        // this.resetPosition()
-        // window.addEventListener('resize', this.resetPosition)
     }
 
-    setInitialPosition() {
+    setInitialPosition = () => {
         const initialPosition = {
             x: Math.round(($('#cards').innerWidth() - this.card.outerWidth(true)) / 2),
             y: Math.round(($('#cards').innerHeight() - this.card.outerHeight(true)) / 2),
@@ -277,7 +274,7 @@ class SwipeBoard extends React.Component {
             if (ref) {
                 ref.set({
                     lat: lat,
-                    lng: lng
+                    lng: lng,
                 })
             }
         }
@@ -292,10 +289,33 @@ class SwipeBoard extends React.Component {
 
     placeSelection = (swipe_direction) => {
         let nearbyResult = this.state.nearbyResult;
+        let place = nearbyResult[0];
 
-        if (swipe_direction == "left") {
-            nearbyResult.splice(0, 1);
+        if (swipe_direction == "right") {
+            let ref = Firebase.database().ref(this.state.uuid);
+            if (ref) {
+                ref.on('value', snapshot => {
+                    let val = snapshot.val();
+                    let placeID = place.id;
+                    let placeReformat = {
+                        lat: place.geometry.location.lat(),
+                        lng: place.geometry.location.lng(),
+                        name: place.name,
+                    }
+
+                    // if the places object doesn't exist, create one
+                    if (!val.places) {
+                        val.places = {};
+                    }
+
+                    val.places[placeID] = placeReformat;
+
+                    ref.set(val);
+                });
+            }
         }
+
+        nearbyResult.splice(0, 1);
 
         this.setState({
             nearbyResult: nearbyResult
