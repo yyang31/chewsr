@@ -306,18 +306,23 @@ class SwipeBoard extends React.Component {
             ref.once('value', snapshot => {
                 let val = snapshot.val();
                 let placeID = place.id;
-                let placeReformat = {
-                    lat: place.geometry.location.lat(),
-                    lng: place.geometry.location.lng(),
-                    name: place.name,
-                }
 
-                // if the places object doesn't exist, create one
+                // if the places container object doesn't exist, create one
                 if (!val.places) {
                     val.places = {};
                 }
 
-                val.places[placeID] = placeReformat;
+                // if the place exist
+                if (val.places[placeID]) {
+                    val.places[placeID].likes++;
+                } else {
+                    val.places[placeID] = {
+                        name: place.name,
+                        lat: place.geometry.location.lat(),
+                        lng: place.geometry.location.lng(),
+                        likes: 1,
+                    };
+                }
 
                 ref.set(val);
             });
