@@ -264,61 +264,77 @@ class SwipeBoard extends React.Component {
         });
     }
 
-    updateNearbyResult = (lat, lng, result, pagination) => {
-        // generate new/unique uuid
-        let uuid = null;
-        let ref = null;
-        while (!ref) {
-            uuid = Math.floor(Math.random() * 90000) + 10000;
-            ref = Firebase.database().ref(uuid);
-            if (ref) {
-                ref.set({
+    setGroupID = (lat, lng) => {
+        let uuid = Math.floor(Math.random() * 90000) + 10000;
+        let ref = Firebase.database().ref("/");
+        let reactScope = this;
+
+        ref.child(uuid).once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                return this.setGroupID(lat, lng);
+            } else {
+                let ref2 = Firebase.database().ref(uuid);
+                ref2.set({
                     lat: lat,
                     lng: lng,
+                });
+
+                // return uuid;
+                reactScope.setState({
+                    uuid: uuid
                 })
             }
-        }
+        });
+    }
+
+    updateNearbyResult = (lat, lng, result, pagination, groupID = null) => {
+        // generate new/unique uuid
+        if (!groupID) this.setGroupID(lat, lng);
 
         this.setState({
-            uuid: uuid,   // temporarily set uuid for testing purpose
+            uuid: groupID,   // temporarily set uuid for testing purpose
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
         });
     }
 
+    updateLike = (place) => {
+        console.log(place.name);
+        let ref = Firebase.database().ref(this.state.uuid);
+        if (ref) {
+            ref.once('value', snapshot => {
+                let val = snapshot.val();
+                let placeID = place.id;
+                let placeReformat = {
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
+                    name: place.name,
+                }
+
+                // if the places object doesn't exist, create one
+                if (!val.places) {
+                    val.places = {};
+                }
+
+                val.places[placeID] = placeReformat;
+
+                ref.set(val);
+            });
+        }
+    }
+
     placeSelection = (swipe_direction) => {
         let nearbyResult = this.state.nearbyResult;
-        let place = nearbyResult[0];
 
         if (swipe_direction == "right") {
-            let ref = Firebase.database().ref(this.state.uuid);
-            if (ref) {
-                ref.on('value', snapshot => {
-                    let val = snapshot.val();
-                    let placeID = place.id;
-                    let placeReformat = {
-                        lat: place.geometry.location.lat(),
-                        lng: place.geometry.location.lng(),
-                        name: place.name,
-                    }
-
-                    // if the places object doesn't exist, create one
-                    if (!val.places) {
-                        val.places = {};
-                    }
-
-                    val.places[placeID] = placeReformat;
-
-                    ref.set(val);
-                });
-            }
+            this.updateLike(this.state.nearbyResult[0]);
         }
 
-        nearbyResult.splice(0, 1);
+        nearbyResult.shift();
 
         this.setState({
-            nearbyResult: nearbyResult
+            nearbyResult: this.state.nearbyResult
         });
     }
 

@@ -38,16 +38,15 @@ class JoinGroup extends React.Component {
     getGroupNumber = (e) => {
         e.preventDefault(process.env.REACT_APP_FIREBASE_PRIVATE_KEY);
 
-        if (this.state.groupID.length == this.state.groupIDLength) {
+        if (this.state.groupID != '' && this.state.groupID.length == this.state.groupIDLength) {
             let ref = Firebase.database().ref("/" + this.state.groupID);
 
-            ref.on("value", snapshot => {
+            ref.once("value", snapshot => {
                 const val = snapshot.val();
-                console.log(val);
                 if (val == null) {
                     this.setShow("error", "The group ID does not exist.");
                 } else {
-                    this.props.fetchNearby("", val.lat, val.lng);
+                    this.props.fetchNearby("", val.lat, val.lng, this.state.groupID);
                 }
             });
         } else {
@@ -128,8 +127,6 @@ class CurrentLocation extends React.Component {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
 
-        console.log("Latitude: " + lat + " Longitude: " + lng);
-
         this.props.fetchNearby("", lat, lng);
     }
 
@@ -162,8 +159,6 @@ class GoogleSuggest extends React.Component {
     }
 
     handleInputChange = e => {
-        console.log(e);
-
         this.setState({
             search: e.target.value,
             value: e.target.value
@@ -171,8 +166,6 @@ class GoogleSuggest extends React.Component {
     }
 
     handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
-        console.log(geocodedPrediction, originalPrediction) // eslint-disable-line
-
         this.props.fetchNearby(
             geocodedPrediction.formatted_address,
             geocodedPrediction.geometry.location.lat(),
@@ -190,8 +183,6 @@ class GoogleSuggest extends React.Component {
     }
 
     handleStatusUpdate = status => {
-        console.log(status);
-
         if (status != this.state.status) {
             this.setState({
                 status: status,
@@ -256,24 +247,22 @@ class NearbySearch extends React.Component {
         nearbyResult: [],
         pagination: null,
         getGroup: false,
+        groupID: null
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.nearbyResult !== this.state.nearbyResult && typeof this.props.updateNearbyResult === 'function') {
-            this.props.updateNearbyResult(this.state.lat, this.state.lng, this.state.nearbyResult, this.state.pagination);
+            this.props.updateNearbyResult(this.state.lat, this.state.lng, this.state.nearbyResult, this.state.pagination, this.state.groupID);
         }
     }
 
-    fetchNearby = (value, lat, lng) => {
+    fetchNearby = (value, lat, lng, groupID = null) => {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         const google = window.google;
         let placesRequest = this.props.placesRequest;
         placesRequest.location = new window.google.maps.LatLng(lat, lng);
-        console.log(placesRequest);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
-            console.log(pagination);
-
             // remove all results that does not have a photo
             response.forEach((element, index) => {
                 if (!element.photos) {
@@ -288,6 +277,8 @@ class NearbySearch extends React.Component {
                     lng: lng,
                     nearbyResult: response,
                     pagination: pagination.hasNextPage ? pagination : null,
+                    groupID: groupID,
+                    getGroup: false,
                 });
             } else {
                 console.log("GOOGLE_MAP_API ERROR: " + status);
