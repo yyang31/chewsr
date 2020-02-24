@@ -1,6 +1,9 @@
 import React, { Component, useState } from "react"
 import './google_map_api.scss'
 
+import ReactDOM from "react-dom";
+import $ from 'jquery';
+
 import Firebase from "firebase";
 import firebaseConfig from "../config";
 
@@ -59,7 +62,7 @@ class JoinGroup extends React.Component {
 
     setShow = (messageType, message) => {
         this.setState({
-            show: this.state.show ? false : true,
+            show: (this.state.show && message == null) ? false : true,
             messageType: messageType,
             message: message,
         })
