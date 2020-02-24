@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import './swipe_board.scss'
 
+import CustomNavbar from '../navbar/navbar';
+
 import NearbySearch from '../google_map_api/google_map_api';
 import Hammer from 'hammerjs'
 import ReactDOM from "react-dom";
@@ -232,6 +234,20 @@ class SwipeBoard extends React.Component {
         },
     }
 
+    resetBoard = () => {
+        this.setState({
+            uuid: null,
+            nearbyResult: [],
+            indexCount: 1,
+            placesRequest: {
+                type: ['restaurant'],
+                radius: 32186.9,        // 32186.9 meters ~ 20 miles
+                keyword: 'Chinese'
+            },
+            pagination: null,
+        });
+    }
+
     updateNearbyResult = (result, pagination) => {
         console.log(JSON.stringify(result));
 
@@ -262,6 +278,7 @@ class SwipeBoard extends React.Component {
     render() {
         return (
             <div id="board">
+                <CustomNavbar resetBoard={this.resetBoard} />
                 <Cards uuid={this.state.uuid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
                 <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
             </div>
