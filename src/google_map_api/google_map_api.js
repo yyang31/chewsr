@@ -256,7 +256,7 @@ class NearbySearch extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.nearbyResult !== this.state.nearbyResult && typeof this.props.updateNearbyResult === 'function') {
-            this.props.updateNearbyResult(this.state.nearbyResult, this.state.pagination);
+            this.props.updateNearbyResult(this.state.lat, this.state.lng, this.state.nearbyResult, this.state.pagination);
         }
     }
 

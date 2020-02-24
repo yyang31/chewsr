@@ -1,6 +1,9 @@
 import React, { Component } from "react"
 import './swipe_board.scss'
 
+import Firebase from "firebase";
+import firebaseConfig from "../config";
+
 import CustomNavbar from '../navbar/navbar';
 
 import NearbySearch from '../google_map_api/google_map_api';
@@ -223,16 +226,24 @@ class Cards extends React.Component {
 }
 
 class SwipeBoard extends React.Component {
-    state = {
-        uuid: null,
-        nearbyResult: [],
-        indexCount: 1,
-        placesRequest: {
-            type: ['restaurant'],
-            radius: 32186.9,        // 32186.9 meters ~ 20 miles
-            keyword: 'Chinese'
-        },
+    constructor(props) {
+        super(props);
+        if (!Firebase.apps.length) {
+            Firebase.initializeApp(firebaseConfig);
+        }
+
+        this.state = {
+            uuid: null,
+            nearbyResult: [],
+            indexCount: 1,
+            placesRequest: {
+                type: ['restaurant'],
+                radius: 32186.9,        // 32186.9 meters ~ 20 miles
+                keyword: 'Chinese'
+            },
+        }
     }
+
 
     componentDidUpdate = () => {
         if ((this.state.nearbyResult && this.state.nearbyResult.length == 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
@@ -256,13 +267,27 @@ class SwipeBoard extends React.Component {
         });
     }
 
-    updateNearbyResult = (result, pagination) => {
+    updateNearbyResult = (lat, lng, result, pagination) => {
+        // generate new/unique uuid
+        let uuid = null;
+        let ref = null;
+        while (!ref) {
+            uuid = Math.floor(Math.random() * 90000) + 10000;
+            ref = Firebase.database().ref(uuid);
+            if (ref) {
+                ref.set({
+                    lat: lat,
+                    lng: lng
+                })
+            }
+        }
+
         this.setState({
-            uuid: 'TEST',   // temporarily set uuid for testing purpose
+            uuid: uuid,   // temporarily set uuid for testing purpose
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
-        })
+        });
     }
 
     placeSelection = (swipe_direction) => {
