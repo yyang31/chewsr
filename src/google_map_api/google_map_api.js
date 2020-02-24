@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, useState } from "react"
 import './google_map_api.scss'
 
 import Firebase from "firebase";
@@ -8,6 +8,7 @@ import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
 
 import Button from 'react-bootstrap/Button';
+import Toast from 'react-bootstrap/Toast';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationArrow, faUsers, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
@@ -17,11 +18,16 @@ const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 class JoinGroup extends React.Component {
     constructor(props) {
         super(props);
-        Firebase.initializeApp(firebaseConfig);
+        if (!Firebase.apps.length) {
+            Firebase.initializeApp(firebaseConfig);
+        }
 
         this.state = {
             groupIDLength: 5,
-            groupID: ''
+            groupID: '',
+            show: false,
+            messageType: '',
+            message: '',
         };
     }
 
@@ -34,13 +40,13 @@ class JoinGroup extends React.Component {
             ref.on("value", snapshot => {
                 const val = snapshot.val();
                 if (val == null) {
-                    console.log("dont exist");
+                    this.setShow("error", "The group ID does not exist.");
                 } else {
                     this.props.fetchNearby("", val.lat, val.lng);
                 }
             });
         } else {
-            console.log("invalid number of digits");
+            this.setShow("error", "Invalid number of digits.");
         }
     }
 
@@ -50,9 +56,24 @@ class JoinGroup extends React.Component {
         });
     }
 
+    setShow = (messageType, message) => {
+        this.setState({
+            show: this.state.show ? false : true,
+            messageType: messageType,
+            message: message,
+        })
+    }
+
     render() {
         return (
             <form onSubmit={this.getGroupNumber}>
+                <Toast className={this.state.messageType} onClose={() => { this.setShow() }} show={this.state.show} delay={3000} autohide>
+                    <Toast.Header>
+                        <strong className="mr-auto">Error</strong>
+                    </Toast.Header>
+                    <Toast.Body>{this.state.message}</Toast.Body>
+                </Toast>
+
                 <h1>
                     <FontAwesomeIcon icon={faUsers} />
                 </h1>
