@@ -53,8 +53,8 @@ class SwipeCard extends React.Component {
 
     setInitialPosition() {
         const initialPosition = {
-            x: Math.round(($('.App').innerWidth() - this.card.outerWidth(true)) / 2),
-            y: Math.round(($('.App').innerHeight() - this.card.outerHeight(true)) / 2),
+            x: Math.round(($('#cards').innerWidth() - this.card.outerWidth(true)) / 2),
+            y: Math.round(($('#cards').innerHeight() - this.card.outerHeight(true)) / 2),
         };
 
         this.setState({ initialPosition });
