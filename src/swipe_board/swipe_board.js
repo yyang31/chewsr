@@ -236,7 +236,7 @@ class SwipeBoard extends React.Component {
             placesRequest: {
                 type: ['restaurant'],
                 radius: 32186.9,        // 32186.9 meters ~ 20 miles
-                keyword: 'Chinese'
+                keyword: ''
             },
         }
     }
@@ -258,7 +258,7 @@ class SwipeBoard extends React.Component {
             placesRequest: {
                 type: ['restaurant'],
                 radius: 32186.9,        // 32186.9 meters ~ 20 miles
-                keyword: 'Chinese'
+                keyword: ''
             },
             pagination: null,
         });
@@ -349,7 +349,7 @@ class SwipeBoard extends React.Component {
     render() {
         return (
             <div id="board">
-                <CustomNavbar resetBoard={this.resetBoard} uuid={this.state.uuid} />
+                <CustomNavbar resetBoard={this.resetBoard} uuid={this.state.uuid} keyword={this.state.placesRequest.keyword} />
                 <Cards uuid={this.state.uuid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
                 <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
             </div>

@@ -1,9 +1,6 @@
 import React, { Component, useState } from "react"
 import './google_map_api.scss'
 
-import ReactDOM from "react-dom";
-import $ from 'jquery';
-
 import Firebase from "firebase";
 import firebaseConfig from "../config";
 
