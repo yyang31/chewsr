@@ -9,7 +9,7 @@ class App extends React.Component {
   render() {
     return (
       <Row className="App justify-content-md-center no-gutters">
-        <Col md={12} lg={6}>
+        <Col sm={12} md={6}>
           <SwipeBoard />
         </Col>
       </Row>
