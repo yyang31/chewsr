@@ -121,10 +121,14 @@
         }
 
         .btn-secondary {
-            height: 54px;
-            width: 54px;
-            // border-radius: 50%;
-            border-radius: 50% 10px 10px 50%;
+            height: 45px;
+            width: 80px;
+            border-radius: 25px 10px 10px 25px;
+
+            svg {
+                right: 50%;
+                transform: translate(50%, -50%);
+            }
         }
     }
 }
