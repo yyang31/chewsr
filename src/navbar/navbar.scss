@@ -28,11 +28,13 @@
 }
 
 .modal-dialog {
-    height: 100vh;
+    height: 100%;
     margin: auto;
 
     .modal-content {
         height: 100%;
+        border: none;
+        border-radius: 0;
     }
 
     .modal-title {
