@@ -22,7 +22,10 @@ class OptionMenu extends Component {
     }
 
     componentDidMount = () => {
-        console.log(this.props.keyword);
+        this.setState({
+            radius: this.props.placesRequest.radius,
+            keyword: this.props.placesRequest.keyword
+        });
     }
 
     /**
@@ -39,13 +42,39 @@ class OptionMenu extends Component {
         // remove class 'selected' from other radio buttons
         $('.type-radio-cont').not(restTypeBtn).removeClass('selected');
 
-        console.log(restTypeBtn);
+        // update search keyword
+        let selectResType = restTypeBtn.find(':input[type=radio]').val();
+        this.setState({
+            keyword: selectResType == 'all' ? '' : selectResType
+        });
+    }
+
+    /**
+     * handle radius select option change
+     */
+    radiusChange = (e) => {
+        this.setState({
+            radius: e.target.value * 1609.34     // 1 mile = 1609.34 metters
+        })
+        console.log(e.target.value);
     }
 
     triggerShow = () => {
         this.setState({
             show: this.state.show ? false : true,
         })
+    }
+
+    filterSubmit = (e) => {
+        e.preventDefault();
+
+        let placesRequest = this.props.placesRequest;
+        placesRequest.radius = this.state.radius;
+        placesRequest.keyword = this.state.keyword;
+
+        this.props.updateFilters(placesRequest);
+
+        this.triggerShow();
     }
 
     render() {
@@ -56,16 +85,16 @@ class OptionMenu extends Component {
                 </Button>
 
                 <Modal show={this.state.show} onHide={() => { this.triggerShow() }}>
-                    <Modal.Header>
-                        <Modal.Title>
-                            <div className="logo">
-                                Chews<span className="navbar-brand-r">r</span>
-                            </div>
-                            <div className="modal-sub-text">options</div>
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
+                    <Form onSubmit={this.filterSubmit}>
+                        <Modal.Header>
+                            <Modal.Title>
+                                <div className="logo">
+                                    Chews<span className="navbar-brand-r">r</span>
+                                </div>
+                                <div className="modal-sub-text">options</div>
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
                             <Row>
                                 {/* Group ID */}
                                 {this.props.uuid ? (
@@ -90,7 +119,7 @@ class OptionMenu extends Component {
                                         <Col id="restaurantTypeCont">
                                             {this.state.restaurantTypes.map((val, key) => {
                                                 return (
-                                                    <span key={val} className={'type-radio-cont btn' + ((this.props.keyword == val || (this.props.keyword == '' && val == 'all')) ? ' selected' : '')} onClick={(e) => { this.restTypeClick(e) }}>
+                                                    <span key={val} className={'type-radio-cont btn' + ((this.state.keyword == val || (this.state.keyword == '' && val == 'all')) ? ' selected' : '')} onClick={(e) => { this.restTypeClick(e) }}>
                                                         {val}
                                                         <input type="radio" name="restaurant-type" value={val} />
                                                     </span>
@@ -106,7 +135,7 @@ class OptionMenu extends Component {
                                         <Col md={12} className="option-title">search radius</Col>
                                         <Col>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.radiusChange} value={this.state.radius / 1609.34}>
                                                     <option>5</option>
                                                     <option>10</option>
                                                     <option>25</option>
@@ -119,14 +148,14 @@ class OptionMenu extends Component {
                                     </Row>
                                 </Col>
                             </Row>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => { this.triggerShow() }}>
-                            <FontAwesomeIcon icon={faTimes} />
-                        </Button>
-                        <Button variant="primary" onClick={() => { this.triggerShow() }}>Save</Button>
-                    </Modal.Footer>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => { this.triggerShow() }}>
+                                <FontAwesomeIcon icon={faTimes} />
+                            </Button>
+                            <input type="submit" value="save" className="btn btn-primary" />
+                        </Modal.Footer>
+                    </Form>
                 </Modal>
             </>
         );
@@ -140,7 +169,7 @@ class CustomNavbar extends Component {
                 <Navbar.Brand className="logo" onClick={this.props.resetBoard}>
                     Chews<span className="navbar-brand-r">r</span>
                 </Navbar.Brand>
-                <OptionMenu uuid={this.props.uuid} keyword={this.props.keyword} />
+                <OptionMenu uuid={this.props.uuid} placesRequest={this.props.placesRequest} updateFilters={this.props.updateFilters} />
             </Navbar>
         );
     }

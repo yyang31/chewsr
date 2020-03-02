@@ -35,6 +35,12 @@
         height: 100%;
         border: none;
         border-radius: 0;
+
+        form {
+            display: flex;
+            flex-flow: column;
+            flex: 1;
+        }
     }
 
     .modal-title {
@@ -55,7 +61,7 @@
         text-align: center;
         overflow-y: scroll;
 
-        form>.row>div {
+        .row>div {
             margin-bottom: 10px;
         }
 
