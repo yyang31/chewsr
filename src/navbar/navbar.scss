@@ -4,18 +4,14 @@
 .navbar {
     padding: 10px 20px;
     margin: -10px -10px 10px -10px;
-    transition: 0.25s;
+    background-color: transparent !important;
 
-    &.transparent {
-        background-color: transparent !important;
+    .logo {
+        color: $white !important;
+    }
 
-        .logo {
-            color: $white !important;
-        }
-
-        #optionMenuTrigger {
-            color: $white !important;
-        }
+    #optionMenuTrigger {
+        color: $white !important;
     }
 }
 
