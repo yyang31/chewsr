@@ -33,7 +33,7 @@ class OptionMenu extends Component {
             radius: this.props.placesRequest.radius,
             keyword: this.props.placesRequest.keyword,
             maxprice: this.props.placesRequest.maxprice,
-            opennow: this.props.placesRequest.opennow,
+            openNow: this.props.placesRequest.openNow,
         });
     }
 
@@ -90,7 +90,7 @@ class OptionMenu extends Component {
         $('.toggle-cont').toggleClass('true false');
 
         this.setState({
-            opennow: $('.toggle-cont').hasClass('true') ? true : false,
+            openNow: $('.toggle-cont').hasClass('true') ? true : false,
         });
     }
 
@@ -107,7 +107,7 @@ class OptionMenu extends Component {
         placesRequest.radius = this.state.radius;
         placesRequest.keyword = this.state.keyword;
         placesRequest.maxprice = this.state.maxprice;
-        placesRequest.opennow = this.state.opennow;
+        placesRequest.openNow = this.state.openNow;
 
         this.props.updateFilters(placesRequest);
 
@@ -211,7 +211,7 @@ class OptionMenu extends Component {
                                                     <Row className="open-now">
                                                         <Col md={12} className="option-title">open now</Col>
                                                         <Col>
-                                                            <div className={"toggle-cont " + (this.state.opennow ? "true" : "false")} onClick={() => { this.toggleOpennow() }}>
+                                                            <div className={"toggle-cont " + (this.state.openNow ? "true" : "false")} onClick={() => { this.toggleOpennow() }}>
                                                                 <div className="toggle-circle"></div>
                                                             </div>
                                                         </Col>

@@ -239,7 +239,7 @@ class SwipeBoard extends React.Component {
                 keyword: '',
                 minprice: 0,
                 maxprice: 4,            // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
-                opennow: true,
+                openNow: true,
             },
         }
     }
@@ -264,7 +264,7 @@ class SwipeBoard extends React.Component {
                 keyword: '',
                 minprice: 0,
                 maxprice: 4,
-                opennow: true,
+                openNow: true,
             },
             pagination: null,
         });
