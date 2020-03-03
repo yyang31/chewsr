@@ -25,7 +25,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
 class OptionMenu extends Component {
     state = {
         show: false,
-        restaurantTypes: ['all', 'chinese', 'italian', 'mexican', 'vegetarian'],
+        restaurantTypes: ['all', 'fast food', 'chinese', 'italian', 'mexican', 'vegetarian'],
     }
 
     componentDidMount = () => {
@@ -65,8 +65,6 @@ class OptionMenu extends Component {
         this.setState({
             radius: e.target.value * 1609.34     // 1 mile = 1609.34 metters
         });
-
-        console.log(e.target.value);
     }
 
     /**
@@ -154,7 +152,7 @@ class OptionMenu extends Component {
                                 {/* Seach Restaurant Type */}
                                 <Col md={12}>
                                     <Row className="search-type">
-                                        <Col md={12} className="option-title">Restaurant Type</Col>
+                                        <Col md={12} className="option-title">restaurant type</Col>
                                         <Col id="restaurantTypeCont">
                                             {this.state.restaurantTypes.map((val, key) => {
                                                 return (
@@ -171,7 +169,7 @@ class OptionMenu extends Component {
                                 {/* Max Price */}
                                 <Col md={12}>
                                     <Row className="max-price">
-                                        <Col md={12} className="option-title">Price Range</Col>
+                                        <Col md={12} className="option-title">price range</Col>
                                         <Col md={12} className="price-slider-cont">
                                             <div className="price-icons">
                                                 {this.renderPriceIcon()}
