@@ -236,7 +236,10 @@ class SwipeBoard extends React.Component {
             placesRequest: {
                 type: ['restaurant'],
                 radius: 40233.5,        // 40233.5 meters ~ 25 miles
-                keyword: ''
+                keyword: '',
+                minprice: 0,
+                maxprice: 4,            // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
+                opennow: true,
             },
         }
     }
@@ -258,7 +261,10 @@ class SwipeBoard extends React.Component {
             placesRequest: {
                 type: ['restaurant'],
                 radius: 40233.5,        // 40233.5 meters ~ 25 miles
-                keyword: ''
+                keyword: '',
+                minprice: 0,
+                maxprice: 4,
+                opennow: true,
             },
             pagination: null,
         });
@@ -291,6 +297,8 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (lat, lng, result, pagination, groupID = null) => {
+        console.log(result);
+
         // generate new/unique uuid
         if (!groupID) this.setGroupID(lat, lng);
 
@@ -303,7 +311,6 @@ class SwipeBoard extends React.Component {
     }
 
     updateLike = (place) => {
-        console.log(place.name);
         let ref = Firebase.database().ref(this.state.uuid);
         if (ref) {
             ref.once('value', snapshot => {

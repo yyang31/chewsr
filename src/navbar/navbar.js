@@ -10,10 +10,17 @@ import {
     Form
 } from 'react-bootstrap';
 
+import "rc-slider/assets/index.css";
+import "rc-tooltip/assets/bootstrap.css";
+import Tooltip from "rc-tooltip";
+import Slider from 'rc-slider';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faBars, faDollarSign } from '@fortawesome/free-solid-svg-icons'
 
 import $ from 'jquery';
+
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
 
 class OptionMenu extends Component {
     state = {
@@ -24,7 +31,9 @@ class OptionMenu extends Component {
     componentDidMount = () => {
         this.setState({
             radius: this.props.placesRequest.radius,
-            keyword: this.props.placesRequest.keyword
+            keyword: this.props.placesRequest.keyword,
+            maxprice: this.props.placesRequest.maxprice,
+            opennow: this.props.placesRequest.opennow,
         });
     }
 
@@ -55,8 +64,36 @@ class OptionMenu extends Component {
     radiusChange = (e) => {
         this.setState({
             radius: e.target.value * 1609.34     // 1 mile = 1609.34 metters
-        })
+        });
+
         console.log(e.target.value);
+    }
+
+    /**
+     * handle max price slider
+     */
+    priceChange = (val) => {
+        this.setState({
+            maxprice: parseInt(val)
+        });
+    }
+
+    renderPriceIcon = () => {
+        let icons = [];
+
+        for (let i = 0; i < this.state.maxprice + 1; i++) {
+            icons.push(<FontAwesomeIcon className={"dollar-" + this.state.maxprice} key={i} icon={faDollarSign} />)
+        }
+
+        return icons;
+    }
+
+    toggleOpennow = () => {
+        $('.toggle-cont').toggleClass('true false');
+
+        this.setState({
+            opennow: $('.toggle-cont').hasClass('true') ? true : false,
+        });
     }
 
     triggerShow = () => {
@@ -71,6 +108,8 @@ class OptionMenu extends Component {
         let placesRequest = this.props.placesRequest;
         placesRequest.radius = this.state.radius;
         placesRequest.keyword = this.state.keyword;
+        placesRequest.maxprice = this.state.maxprice;
+        placesRequest.opennow = this.state.opennow;
 
         this.props.updateFilters(placesRequest);
 
@@ -129,24 +168,62 @@ class OptionMenu extends Component {
                                     </Row>
                                 </Col>
 
-                                {/* Search Radius */}
+                                {/* Max Price */}
                                 <Col md={12}>
-                                    <Row className="search-radius">
-                                        <Col md={12} className="option-title">search radius</Col>
-                                        <Col>
-                                            <Form.Group controlId="exampleForm.ControlSelect1">
-                                                <Form.Control as="select" onChange={this.radiusChange} value={this.state.radius / 1609.34}>
-                                                    <option>5</option>
-                                                    <option>10</option>
-                                                    <option>25</option>
-                                                    <option>50</option>
-                                                    <option>100</option>
-                                                </Form.Control>
-                                                <span>miles</span>
-                                            </Form.Group>
+                                    <Row className="max-price">
+                                        <Col md={12} className="option-title">Price Range</Col>
+                                        <Col md={12} className="price-slider-cont">
+                                            <div className="price-icons">
+                                                {this.renderPriceIcon()}
+                                            </div>
+                                            <Slider
+                                                max={4}
+                                                defaultValue={this.state.maxprice}
+                                                onChange={(val) => { this.priceChange(val) }}
+                                            />
                                         </Col>
                                     </Row>
                                 </Col>
+
+                                <Col md={12}>
+                                    <Row>
+                                        {/* Search Radius */}
+                                        <Col className="search-radius">
+                                            <Row>
+                                                <Col md={12} className="option-title">search radius</Col>
+                                                <Col>
+                                                    <Form.Group controlId="exampleForm.ControlSelect1">
+                                                        <Form.Control as="select" onChange={this.radiusChange} value={this.state.radius / 1609.34}>
+                                                            <option>5</option>
+                                                            <option>10</option>
+                                                            <option>25</option>
+                                                            <option>50</option>
+                                                            <option>100</option>
+                                                        </Form.Control>
+                                                        <span>miles</span>
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+
+                                        {/* Open Now */}
+                                        <Col className="open-now">
+                                            <Row>
+                                                <Col md={6}>
+                                                    <Row className="open-now">
+                                                        <Col md={12} className="option-title">open now</Col>
+                                                        <Col>
+                                                            <div className={"toggle-cont " + (this.state.opennow ? "true" : "false")} onClick={() => { this.toggleOpennow() }}>
+                                                                <div className="toggle-circle"></div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </Col>
+
                             </Row>
                         </Modal.Body>
                         <Modal.Footer>

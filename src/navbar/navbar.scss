@@ -61,14 +61,19 @@
         text-align: center;
         overflow-y: scroll;
 
-        .row>div {
-            margin-bottom: 10px;
+        &>.row>div {
+            margin-bottom: 20px;
+        }
+
+        .row {
+            justify-content: center;
         }
 
         .option-title {
             color: $blue;
             font-weight: bold;
             font-size: 18px;
+            margin-bottom: 5px;
         }
 
         // Search Radisu
@@ -118,6 +123,94 @@
                 }
             }
         }
+
+        // Max Price
+        .max-price {
+            .price-slider-cont {
+                display: flex;
+                flex-flow: column;
+
+                .price-icons {
+                    display: flex;
+                    margin: auto;
+                    width: 75px;
+                    text-align: center;
+                    justify-content: center;
+                    margin-bottom: 5px;
+
+                    svg {
+                        margin: 0 1px;
+
+                        &.dollar-0 {
+                            color: $yellow;
+                        }
+
+                        &.dollar-1 {
+                            color: $light_orange;
+                        }
+
+                        &.dollar-2 {
+                            color: $dark_orange;
+                        }
+
+                        &.dollar-3 {
+                            color: $red;
+                        }
+
+                        &.dollar-4 {
+                            color: $dark_red;
+                        }
+                    }
+                }
+
+                .rc-slider {
+                    .rc-slider-track {
+                        background-color: $light_blue;
+                    }
+
+                    .rc-slider-handle {
+                        border-color: $blue;
+                    }
+                }
+            }
+        }
+
+        // Open Now
+        .open-now {
+            .toggle-cont {
+                height: 35px;
+                width: 100px;
+                border-radius: 25px;
+                display: flex;
+                justify-content: center;
+                padding: 5px;
+                margin: auto;
+                transition: 0.25s;
+
+                &.true {
+                    background-color: $green;
+
+                    .toggle-circle {
+                        margin-left: auto;
+                    }
+                }
+
+                &.false {
+                    background-color: $red;
+
+                    .toggle-circle {
+                        margin-right: auto;
+                    }
+                }
+
+                .toggle-circle {
+                    width: 25px;
+                    height: 25px;
+                    border-radius: 50%;
+                    background-color: rgba($white, 0.7);
+                }
+            }
+        }
     }
 
     .modal-footer {
@@ -139,4 +232,8 @@
             }
         }
     }
+}
+
+.rc-slider-tooltip {
+    z-index: 1051;
 }
