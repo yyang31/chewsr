@@ -6,7 +6,19 @@
     h1 {
         text-align: center;
         font-size: 60px;
-        color: $blue;
+        color: $white;
+        margin-bottom: 20px;
+    }
+
+    input[type=text],
+    input[type=number] {
+        background-color: transparent;
+        border-color: $white;
+        color: $white;
+
+        &::placeholder {
+            color: $white;
+        }
     }
 
     .bpzdHV {
@@ -15,7 +27,7 @@
             position: relative;
             top: initial;
             box-shadow: none;
-            background-color: $blue;
+            background-color: $white;
             margin: 20px auto;
             padding: 10px;
             border-radius: 10px;
@@ -23,14 +35,17 @@
             transition: 0.25s;
 
             &.invalid {
-                background-color: $light_red;
+                .sc-htpNat {
+                    color: $dark_red;
+                }
             }
 
             .sc-htpNat {
                 width: 100%;
                 font-size: 15px;
                 padding: 10px;
-                color: $white;
+                color: $dark_blue;
+                font-weight: bold;
                 background-color: transparent;
 
                 &:hover {

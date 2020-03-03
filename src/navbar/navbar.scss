@@ -2,9 +2,8 @@
 @import '../common/_color';
 
 .navbar {
-    background-color: transparent !important;
-    padding: 0;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin: -10px -10px 10px -10px;
 }
 
 .logo {
@@ -21,7 +20,6 @@
 #optionMenuTrigger {
     background-color: transparent;
     color: $blue;
-    height: 100%;
     width: auto;
     margin-right: 0;
     padding: 0;
