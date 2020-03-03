@@ -2,8 +2,21 @@
 @import '../common/_color';
 
 .navbar {
-    padding: 10px;
+    padding: 10px 20px;
     margin: -10px -10px 10px -10px;
+    transition: 0.25s;
+
+    &.transparent {
+        background-color: transparent !important;
+
+        .logo {
+            color: $white !important;
+        }
+
+        #optionMenuTrigger {
+            color: $white !important;
+        }
+    }
 }
 
 .logo {
@@ -23,6 +36,10 @@
     width: auto;
     margin-right: 0;
     padding: 0;
+
+    svg {
+        right: 0;
+    }
 }
 
 .modal-dialog {

@@ -240,7 +240,7 @@ class OptionMenu extends Component {
 class CustomNavbar extends Component {
     render() {
         return (
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light" expand="lg" className={this.props.uuid ? 'transparent' : ''}>
                 <Navbar.Brand className="logo" onClick={this.props.resetBoard}>
                     Chews<span className="navbar-brand-r">r</span>
                 </Navbar.Brand>
