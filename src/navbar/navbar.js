@@ -125,7 +125,7 @@ class OptionMenu extends Component {
                     <Form onSubmit={this.filterSubmit}>
                         <Modal.Header>
                             <Modal.Title>
-                                <div className="logo">
+                                <div className="logo logo-colored">
                                     Chews<span className="navbar-brand-r">r</span>
                                 </div>
                                 <div className="modal-sub-text">options</div>
@@ -241,7 +241,7 @@ class CustomNavbar extends Component {
     render() {
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand className="logo" onClick={this.props.resetBoard}>
+                <Navbar.Brand className="logo logo-white" onClick={this.props.resetBoard}>
                     Chews<span className="navbar-brand-r">r</span>
                 </Navbar.Brand>
                 <OptionMenu uuid={this.props.uuid} placesRequest={this.props.placesRequest} updateFilters={this.props.updateFilters} />

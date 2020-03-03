@@ -6,10 +6,6 @@
     margin: -10px -10px 10px -10px;
     background-color: transparent !important;
 
-    .logo {
-        color: $white !important;
-    }
-
     #optionMenuTrigger {
         color: $white !important;
     }
@@ -20,6 +16,16 @@
     font-size: 30px;
     color: $blue !important;
     padding: 0;
+
+    &.logo-white {
+        color: $white !important;
+    }
+
+    &.logo-colored {
+        background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
     .navbar-brand-r {
         color: $light_red;
