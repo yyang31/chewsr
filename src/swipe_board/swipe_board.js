@@ -15,12 +15,35 @@ import Spinner from 'react-bootstrap/Spinner';
 import { Row, Col } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
 
 const google = window.google;
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
+// number of photos or cards loads at a time
+const numLoad = 3;
+const photoSwitchTime = 3000;
+
 class MostLikedPlace extends React.Component {
+    componentDidMount = () => {
+        setTimeout(() => { this.photoSwitch() }, photoSwitchTime);
+    }
+
+    photoSwitch = () => {
+        let curPhoto = $('.place-photo img.show');
+        let nextPhoto = curPhoto.next().length == 0 ? $('.place-photo img').first() : curPhoto.next();
+
+        nextPhoto.fadeIn().addClass('show');
+        curPhoto.fadeOut().removeClass('show');
+
+        if (!nextPhoto.next().hasClass('loaded')) {
+            nextPhoto.next().attr('src', nextPhoto.data('src'))
+                .addClass('loaded');
+        }
+
+        setTimeout(() => { this.photoSwitch() }, photoSwitchTime);
+    }
+
     render() {
         return (
             <Row id="resultPlace" className="no-gutters">
@@ -30,7 +53,13 @@ class MostLikedPlace extends React.Component {
                         <Col>
                             {this.props.mostLiked.photos.map((photo, i) => {
                                 return (
-                                    <img key={i} src={photo.getUrl()} alt={this.props.mostLiked.name} className={i == 0 ? 'show' : ''} />
+                                    <img
+                                        key={i}
+                                        src={i < numLoad ? photo.getUrl() : ''}
+                                        alt={this.props.mostLiked.name}
+                                        className={(i < numLoad ? 'loaded' : '') + (i == 0 ? ' show' : '')}
+                                        data-src={photo.getUrl()}
+                                    />
                                 );
                             })}
                         </Col>
@@ -38,16 +67,27 @@ class MostLikedPlace extends React.Component {
                     <Row>
                         <Col className="place-name">{this.props.mostLiked.name}</Col>
                     </Row>
+
                     {/* Phone Number */}
-                    <Row className="place-phone-number">
-                        <Col>
-                            <span>{this.props.formatted_phone_number}</span>
-                        </Col>
-                    </Row>
+                    {this.props.mostLiked.formatted_phone_number ? (
+                        <Row className="place-phone-number">
+                            <Col>
+                            </Col>
+                        </Row>
+                    ) : (
+                            null
+                        )}
+
                     <Row className="result-bottom-sec">
                         <Col>
+                            {/* Phone Number */}
+                            <a href={"tel:" + this.props.mostLiked.formatted_phone_number}
+                                className="btn btn-primary cursor-pointer phone-number">
+                                <FontAwesomeIcon icon={faPhoneAlt} />
+                            </a>
+
+                            {/* Address */}
                             <a href={"http://maps.apple.com/?address=" + this.props.mostLiked.formatted_address}
-                                // target="_blank"
                                 className="btn btn-primary cursor-pointer">
                                 <span className="colored-text">direction</span><FontAwesomeIcon icon={faAngleDoubleRight} />
                             </a>
@@ -66,9 +106,13 @@ class BoardControl extends React.Component {
                 <div id="boardDislike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'left')}>
                     <FontAwesomeIcon icon={faThumbsDown} />
                 </div>
-                <div id="boardDone" className="board-control-main-btn cursor-pointer" onClick={() => { this.props.doneSwipe() }}>
-                    <span className="colored-text">done</span>
-                </div>
+                {this.props.hasLikes ? (
+                    <div id="boardDone" className="board-control-main-btn cursor-pointer" onClick={() => { this.props.doneSwipe() }}>
+                        <span className="colored-text">done</span>
+                    </div>
+                ) : (
+                        null
+                    )}
                 <div id="boardLike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'right')}>
                     <FontAwesomeIcon icon={faThumbsUp} />
                 </div>
@@ -224,7 +268,11 @@ class SwipeCard extends React.Component {
                         )}
                     <div className="place-rating">{this.props.place.rating}</div>
 
-                    <BoardControl triggerSwipe={this.triggerSwipe} doneSwipe={this.props.doneSwipe} />
+                    <BoardControl
+                        triggerSwipe={this.triggerSwipe}
+                        doneSwipe={this.props.doneSwipe}
+                        hasLikes={this.props.hasLikes}
+                    />
                 </div>
 
                 <div className="card-swipe-direction">
@@ -249,6 +297,7 @@ class Cards extends React.Component {
                                 index={this.props.indexCount + this.props.nearbyResult.length - index}
                                 placeSelection={this.props.placeSelection}
                                 doneSwipe={this.props.doneSwipe}
+                                hasLikes={this.props.hasLikes}
                             />
                         })}
                     </div>
@@ -294,6 +343,7 @@ class SwipeBoard extends React.Component {
                 openNow: true,
             },
             mostLiked: null,
+            hasLikes: false,
         }
     }
 
@@ -407,6 +457,8 @@ class SwipeBoard extends React.Component {
 
     updateLike = (place) => {
         let ref = Firebase.database().ref(this.state.uuid);
+        let reactScope = this;
+
         if (ref) {
             ref.once('value', snapshot => {
                 let val = snapshot.val();
@@ -431,6 +483,12 @@ class SwipeBoard extends React.Component {
                 }
 
                 ref.set(val);
+                console.log(reactScope.state.hasLikes);
+                if (!reactScope.state.hasLikes) {
+                    reactScope.setState({
+                        hasLikes: true,
+                    });
+                }
             });
         }
     }
@@ -475,6 +533,7 @@ class SwipeBoard extends React.Component {
                             pagination={this.state.pagination}
                             nearbyResult={this.state.nearbyResult}
                             indexCount={this.state.indexCount}
+                            hasLikes={this.state.hasLikes}
                             placeSelection={this.placeSelection}
                             doneSwipe={this.doneSwipe}
                         />
