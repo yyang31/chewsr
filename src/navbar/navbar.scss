@@ -5,6 +5,7 @@
     padding: 10px 20px;
     margin: -10px -10px 10px -10px;
     background-color: transparent !important;
+    z-index: 1000;
 
     #optionMenuTrigger {
         color: $white !important;
@@ -21,14 +22,8 @@
         color: $white !important;
     }
 
-    &.logo-colored {
-        background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
     .navbar-brand-r {
-        color: $light_red;
+        color: $red;
     }
 }
 

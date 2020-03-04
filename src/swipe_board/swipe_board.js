@@ -12,9 +12,53 @@ import ReactDOM from "react-dom";
 import $ from 'jquery';
 
 import Spinner from 'react-bootstrap/Spinner';
+import { Row, Col } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsDown, faThumbsUp, faCookieBite, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+
+const google = window.google;
+const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
+
+class MostLikedPlace extends React.Component {
+    render() {
+        return (
+            <Row id="resultPlace" className="no-gutters">
+                <Col>
+                    {/* Photos */}
+                    <Row className="place-photo">
+                        <Col>
+                            {this.props.mostLiked.photos.map((photo, i) => {
+                                return (
+                                    <img key={i} src={photo.getUrl()} alt={this.props.mostLiked.name} className={i == 0 ? 'show' : ''} />
+                                );
+                            })}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="place-name">{this.props.mostLiked.name}</Col>
+                    </Row>
+                    {/* Phone Number */}
+                    <Row className="place-phone-number">
+                        <Col>
+                            <span>{this.props.formatted_phone_number}</span>
+                        </Col>
+                    </Row>
+                    <Row className="result-bottom-sec">
+                        <Col>
+                            <span className="result-greeting-text">most liked</span>
+                        </Col>
+                        <Col>
+                            <a href={"http://maps.apple.com/?address=" + this.props.mostLiked.formatted_address} target="_blank" className="go-to-place-btn cursor-pointer">
+                                <FontAwesomeIcon icon={faAngleDoubleRight} />
+                            </a>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+        )
+    }
+}
 
 class BoardControl extends React.Component {
     render() {
@@ -22,6 +66,9 @@ class BoardControl extends React.Component {
             <div id="boardControl" className={this.props.display}>
                 <div id="boardDislike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'left')}>
                     <FontAwesomeIcon icon={faThumbsDown} />
+                </div>
+                <div id="boardDone" className="board-control-main-btn cursor-pointer" onClick={() => { this.props.doneSwipe() }}>
+                    <span className="colored-text">done</span>
                 </div>
                 <div id="boardLike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'right')}>
                     <FontAwesomeIcon icon={faThumbsUp} />
@@ -178,7 +225,7 @@ class SwipeCard extends React.Component {
                         )}
                     <div className="place-rating">{this.props.place.rating}</div>
 
-                    <BoardControl triggerSwipe={this.triggerSwipe} />
+                    <BoardControl triggerSwipe={this.triggerSwipe} doneSwipe={this.props.doneSwipe} />
                 </div>
 
                 <div className="card-swipe-direction">
@@ -197,7 +244,13 @@ class Cards extends React.Component {
                 return (
                     <div id="cards">
                         {this.props.nearbyResult.map((place, index) => {
-                            return <SwipeCard key={place.place_id} place={place} index={this.props.indexCount + this.props.nearbyResult.length - index} placeSelection={this.props.placeSelection} />
+                            return <SwipeCard
+                                key={place.place_id}
+                                place={place}
+                                index={this.props.indexCount + this.props.nearbyResult.length - index}
+                                placeSelection={this.props.placeSelection}
+                                doneSwipe={this.props.doneSwipe}
+                            />
                         })}
                     </div>
                 );
@@ -235,12 +288,13 @@ class SwipeBoard extends React.Component {
             indexCount: 1,
             placesRequest: {
                 type: ['restaurant'],
-                radius: 40233.5,        // 40233.5 meters ~ 25 miles
+                radius: 16093.4,        // 16093.4 meters ~ 10 miles
                 keyword: '',
                 minprice: 0,
                 maxprice: 4,            // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
                 openNow: true,
             },
+            mostLiked: null,
         }
     }
 
@@ -251,6 +305,10 @@ class SwipeBoard extends React.Component {
                 nearbyResult: this.state.pagination.nextPage()
             })
         }
+
+        if (this.state.likedPlaces && this.state.mostLiked == null) {
+            this.getResult();
+        }
     }
 
     resetBoard = () => {
@@ -260,13 +318,53 @@ class SwipeBoard extends React.Component {
             indexCount: 1,
             placesRequest: {
                 type: ['restaurant'],
-                radius: 40233.5,        // 40233.5 meters ~ 25 miles
+                radius: 16093.4,        // 16093.4 meters ~ 10 miles
                 keyword: '',
                 minprice: 0,
                 maxprice: 4,
                 openNow: true,
             },
             pagination: null,
+        });
+    }
+
+    getResult = () => {
+        let likedPlaces = this.state.likedPlaces;
+        let mostLiked = likedPlaces[Object.keys(likedPlaces)[0]];
+        let mostLikedPlaceId = Object.keys(likedPlaces)[0];
+
+        Object.keys(likedPlaces).forEach((k) => {
+            let place = likedPlaces[k];
+
+            if (place.likes > mostLiked.likes) {
+                mostLikedPlaceId = k;
+            }
+        });
+
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        service.getDetails({
+            key: GOOGLE_API_KEY,
+            placeId: mostLikedPlaceId
+        }, (place, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                this.setState({
+                    mostLiked: place
+                });
+            }
+        });
+    }
+
+    doneSwipe = () => {
+        let ref = Firebase.database().ref("/" + this.state.uuid);
+        let reactScope = this;
+
+        ref.once('value', function (snapshot) {
+            let likedPlaces = snapshot.val().places;
+            if (likedPlaces) {
+                reactScope.setState({
+                    likedPlaces: likedPlaces
+                })
+            }
         });
     }
 
@@ -297,8 +395,6 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (lat, lng, result, pagination, groupID = null) => {
-        console.log(result);
-
         // generate new/unique uuid
         if (!groupID) this.setGroupID(lat, lng);
 
@@ -315,7 +411,7 @@ class SwipeBoard extends React.Component {
         if (ref) {
             ref.once('value', snapshot => {
                 let val = snapshot.val();
-                let placeID = place.id;
+                let placeID = place.place_id;
 
                 // if the places container object doesn't exist, create one
                 if (!val.places) {
@@ -331,6 +427,7 @@ class SwipeBoard extends React.Component {
                         lat: place.geometry.location.lat(),
                         lng: place.geometry.location.lng(),
                         likes: 1,
+                        photoURL: place.photos[0].getUrl(),
                     };
                 }
 
@@ -366,9 +463,27 @@ class SwipeBoard extends React.Component {
     render() {
         return (
             <div id="board">
-                <CustomNavbar resetBoard={this.resetBoard} uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateFilters={this.updateFilters} />
-                <Cards uuid={this.state.uuid} pagination={this.state.pagination} nearbyResult={this.state.nearbyResult} indexCount={this.state.indexCount} placeSelection={this.placeSelection} />
-                <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+                <CustomNavbar
+                    resetBoard={this.resetBoard}
+                    uuid={this.state.uuid}
+                    placesRequest={this.state.placesRequest}
+                    updateFilters={this.updateFilters}
+                />
+                {this.state.mostLiked == null ? (
+                    <>
+                        <Cards
+                            uuid={this.state.uuid}
+                            pagination={this.state.pagination}
+                            nearbyResult={this.state.nearbyResult}
+                            indexCount={this.state.indexCount}
+                            placeSelection={this.placeSelection}
+                            doneSwipe={this.doneSwipe}
+                        />
+                        <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+                    </>
+                ) : (
+                        <MostLikedPlace mostLiked={this.state.mostLiked} />
+                    )}
             </div>
         )
     }

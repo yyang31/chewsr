@@ -125,7 +125,7 @@ class OptionMenu extends Component {
                     <Form onSubmit={this.filterSubmit}>
                         <Modal.Header>
                             <Modal.Title>
-                                <div className="logo logo-colored">
+                                <div className="logo colored-text">
                                     Chews<span className="navbar-brand-r">r</span>
                                 </div>
                                 <div className="modal-sub-text">options</div>

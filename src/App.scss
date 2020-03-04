@@ -35,6 +35,12 @@ body,
     cursor: pointer;
 }
 
+.colored-text {
+    background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 /*********************** Bootstrap Redesign ************************/
 // btn
 .btn-primary,

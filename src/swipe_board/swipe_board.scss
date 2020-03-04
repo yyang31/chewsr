@@ -185,5 +185,115 @@
                 box-shadow: $shadow;
             }
         }
+
+        &#boardDone {
+            width: auto;
+            height: auto;
+            padding: 5px 20px;
+            border-radius: 25px;
+            align-self: start;
+            margin-top: auto;
+            font-size: 18px;
+            font-weight: bold;
+
+            &:hover {
+                background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
+
+                span {
+                    color: $white;
+                    background: transparent;
+                    -webkit-text-fill-color: $white;
+                }
+            }
+        }
+    }
+}
+
+#resultPlace {
+    flex: 1;
+    border-radius: 10px;
+    overflow: hidden;
+
+    &>.col {
+        padding: 10px;
+        display: flex;
+        flex-flow: column;
+    }
+
+    .result-banner {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1;
+        border: 2px solid $green;
+        color: $white;
+        border-radius: 10px;
+        background-color: $green;
+
+        h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 10px;
+        }
+    }
+
+    .place-name {
+        font-size: 40px;
+        color: $white;
+        font-weight: bold;
+    }
+
+    .place-photo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+
+        img {
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+
+            &:not(.show) {
+                display: none;
+            }
+        }
+    }
+
+    .result-bottom-sec {
+        margin-top: auto;
+
+        &>.col {
+            display: flex;
+        }
+
+        .result-greeting-text {
+            font-size: 20px;
+            color: $white;
+            font-weight: bold;
+            margin: auto;
+        }
+
+        .go-to-place-btn {
+            color: $blue;
+            font-size: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: $white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            transition: 0.25s;
+            margin-left: auto;
+
+            &:hover {
+                color: $white;
+                background-color: $blue;
+            }
+
+            svg {
+                margin: auto;
+            }
+        }
     }
 }
