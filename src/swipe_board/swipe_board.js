@@ -475,11 +475,9 @@ class SwipeBoard extends React.Component {
                     val.places[placeID].likes++;
                 } else {
                     val.places[placeID] = {
-                        name: place.name,
                         lat: place.geometry.location.lat(),
                         lng: place.geometry.location.lng(),
                         likes: 1,
-                        photoURL: place.photos[0].getUrl(),
                     };
                 }
 
