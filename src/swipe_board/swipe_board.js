@@ -22,7 +22,7 @@ const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 // number of photos or cards loads at a time
 const numLoad = 3;
-const photoSwitchTime = 3000;
+const photoSwitchTime = 4000;       // 4 second
 
 class MostLikedPlace extends React.Component {
     componentDidMount = () => {
@@ -32,12 +32,13 @@ class MostLikedPlace extends React.Component {
     photoSwitch = () => {
         let curPhoto = $('.place-photo img.show');
         let nextPhoto = curPhoto.next().length == 0 ? $('.place-photo img').first() : curPhoto.next();
+        let nextNextPhoto = curPhoto.next().next();
 
-        nextPhoto.fadeIn().addClass('show');
         curPhoto.fadeOut().removeClass('show');
+        nextPhoto.fadeIn().addClass('show');
 
-        if (!nextPhoto.next().hasClass('loaded')) {
-            nextPhoto.next().attr('src', nextPhoto.data('src'))
+        if (!nextNextPhoto.hasClass('loaded')) {
+            nextNextPhoto.attr('src', nextNextPhoto.data('src'))
                 .addClass('loaded');
         }
 
