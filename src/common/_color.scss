@@ -60,3 +60,6 @@ $light_yellow: #fce46a;
 /******************** Shadow ************************/
 $shadow: 0 3px 6px rgba($black, 0.2);
 $deep_shadow: 0 5px 10px rgba($black, 0.4);
+
+/******************** Gradient ************************/
+$colored_gradient: linear-gradient(145deg, rgba($dark_blue, 1) 0%, rgba($dark_red, 1) 100%)

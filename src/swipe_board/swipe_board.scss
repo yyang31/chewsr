@@ -197,7 +197,7 @@
             font-weight: bold;
 
             &:hover {
-                background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
+                background: $colored_gradient;
 
                 span {
                     color: $white;
@@ -244,7 +244,7 @@
     }
 
     .place-photo {
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         height: 100%;
@@ -262,37 +262,27 @@
 
     .result-bottom-sec {
         margin-top: auto;
+        z-index: 1;
 
         &>.col {
             display: flex;
         }
 
-        .result-greeting-text {
-            font-size: 20px;
-            color: $white;
-            font-weight: bold;
-            margin: auto;
-        }
-
-        .go-to-place-btn {
-            color: $blue;
-            font-size: 20px;
-            width: 50px;
-            height: 50px;
+        .btn-primary {
             background-color: $white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            transition: 0.25s;
-            margin-left: auto;
+            font-weight: bold;
+            $color: $blue;
 
             &:hover {
-                color: $white;
-                background-color: $blue;
+                background: $colored_gradient;
+
+                .colored-text {
+                    -webkit-text-fill-color: $white;
+                }
             }
 
             svg {
-                margin: auto;
+                color: $blue;
             }
         }
     }

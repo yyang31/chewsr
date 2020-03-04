@@ -46,11 +46,10 @@ class MostLikedPlace extends React.Component {
                     </Row>
                     <Row className="result-bottom-sec">
                         <Col>
-                            <span className="result-greeting-text">most liked</span>
-                        </Col>
-                        <Col>
-                            <a href={"http://maps.apple.com/?address=" + this.props.mostLiked.formatted_address} target="_blank" className="go-to-place-btn cursor-pointer">
-                                <FontAwesomeIcon icon={faAngleDoubleRight} />
+                            <a href={"http://maps.apple.com/?address=" + this.props.mostLiked.formatted_address}
+                                // target="_blank"
+                                className="btn btn-primary cursor-pointer">
+                                <span className="colored-text">direction</span><FontAwesomeIcon icon={faAngleDoubleRight} />
                             </a>
                         </Col>
                     </Row>

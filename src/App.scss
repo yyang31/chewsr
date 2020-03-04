@@ -27,7 +27,7 @@ body,
     background-color: $white;
     overflow: hidden;
     background: $dark_blue;
-    background: linear-gradient(145deg, rgba($dark_blue, 1) 0%, rgba($dark_red, 1) 100%);
+    background: $colored_gradient;
 }
 
 /************************** Custom CSS *****************************/
