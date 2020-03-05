@@ -114,9 +114,25 @@ body,
     border: none;
     border-radius: unset;
     color: $white;
+    background-color: transparent;
+
+    &.show {
+        z-index: 2001;
+    }
 
     &.error {
         background-color: $red;
+    }
+
+    &.success {
+        background-color: $dark_green;
+    }
+
+    &.error,
+    &.success {
+        .toast-header .close {
+            opacity: 1;
+        }
     }
 
     .toast-header {
@@ -126,7 +142,7 @@ body,
         padding: 10px 10px 0 10px;
 
         .close {
-            opacity: unset;
+            opacity: 0;
             color: $white;
         }
     }

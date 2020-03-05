@@ -26,9 +26,6 @@ class JoinGroup extends React.Component {
         this.state = {
             groupIDLength: 5,
             groupID: '',
-            show: false,
-            messageType: '',
-            message: '',
         };
     }
 
@@ -41,13 +38,13 @@ class JoinGroup extends React.Component {
             ref.once("value", snapshot => {
                 const val = snapshot.val();
                 if (val == null) {
-                    this.setShow("error", "The group ID does not exist.");
+                    this.props.setToastMessage("error", "the group ID does not exist");
                 } else {
                     this.props.fetchNearby("", val.lat, val.lng, this.state.groupID);
                 }
             });
         } else {
-            this.setShow("error", "Invalid number of digits.");
+            this.props.setToastMessage("error", "group ID must be 5 digits");
         }
     }
 
@@ -57,24 +54,9 @@ class JoinGroup extends React.Component {
         });
     }
 
-    setShow = (messageType, message) => {
-        this.setState({
-            show: (this.state.show && message == null) ? false : true,
-            messageType: messageType,
-            message: message,
-        })
-    }
-
     render() {
         return (
             <form onSubmit={this.getGroupNumber}>
-                <Toast className={this.state.messageType} onClose={() => { this.setShow() }} show={this.state.show} delay={3000} autohide>
-                    <Toast.Header>
-                        <strong className="mr-auto">Error</strong>
-                    </Toast.Header>
-                    <Toast.Body>{this.state.message}</Toast.Body>
-                </Toast>
-
                 <Row>
                     <Col>
                         <Row>
@@ -114,9 +96,10 @@ class JoinGroup extends React.Component {
 class CurrentLocation extends React.Component {
     getLocation = () => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.showPosition);
+            this.props.toggleLoadingOverlay(true);
+            navigator.geolocation.getCurrentPosition(this.showPosition, this.accessDenied);
         } else {
-            console.log("Geolocation is not supported by this browser");
+            this.props.setToastMessage('error', 'geolocation is not supported by this browser');
         }
     }
 
@@ -125,6 +108,11 @@ class CurrentLocation extends React.Component {
         var lng = position.coords.longitude;
 
         this.props.fetchNearby("", lat, lng);
+    }
+
+    accessDenied = () => {
+        this.props.toggleLoadingOverlay(false);
+        this.props.setToastMessage('error', 'access to location denied')
     }
 
     render() {
@@ -176,7 +164,7 @@ class GoogleSuggest extends React.Component {
     }
 
     handleNoResult = () => {
-        console.log("No results for ", this.state.search);
+        this.props.setToastMessage('error', "No results for " + this.state.search);
     }
 
     handleStatusUpdate = status => {
@@ -278,7 +266,7 @@ class NearbySearch extends React.Component {
                     getGroup: false,
                 });
             } else {
-                console.log("GOOGLE_MAP_API ERROR: " + status);
+                this.props.setToastMessage('error', "GOOGLE_MAP_API ERROR: " + status);
             }
         }));
     }
@@ -294,7 +282,11 @@ class NearbySearch extends React.Component {
             <Row id="NearbySearch" className={this.props.uuid != null ? "d-none" : ""}>
                 {this.state.getGroup ? (
                     <Col>
-                        <JoinGroup toggleGetGroup={this.toggleGetGroup} fetchNearby={this.fetchNearby} />
+                        <JoinGroup
+                            toggleGetGroup={this.toggleGetGroup}
+                            fetchNearby={this.fetchNearby}
+                            setToastMessage={this.props.setToastMessage}
+                        />
                     </Col>
                 ) : (
                         <Col>
@@ -305,10 +297,17 @@ class NearbySearch extends React.Component {
                                     </h1>
                                 </Col>
                                 <Col md={12}>
-                                    <GoogleSuggest fetchNearby={this.fetchNearby} />
+                                    <GoogleSuggest
+                                        fetchNearby={this.fetchNearby}
+                                        setToastMessage={this.props.setToastMessage}
+                                    />
                                 </Col>
                                 <Col md={12}>
-                                    <CurrentLocation fetchNearby={this.fetchNearby} />
+                                    <CurrentLocation
+                                        fetchNearby={this.fetchNearby}
+                                        toggleLoadingOverlay={this.props.toggleLoadingOverlay}
+                                        setToastMessage={this.props.setToastMessage}
+                                    />
                                 </Col>
                                 <Col md={12}>
                                     <Button variant="primary" onClick={this.toggleGetGroup}>

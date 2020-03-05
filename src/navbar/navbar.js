@@ -242,7 +242,7 @@ class CustomNavbar extends Component {
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand className="logo logo-white" onClick={this.props.resetBoard}>
-                    Chews<span className="navbar-brand-r">r</span>
+                    <span>Chews</span><span className="navbar-brand-r">r</span>
                 </Navbar.Brand>
                 <OptionMenu uuid={this.props.uuid} placesRequest={this.props.placesRequest} updateFilters={this.props.updateFilters} />
             </Navbar>

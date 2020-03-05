@@ -13,6 +13,7 @@ import $ from 'jquery';
 
 import Spinner from 'react-bootstrap/Spinner';
 import { Row, Col } from 'react-bootstrap';
+import Toast from 'react-bootstrap/Toast';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
@@ -22,8 +23,49 @@ const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 const numLoad = 3;                  // number of photos or cards loads at a time
 const photoSwitchTime = 4000;       // 4 second
-const swipeDistance = 600;
-const swipeThreshold = 150;
+const swipeThreshold = 150;         // x distance need to move for the card to register as a like or dislike
+const swipeDistance = 600;          // distance to manually trigger swipe when click on like or dislike buttons
+
+class ToastMessage extends React.Component {
+    render() {
+        return (
+            <Toast className={this.props.messageType} onClose={() => { this.props.setToastMessage() }} show={this.props.show} delay={3000} autohide >
+                <Toast.Header>
+                    <strong className="mr-auto">{this.props.messageType}</strong>
+                </Toast.Header>
+                <Toast.Body>{this.props.message}</Toast.Body>
+            </Toast >
+        );
+    }
+}
+
+class LoadingOverlay extends React.Component {
+    componentDidUpdate = () => {
+        let overlay = $(ReactDOM.findDOMNode(this));
+        if (this.props.showLoading) {
+            overlay.fadeIn();
+        } else {
+            overlay.fadeOut();
+        }
+    }
+
+    render() {
+        return (
+            <Row id="loadingOverlay" className="no-gutters" >
+                <Col>
+                    <Row>
+                        <Col>
+                            <Spinner animation="border" />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>loading</Col>
+                    </Row>
+                </Col>
+            </Row>
+        )
+    }
+}
 
 class MostLikedPlace extends React.Component {
     componentDidMount = () => {
@@ -347,6 +389,10 @@ class SwipeBoard extends React.Component {
             },
             mostLiked: null,
             hasLikes: false,
+            showLoading: false,
+            showToast: false,
+            ToastMessageType: '',
+            ToastMessage: '',
         }
     }
 
@@ -455,6 +501,7 @@ class SwipeBoard extends React.Component {
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
+            showLoading: false,
         });
     }
 
@@ -516,11 +563,34 @@ class SwipeBoard extends React.Component {
         this.setState({
             placesRequest: placesRequest
         })
+
+        this.setToastMessage('success', 'search filter updated');
+    }
+
+    toggleLoadingOverlay = (show) => {
+        this.setState({
+            showLoading: show
+        });
+    }
+
+    setToastMessage = (messageType, message) => {
+        this.setState({
+            showToast: (this.state.showToast && message == null) ? false : true,
+            ToastMessageType: messageType,
+            ToastMessage: message,
+        })
     }
 
     render() {
         return (
             <div id="board">
+                <LoadingOverlay showLoading={this.state.showLoading} />
+                <ToastMessage
+                    show={this.state.showToast}
+                    messageType={this.state.ToastMessageType}
+                    message={this.state.ToastMessage}
+                    setToastMessage={this.setToastMessage}
+                />
                 <CustomNavbar
                     resetBoard={this.resetBoard}
                     uuid={this.state.uuid}
@@ -538,7 +608,13 @@ class SwipeBoard extends React.Component {
                             placeSelection={this.placeSelection}
                             doneSwipe={this.doneSwipe}
                         />
-                        <NearbySearch uuid={this.state.uuid} placesRequest={this.state.placesRequest} updateNearbyResult={this.updateNearbyResult} />
+                        <NearbySearch
+                            uuid={this.state.uuid}
+                            placesRequest={this.state.placesRequest}
+                            updateNearbyResult={this.updateNearbyResult}
+                            toggleLoadingOverlay={this.toggleLoadingOverlay}
+                            setToastMessage={this.setToastMessage}
+                        />
                     </>
                 ) : (
                         <MostLikedPlace mostLiked={this.state.mostLiked} />
