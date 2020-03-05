@@ -20,9 +20,10 @@ import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, fa
 const google = window.google;
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
-// number of photos or cards loads at a time
-const numLoad = 3;
+const numLoad = 3;                  // number of photos or cards loads at a time
 const photoSwitchTime = 4000;       // 4 second
+const swipeDistance = 600;
+const swipeThreshold = 150;
 
 class MostLikedPlace extends React.Component {
     componentDidMount = () => {
@@ -127,7 +128,6 @@ class SwipeCard extends React.Component {
         x: 0,
         y: 0,
         initialPosition: { x: 0, y: 0 },
-        swipeThreshold: 150,
     }
 
     componentDidMount() {
@@ -154,7 +154,7 @@ class SwipeCard extends React.Component {
     triggerSwipe = (direction) => {
         let ev = {
             type: "panend",
-            deltaX: direction == 'left' ? (-1 * (this.state.swipeThreshold + 10)) : this.state.swipeThreshold + 10,
+            deltaX: direction == 'left' ? (-1 * swipeThreshold) : swipeThreshold,
         }
 
         this.panend(ev);
@@ -187,16 +187,18 @@ class SwipeCard extends React.Component {
 
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
-        if (xloc >= this.state.swipeThreshold) {        // swipe right
-            this.updateTransform(600, 0);
-            $(ReactDOM.findDOMNode(this)).fadeOut(() => {
+        if (xloc >= swipeThreshold) {        // swipe right
+            this.updateTransform(swipeDistance, 0);
+            this.card.fadeOut(() => {
                 this.props.placeSelection("right");
             });
-        } else if (xloc <= (this.state.swipeThreshold * -1)) {      // swipe left
-            this.updateTransform(-600, 0);
-            $(ReactDOM.findDOMNode(this)).fadeOut(() => {
+            this.card.css('transition-duration', '');
+        } else if (xloc <= (swipeThreshold * -1)) {      // swipe left
+            this.updateTransform(swipeDistance * -1, 0);
+            this.card.fadeOut(() => {
                 this.props.placeSelection("left");
             });
+            this.card.css('transition-duration', '');
         } else {        // center
             this.updateTransform(0, 0);
             this.card.find('#boardControl').fadeIn();
@@ -207,7 +209,7 @@ class SwipeCard extends React.Component {
         console.log(ev.type);
 
         // remove transition duration
-        this.card.css('transition-duration', '0s');
+        this.card.css('transition-duration', '');
 
         this.updateTransform(ev.deltaX + this.state.initialPosition.x, 0);
     }
@@ -220,8 +222,11 @@ class SwipeCard extends React.Component {
     }
 
     updateTransform = (x = 0, y = 0) => {
+        // hide the button controls
+        this.card.find('#boardControl').fadeOut();
+
         this.card.css({
-            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)'
+            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)',
         });
 
         this.card.find('.card-info').css({
@@ -239,9 +244,6 @@ class SwipeCard extends React.Component {
         } else if (x == 0) {
             swipe_direction_cont.removeClass("right left");
         }
-
-        // hide the button controls
-        this.card.find('#boardControl').fadeOut();
     }
 
     render() {
