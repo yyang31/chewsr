@@ -331,15 +331,25 @@ class SwipeCard extends React.Component {
 
 class Cards extends React.Component {
     render() {
+        let selectedNearbyResult = [];
+        let nearbyResult = this.props.nearbyResult;
+        if (nearbyResult && nearbyResult.length > 0) {
+            let loopTo = nearbyResult.length > numLoad ? numLoad : nearbyResult.length;
+
+            for (var i = 0; i < loopTo; i++) {
+                selectedNearbyResult.push(this.props.nearbyResult[i]);
+            }
+        }
+
         if (this.props.uuid) {    // if swiping
-            if (this.props.nearbyResult && this.props.nearbyResult.length > 0) {  // if have cards to swipe
+            if (selectedNearbyResult.length > 0) {  // if have cards to swipe
                 return (
                     <div id="cards">
-                        {this.props.nearbyResult.map((place, index) => {
+                        {selectedNearbyResult.map((place, index) => {
                             return <SwipeCard
                                 key={place.place_id}
                                 place={place}
-                                index={this.props.indexCount + this.props.nearbyResult.length - index}
+                                index={this.props.indexCount + selectedNearbyResult.length - index}
                                 placeSelection={this.props.placeSelection}
                                 doneSwipe={this.props.doneSwipe}
                                 hasLikes={this.props.hasLikes}
