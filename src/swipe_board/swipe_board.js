@@ -309,7 +309,7 @@ class SwipeCard extends React.Component {
                             <div className="place-photos-cont no-image">
                                 <FontAwesomeIcon icon={faCookieBite} />
                                 no image avaiable
-                        </div>
+                            </div>
                         )}
                     <div className="place-rating">{this.props.place.rating}</div>
 
@@ -483,15 +483,21 @@ class SwipeBoard extends React.Component {
 
         ref.child(uuid).once('value', function (snapshot) {
             if (snapshot.exists()) {
-                return this.setGroupID(lat, lng);
+                return reactScope.setGroupID(lat, lng);
             } else {
                 let ref2 = Firebase.database().ref(uuid);
                 let date = new Date();
+
+                // remove location from placesRequest
+                // this is because Firebase can not save a function
+                let placesRequest = reactScope.state.placesRequest;
+                delete placesRequest.location;
 
                 ref2.set({
                     lat: lat,
                     lng: lng,
                     created_on: date.toLocaleString(),
+                    placesRequest: placesRequest
                 });
 
                 // return uuid;
@@ -502,15 +508,16 @@ class SwipeBoard extends React.Component {
         });
     }
 
-    updateNearbyResult = (lat, lng, result, pagination, groupID = null) => {
+    updateNearbyResult = (lat, lng, result, pagination, placesRequest, groupID = null) => {
         // generate new/unique uuid
         if (!groupID) this.setGroupID(lat, lng);
 
         this.setState({
-            uuid: groupID,   // temporarily set uuid for testing purpose
+            uuid: groupID,
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
+            placesRequest: placesRequest,
             showLoading: false,
         });
     }
@@ -565,7 +572,7 @@ class SwipeBoard extends React.Component {
         });
     }
 
-    updateFilters = (filters) => {
+    updateFilters = (filters = null) => {
         let placesRequest = this.state.placesRequest;
         placesRequest.radius = filters.radius;
         placesRequest.keyword = filters.keyword;

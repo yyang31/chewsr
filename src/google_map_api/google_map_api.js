@@ -40,7 +40,7 @@ class JoinGroup extends React.Component {
                 if (val == null) {
                     this.props.setToastMessage("error", "the group ID does not exist");
                 } else {
-                    this.props.fetchNearby("", val.lat, val.lng, this.state.groupID);
+                    this.props.fetchNearby("", val.lat, val.lng, val.placesRequest, this.state.groupID);
                 }
             });
         } else {
@@ -237,14 +237,21 @@ class NearbySearch extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.nearbyResult !== this.state.nearbyResult && typeof this.props.updateNearbyResult === 'function') {
-            this.props.updateNearbyResult(this.state.lat, this.state.lng, this.state.nearbyResult, this.state.pagination, this.state.groupID);
+            this.props.updateNearbyResult(
+                this.state.lat,
+                this.state.lng,
+                this.state.nearbyResult,
+                this.state.pagination,
+                this.state.placesRequest,
+                this.state.groupID
+            );
         }
     }
 
-    fetchNearby = (value, lat, lng, groupID = null) => {
+    fetchNearby = (value, lat, lng, groupPlacesRequest = null, groupID = null) => {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         const google = window.google;
-        let placesRequest = this.props.placesRequest;
+        let placesRequest = groupPlacesRequest ? groupPlacesRequest : this.props.placesRequest;
         placesRequest.location = new window.google.maps.LatLng(lat, lng);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
@@ -264,6 +271,7 @@ class NearbySearch extends React.Component {
                     pagination: pagination.hasNextPage ? pagination : null,
                     groupID: groupID,
                     getGroup: false,
+                    placesRequest: placesRequest,
                 });
             } else {
                 this.props.setToastMessage('error', "GOOGLE_MAP_API ERROR: " + status);

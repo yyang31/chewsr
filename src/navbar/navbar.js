@@ -37,10 +37,24 @@ class OptionMenu extends Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.placesRequest !== this.props.placesRequest) {
+            this.setState({
+                radius: this.props.placesRequest.radius,
+                keyword: this.props.placesRequest.keyword,
+                maxprice: this.props.placesRequest.maxprice,
+                openNow: this.props.placesRequest.openNow,
+            });
+        }
+    }
+
     /**
      * handles click on custom restaurant type buttons
      */
     restTypeClick = (e) => {
+        // return if current swiping
+        if (this.props.uuid) return;
+
         // console.log(e.target);
         let restTypeBtn = $(e.target);
 
@@ -87,6 +101,9 @@ class OptionMenu extends Component {
     }
 
     toggleOpennow = () => {
+        // return if current swiping
+        if (this.props.uuid) return;
+
         $('.toggle-cont').toggleClass('true false');
 
         this.setState({
@@ -125,7 +142,7 @@ class OptionMenu extends Component {
                     <Form onSubmit={this.filterSubmit}>
                         <Modal.Header>
                             <Modal.Title>
-                                <div className="logo colored-text">
+                                <div className="logo colored-text" onClick={() => { this.props.resetBoard() }}>
                                     Chews<span className="navbar-brand-r">r</span>
                                 </div>
                                 <div className="modal-sub-text">options</div>
@@ -167,7 +184,7 @@ class OptionMenu extends Component {
                                                 return (
                                                     <span key={val}
                                                         className={'type-radio-cont btn' + ((this.state.keyword == val || (this.state.keyword == '' && val == 'all')) ? ' selected' : '') + (this.props.uuid ? ' disabled' : '')}
-                                                        onClick={this.props.uuid ? '' : (e) => { this.restTypeClick(e) }}>
+                                                        onClick={(e) => { this.restTypeClick(e) }}>
                                                         {val}
                                                         <input type="radio" name="restaurant-type" value={val} />
                                                     </span>
@@ -224,7 +241,7 @@ class OptionMenu extends Component {
                                                         <Col md={12} className="option-title">open now</Col>
                                                         <Col>
                                                             <div className={"toggle-cont " + (this.state.openNow ? "true" : "false") + (this.props.uuid ? ' disabled' : '')}
-                                                                onClick={this.props.uuid ? '' : () => { this.toggleOpennow() }}>
+                                                                onClick={() => { this.toggleOpennow() }}>
                                                                 <div className="toggle-circle"></div>
                                                             </div>
                                                         </Col>
@@ -239,7 +256,7 @@ class OptionMenu extends Component {
                         </Modal.Body>
                         <Modal.Footer className={this.props.uuid ? 'swiping' : ''}>
                             <Button variant="secondary" onClick={() => { this.triggerShow() }}>
-                                <FontAwesomeIcon icon={faTimes} />
+                                {this.props.uuid ? 'close' : <FontAwesomeIcon icon={faTimes} />}
                             </Button>
                             <input type="submit" value="save" className="btn btn-primary" />
                         </Modal.Footer>
@@ -257,7 +274,12 @@ class CustomNavbar extends Component {
                 <Navbar.Brand className="logo logo-white" onClick={this.props.resetBoard}>
                     <span>Chews</span><span className="navbar-brand-r">r</span>
                 </Navbar.Brand>
-                <OptionMenu uuid={this.props.uuid} placesRequest={this.props.placesRequest} updateFilters={this.props.updateFilters} />
+                <OptionMenu
+                    uuid={this.props.uuid}
+                    placesRequest={this.props.placesRequest}
+                    updateFilters={this.props.updateFilters}
+                    resetBoard={this.props.resetBoard}
+                />
             </Navbar>
         );
     }
