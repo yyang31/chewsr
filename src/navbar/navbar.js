@@ -138,7 +138,7 @@ class OptionMenu extends Component {
                                 {this.props.uuid ? (
                                     <>
                                         {/* Filter Disabled Message */}
-                                        <Col md={12} className="filterd-isabled-msg">
+                                        <Col md={12} className="filter-disabled-msg">
                                             filters can not be changed during swipe
                                     </Col>
 
