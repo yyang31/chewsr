@@ -40,6 +40,7 @@ class JoinGroup extends React.Component {
                 if (val == null) {
                     this.props.setToastMessage("error", "the group ID does not exist");
                 } else {
+                    this.props.toggleLoadingOverlay(true);
                     this.props.fetchNearby("", val.lat, val.lng, val.placesRequest, this.state.groupID);
                 }
             });
@@ -293,6 +294,7 @@ class NearbySearch extends React.Component {
                         <JoinGroup
                             toggleGetGroup={this.toggleGetGroup}
                             fetchNearby={this.fetchNearby}
+                            toggleLoadingOverlay={this.props.toggleLoadingOverlay}
                             setToastMessage={this.props.setToastMessage}
                         />
                     </Col>

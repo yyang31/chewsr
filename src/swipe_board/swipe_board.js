@@ -509,8 +509,13 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (lat, lng, result, pagination, placesRequest, groupID = null) => {
-        // generate new/unique uuid
-        if (!groupID) this.setGroupID(lat, lng);
+        if (groupID) {
+            // add toaster message
+            this.setToastMessage('success', 'joined group with ID of ' + groupID);
+        } else {
+            // generate new/unique uuid
+            if (!groupID) this.setGroupID(lat, lng);
+        }
 
         this.setState({
             uuid: groupID,
