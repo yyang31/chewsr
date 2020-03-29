@@ -89,6 +89,13 @@
             margin-bottom: 5px;
         }
 
+        .filterd-isabled-msg {
+            background-color: $gray;
+            color: $white;
+            padding: 10px;
+            margin-top: -1em;
+        }
+
         // Search Radisu
         .search-radius {
             .form-group {
@@ -127,12 +134,20 @@
                     background-color: $blue;
                 }
 
-                input {
-                    display: none;
+                &.disabled {
+                    background-color: $light_gray;
                 }
 
                 &.selected {
                     background-color: $dark_blue;
+
+                    &.disabled {
+                        background-color: $dark_gray;
+                    }
+                }
+
+                input {
+                    display: none;
                 }
             }
         }
@@ -177,6 +192,16 @@
                 }
 
                 .rc-slider {
+                    &.rc-slider-disabled {
+                        .rc-slider-track {
+                            background-color: $light_gray;
+                        }
+
+                        .rc-slider-handle {
+                            border-color: $gray;
+                        }
+                    }
+
                     .rc-slider-track {
                         background-color: $light_blue;
                     }
@@ -217,6 +242,10 @@
                     }
                 }
 
+                &.disabled {
+                    background-color: $gray;
+                }
+
                 .toggle-circle {
                     width: 25px;
                     height: 25px;
@@ -233,6 +262,18 @@
     }
 
     .modal-footer {
+        &.swiping {
+            .btn-primary {
+                display: none;
+            }
+
+            .btn-secondary {
+                width: auto;
+                flex: 1;
+                border-radius: 25px;
+            }
+        }
+
         .btn-primary {
             width: auto;
             flex: 1;

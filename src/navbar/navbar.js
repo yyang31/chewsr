@@ -133,18 +133,27 @@ class OptionMenu extends Component {
                         </Modal.Header>
                         <Modal.Body>
                             <Row>
-                                {/* Group ID */}
+
+
                                 {this.props.uuid ? (
-                                    <Col md={12}>
-                                        <Row>
-                                            <Col md={12} className="option-title">
-                                                group ID
-                                                </Col>
-                                            <Col md={12}>
-                                                {this.props.uuid}
-                                            </Col>
-                                        </Row>
+                                    <>
+                                        {/* Filter Disabled Message */}
+                                        <Col md={12} className="filterd-isabled-msg">
+                                            filters can not be changed during swipe
                                     </Col>
+
+                                        {/* Group ID */}
+                                        <Col md={12}>
+                                            <Row>
+                                                <Col md={12} className="option-title">
+                                                    group ID
+                                                </Col>
+                                                <Col md={12}>
+                                                    {this.props.uuid}
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </>
                                 ) : (
                                         null
                                     )}
@@ -156,7 +165,9 @@ class OptionMenu extends Component {
                                         <Col id="restaurantTypeCont">
                                             {this.state.restaurantTypes.map((val, key) => {
                                                 return (
-                                                    <span key={val} className={'type-radio-cont btn' + ((this.state.keyword == val || (this.state.keyword == '' && val == 'all')) ? ' selected' : '')} onClick={(e) => { this.restTypeClick(e) }}>
+                                                    <span key={val}
+                                                        className={'type-radio-cont btn' + ((this.state.keyword == val || (this.state.keyword == '' && val == 'all')) ? ' selected' : '') + (this.props.uuid ? ' disabled' : '')}
+                                                        onClick={this.props.uuid ? '' : (e) => { this.restTypeClick(e) }}>
                                                         {val}
                                                         <input type="radio" name="restaurant-type" value={val} />
                                                     </span>
@@ -178,6 +189,7 @@ class OptionMenu extends Component {
                                                 max={4}
                                                 defaultValue={this.state.maxprice}
                                                 onChange={(val) => { this.priceChange(val) }}
+                                                disabled={this.props.uuid ? true : false}
                                             />
                                         </Col>
                                     </Row>
@@ -191,7 +203,7 @@ class OptionMenu extends Component {
                                                 <Col md={12} className="option-title">search radius</Col>
                                                 <Col>
                                                     <Form.Group controlId="exampleForm.ControlSelect1">
-                                                        <Form.Control as="select" onChange={this.radiusChange} value={this.state.radius / 1609.34}>
+                                                        <Form.Control as="select" onChange={this.radiusChange} value={this.state.radius / 1609.34} disabled={this.props.uuid ? true : false}>
                                                             <option>5</option>
                                                             <option>10</option>
                                                             <option>25</option>
@@ -211,7 +223,8 @@ class OptionMenu extends Component {
                                                     <Row className="open-now">
                                                         <Col md={12} className="option-title">open now</Col>
                                                         <Col>
-                                                            <div className={"toggle-cont " + (this.state.openNow ? "true" : "false")} onClick={() => { this.toggleOpennow() }}>
+                                                            <div className={"toggle-cont " + (this.state.openNow ? "true" : "false") + (this.props.uuid ? ' disabled' : '')}
+                                                                onClick={this.props.uuid ? '' : () => { this.toggleOpennow() }}>
                                                                 <div className="toggle-circle"></div>
                                                             </div>
                                                         </Col>
@@ -224,7 +237,7 @@ class OptionMenu extends Component {
 
                             </Row>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className={this.props.uuid ? 'swiping' : ''}>
                             <Button variant="secondary" onClick={() => { this.triggerShow() }}>
                                 <FontAwesomeIcon icon={faTimes} />
                             </Button>
