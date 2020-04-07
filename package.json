@@ -21,6 +21,7 @@
     "rc-slider": "^9.2.4",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
     "react-google-maps-loader": "^4.2.6",
     "react-google-places-suggest": "^3.9.2",
