@@ -11,16 +11,27 @@ import Hammer from 'hammerjs'
 import ReactDOM from "react-dom";
 import $ from 'jquery';
 
+// react bootstrap
 import Spinner from 'react-bootstrap/Spinner';
 import { Row, Col } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 
+// font awsome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
 
+// react cookie
+import { useCookies } from 'react-cookie';
+
+// google constants
 const google = window.google;
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
+// cookie constants
+const uuidCookieName = 'group_uuid';
+const uuidCookieMaxage = 1800;      // max age is in seconds, 1800 = 30 minutes
+
+// constants
 const numLoad = 3;                  // number of photos or cards loads at a time
 const photoSwitchTime = 4000;       // 4 second
 const swipeThreshold = 150;         // x distance need to move for the card to register as a like or dislike
@@ -404,8 +415,7 @@ class SwipeBoard extends React.Component {
             ToastMessageType: '',
             ToastMessage: '',
         }
-    }
-
+    };
 
     componentDidUpdate = () => {
         if ((this.state.nearbyResult && this.state.nearbyResult.length == 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
@@ -500,6 +510,8 @@ class SwipeBoard extends React.Component {
                     placesRequest: placesRequest
                 });
 
+                reactScope.setUUIDCookie(uuid);
+
                 // return uuid;
                 reactScope.setState({
                     uuid: uuid
@@ -509,22 +521,25 @@ class SwipeBoard extends React.Component {
     }
 
     updateNearbyResult = (lat, lng, result, pagination, placesRequest, groupID = null) => {
-        if (groupID) {
-            // add toaster message
-            this.setToastMessage('success', 'joined group with ID of ' + groupID);
-        } else {
-            // generate new/unique uuid
-            if (!groupID) this.setGroupID(lat, lng);
-        }
-
-        this.setState({
-            uuid: groupID,
+        let newState = {
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
             pagination: pagination != null && pagination.hasNextPage ? pagination : null,
             placesRequest: placesRequest,
             showLoading: false,
-        });
+        };
+
+        if (groupID) {
+            // add toaster message
+            this.setToastMessage('success', 'joined group with ID of ' + groupID);
+            newState.uuid = groupID;
+            this.setUUIDCookie(groupID);
+        } else {
+            // generate new/unique uuid
+            if (!groupID) this.setGroupID(lat, lng);
+        }
+
+        this.setState(newState);
     }
 
     updateLike = (place) => {
@@ -603,6 +618,10 @@ class SwipeBoard extends React.Component {
         })
     }
 
+    setUUIDCookie = (uuid) => {
+        this.props.cookies.set(uuidCookieName, uuid, { path: '/', maxAge: uuidCookieMaxage });
+    }
+
     render() {
         return (
             <div id="board">
@@ -636,6 +655,7 @@ class SwipeBoard extends React.Component {
                             updateNearbyResult={this.updateNearbyResult}
                             toggleLoadingOverlay={this.toggleLoadingOverlay}
                             setToastMessage={this.setToastMessage}
+                            cookies={this.props.cookies.get(uuidCookieName)}
                         />
                     </>
                 ) : (

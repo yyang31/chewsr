@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Toast from 'react-bootstrap/Toast';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationArrow, faUsers, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
+import { faLocationArrow, faUsers, faMapMarkedAlt, faUndoAlt } from '@fortawesome/free-solid-svg-icons'
 import { Row, Col } from "react-bootstrap";
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
@@ -32,18 +32,10 @@ class JoinGroup extends React.Component {
     getGroupNumber = (e) => {
         e.preventDefault(process.env.REACT_APP_FIREBASE_PRIVATE_KEY);
 
-        if (this.state.groupID != '' && this.state.groupID.length == this.state.groupIDLength) {
-            let ref = Firebase.database().ref("/" + this.state.groupID);
+        let groupId = this.state.groupID;
 
-            ref.once("value", snapshot => {
-                const val = snapshot.val();
-                if (val == null) {
-                    this.props.setToastMessage("error", "the group ID does not exist");
-                } else {
-                    this.props.toggleLoadingOverlay(true);
-                    this.props.fetchNearby("", val.lat, val.lng, val.placesRequest, this.state.groupID);
-                }
-            });
+        if (groupId != '' && groupId.length == this.state.groupIDLength) {
+            this.props.joinGroupByID(groupId);
         } else {
             this.props.setToastMessage("error", "group ID must be 5 digits");
         }
@@ -286,6 +278,20 @@ class NearbySearch extends React.Component {
         });
     }
 
+    joinGroupByID = (uuid) => {
+        let ref = Firebase.database().ref("/" + uuid);
+
+        ref.once("value", snapshot => {
+            const val = snapshot.val();
+            if (val == null) {
+                this.props.setToastMessage("error", "the group ID does not exist");
+            } else {
+                this.props.toggleLoadingOverlay(true);
+                this.fetchNearby("", val.lat, val.lng, val.placesRequest, uuid);
+            }
+        });
+    }
+
     render() {
         return (
             <Row id="NearbySearch" className={this.props.uuid != null ? "d-none" : ""}>
@@ -293,8 +299,7 @@ class NearbySearch extends React.Component {
                     <Col>
                         <JoinGroup
                             toggleGetGroup={this.toggleGetGroup}
-                            fetchNearby={this.fetchNearby}
-                            toggleLoadingOverlay={this.props.toggleLoadingOverlay}
+                            joinGroupByID={this.joinGroupByID}
                             setToastMessage={this.props.setToastMessage}
                         />
                     </Col>
@@ -322,9 +327,20 @@ class NearbySearch extends React.Component {
                                 <Col md={12}>
                                     <Button variant="primary" onClick={this.toggleGetGroup}>
                                         join group
-                                <FontAwesomeIcon icon={faUsers} />
+                                        <FontAwesomeIcon icon={faUsers} />
                                     </Button>
                                 </Col>
+                                {this.props.cookies == null ? (
+                                    null
+                                ) : (
+                                        <Col md={12}>
+                                            <Button variant="primary" onClick={() => { this.joinGroupByID(this.props.cookies) }}>
+                                                join previous session
+                                                <FontAwesomeIcon icon={faUndoAlt} />
+                                            </Button>
+                                        </Col>
+                                    )
+                                }
                             </Row>
                         </Col>
                     )
