@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react"
+import React from "react"
 import './google_map_api.scss'
 
 import Firebase from "firebase";
@@ -8,7 +8,6 @@ import ReactGoogleMapLoader from "react-google-maps-loader"
 import ReactGooglePlacesSuggest from "react-google-places-suggest"
 
 import Button from 'react-bootstrap/Button';
-import Toast from 'react-bootstrap/Toast';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationArrow, faUsers, faMapMarkedAlt, faUndoAlt } from '@fortawesome/free-solid-svg-icons'
@@ -34,7 +33,7 @@ class JoinGroup extends React.Component {
 
         let groupId = this.state.groupID;
 
-        if (groupId != '' && groupId.length == this.state.groupIDLength) {
+        if (groupId !== '' && groupId.length === this.state.groupIDLength) {
             this.props.joinGroupByID(groupId);
         } else {
             this.props.setToastMessage("error", "group ID must be 5 digits");
@@ -127,8 +126,8 @@ class GoogleSuggest extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         // status change
-        if (prevState.status !== this.state.status && this.state.status != "" && document.getElementsByClassName('sc-EHOje').length > 0) {
-            if (this.state.status == window.google.maps.places.PlacesServiceStatus.OK) {
+        if (prevState.status !== this.state.status && this.state.status !== "" && document.getElementsByClassName('sc-EHOje').length > 0) {
+            if (this.state.status === window.google.maps.places.PlacesServiceStatus.OK) {
                 document.getElementsByClassName('sc-EHOje')[0].classList.remove('invalid');
             } else {
                 document.getElementsByClassName('sc-EHOje')[0].classList.add('invalid');
@@ -161,7 +160,7 @@ class GoogleSuggest extends React.Component {
     }
 
     handleStatusUpdate = status => {
-        if (status != this.state.status) {
+        if (status !== this.state.status) {
             this.setState({
                 status: status,
             });

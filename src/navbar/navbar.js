@@ -12,15 +12,12 @@ import {
 
 import "rc-slider/assets/index.css";
 import "rc-tooltip/assets/bootstrap.css";
-import Tooltip from "rc-tooltip";
 import Slider from 'rc-slider';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faBars, faDollarSign } from '@fortawesome/free-solid-svg-icons'
 
 import $ from 'jquery';
-
-const createSliderWithTooltip = Slider.createSliderWithTooltip;
 
 class OptionMenu extends Component {
     state = {
@@ -68,7 +65,7 @@ class OptionMenu extends Component {
         // update search keyword
         let selectResType = restTypeBtn.find(':input[type=radio]').val();
         this.setState({
-            keyword: selectResType == 'all' ? '' : selectResType
+            keyword: selectResType === 'all' ? '' : selectResType
         });
     }
 
@@ -183,7 +180,7 @@ class OptionMenu extends Component {
                                             {this.state.restaurantTypes.map((val, key) => {
                                                 return (
                                                     <span key={val}
-                                                        className={'type-radio-cont btn' + ((this.state.keyword == val || (this.state.keyword == '' && val == 'all')) ? ' selected' : '') + (this.props.uuid ? ' disabled' : '')}
+                                                        className={'type-radio-cont btn' + ((this.state.keyword === val || (this.state.keyword === '' && val === 'all')) ? ' selected' : '') + (this.props.uuid ? ' disabled' : '')}
                                                         onClick={(e) => { this.restTypeClick(e) }}>
                                                         {val}
                                                         <input type="radio" name="restaurant-type" value={val} />

@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import './swipe_board.scss'
 
 import Firebase from "firebase";
@@ -20,11 +20,7 @@ import Toast from 'react-bootstrap/Toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
 
-// react cookie
-import { useCookies } from 'react-cookie';
-
 // google constants
-const google = window.google;
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 // cookie constants
@@ -85,7 +81,7 @@ class MostLikedPlace extends React.Component {
 
     photoSwitch = () => {
         let curPhoto = $('.place-photo img.show');
-        let nextPhoto = curPhoto.next().length == 0 ? $('.place-photo img').first() : curPhoto.next();
+        let nextPhoto = curPhoto.next().length === 0 ? $('.place-photo img').first() : curPhoto.next();
         let nextNextPhoto = curPhoto.next().next();
 
         curPhoto.fadeOut().removeClass('show');
@@ -112,7 +108,7 @@ class MostLikedPlace extends React.Component {
                                         key={i}
                                         src={i < numLoad ? photo.getUrl() : ''}
                                         alt={this.props.mostLiked.name}
-                                        className={(i < numLoad ? 'loaded' : '') + (i == 0 ? ' show' : '')}
+                                        className={(i < numLoad ? 'loaded' : '') + (i === 0 ? ' show' : '')}
                                         data-src={photo.getUrl()}
                                     />
                                 );
@@ -207,7 +203,7 @@ class SwipeCard extends React.Component {
     triggerSwipe = (direction) => {
         let ev = {
             type: "panend",
-            deltaX: direction == 'left' ? (-1 * swipeThreshold) : swipeThreshold,
+            deltaX: direction === 'left' ? (-1 * swipeThreshold) : swipeThreshold,
         }
 
         this.panend(ev);
@@ -294,7 +290,7 @@ class SwipeCard extends React.Component {
         } else if (x < 0 && !swipe_direction_cont.hasClass('left')) {
             swipe_direction_cont.removeClass("right");
             swipe_direction_cont.addClass('left');
-        } else if (x == 0) {
+        } else if (x === 0) {
             swipe_direction_cont.removeClass("right left");
         }
     }
@@ -418,7 +414,7 @@ class SwipeBoard extends React.Component {
     };
 
     componentDidUpdate = () => {
-        if ((this.state.nearbyResult && this.state.nearbyResult.length == 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
+        if ((this.state.nearbyResult && this.state.nearbyResult.length === 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
             this.setState({
                 nearbyResult: this.state.pagination.nextPage()
             })
@@ -581,7 +577,7 @@ class SwipeBoard extends React.Component {
     placeSelection = (swipe_direction) => {
         let nearbyResult = this.state.nearbyResult;
 
-        if (swipe_direction == "right") {
+        if (swipe_direction === "right") {
             this.updateLike(this.state.nearbyResult[0]);
         }
 
