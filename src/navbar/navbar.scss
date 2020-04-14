@@ -2,8 +2,8 @@
 @import '../common/_color';
 
 .navbar {
-    padding: 10px 20px;
-    margin: -10px -10px 10px -10px;
+    padding: 10px 15px;
+    margin: -10px -10px 0 -10px;
     background-color: transparent !important;
     z-index: 1000;
 
@@ -236,7 +236,7 @@
                 }
 
                 &.false {
-                    background-color: $red;
+                    background-color: $gray;
 
                     .toggle-circle {
                         right: 70px;
@@ -244,7 +244,7 @@
                 }
 
                 &.disabled {
-                    background-color: $gray;
+                    background-color: $light_gray;
                 }
 
                 .toggle-circle {

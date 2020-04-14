@@ -247,8 +247,13 @@ class NearbySearch extends React.Component {
         placesRequest.location = new window.google.maps.LatLng(lat, lng);
 
         service.nearbySearch(placesRequest, ((response, status, pagination) => {
-            // remove all results that does not have a photo
             response.forEach((element, index) => {
+                // deleting open_now, becuase it is deprecated as of November 2019
+                if (element.opening_hours) {
+                    delete element.opening_hours.open_now;
+                }
+
+                // remove all results that does not have a photo
                 if (!element.photos) {
                     response.splice(index, 1);
                 }

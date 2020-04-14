@@ -25,7 +25,9 @@ const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
 
 // cookie constants
 const uuidCookieName = 'group_uuid';
-const uuidCookieMaxage = 1800;      // max age is in seconds, 1800 = 30 minutes
+const currentPageCookieName = 'current_page';
+const currentPlaceCookieName = 'current_place';
+const cookieMaxage = 1800;      // max age is in seconds, 1800 = 30 minutes
 
 // constants
 const numLoad = 3;                  // number of photos or cards loads at a time
@@ -187,8 +189,7 @@ class SwipeCard extends React.Component {
         this.hammer = new Hammer.Manager(ReactDOM.findDOMNode(this));
         this.hammer.add(new Hammer.Pan({ threshold: 2 }));
 
-        this.hammer.on('panstart pancancel panmove panend', this.handlePan);
-        this.hammer.on('swipestart swipeend swipecancel swipemove', this.handleSwipe);
+        this.hammer.on('panmove panend', this.handlePan);
     }
 
     setInitialPosition = () => {
@@ -220,17 +221,7 @@ class SwipeCard extends React.Component {
         return false;
     }
 
-    panstart = (ev) => {
-        console.log(ev.type);
-    }
-
-    pancancel = (ev) => {
-        console.log(ev.type);
-    }
-
     panend = (ev) => {
-        console.log(ev.type);
-
         // add smooth transition duration
         this.card.css('transition-duration', '0.3s');
 
@@ -255,19 +246,10 @@ class SwipeCard extends React.Component {
     }
 
     panmove = (ev) => {
-        console.log(ev.type);
-
         // remove transition duration
         this.card.css('transition-duration', '');
 
         this.updateTransform(ev.deltaX + this.state.initialPosition.x, 0);
-    }
-
-    /*
-     * swipe handlers
-    */
-    handleSwipe = (ev) => {
-        console.log(ev.type);
     }
 
     updateTransform = (x = 0, y = 0) => {
@@ -394,6 +376,7 @@ class SwipeBoard extends React.Component {
 
         this.state = {
             uuid: null,
+            currentPage: 0,
             nearbyResult: [],
             indexCount: 1,
             placesRequest: {
@@ -414,15 +397,20 @@ class SwipeBoard extends React.Component {
     };
 
     componentDidUpdate = () => {
-        if ((this.state.nearbyResult && this.state.nearbyResult.length === 0) && (this.state.pagination != null && this.state.pagination.hasNextPage)) {
+        let state = this.state;
+
+        if (
+            (state.nearbyResult && state.nearbyResult.length === 0)
+            && (state.pagination != null && state.pagination.hasNextPage)
+        ) {
             this.setState({
-                nearbyResult: this.state.pagination.nextPage()
-            })
+                currentPage: state.currentPage + 1,
+                nearbyResult: state.pagination.nextPage()
+            });
         }
 
-        if (this.state.likedPlaces && this.state.mostLiked == null) {
-            this.getResult();
-        }
+        // update cookies
+        this.updateCookie();
     }
 
     resetBoard = () => {
@@ -506,8 +494,6 @@ class SwipeBoard extends React.Component {
                     placesRequest: placesRequest
                 });
 
-                reactScope.setUUIDCookie(uuid);
-
                 // return uuid;
                 reactScope.setState({
                     uuid: uuid
@@ -529,7 +515,6 @@ class SwipeBoard extends React.Component {
             // add toaster message
             this.setToastMessage('success', 'joined group with ID of ' + groupID);
             newState.uuid = groupID;
-            this.setUUIDCookie(groupID);
         } else {
             // generate new/unique uuid
             if (!groupID) this.setGroupID(lat, lng);
@@ -564,7 +549,6 @@ class SwipeBoard extends React.Component {
                 }
 
                 ref.set(val);
-                console.log(reactScope.state.hasLikes);
                 if (!reactScope.state.hasLikes) {
                     reactScope.setState({
                         hasLikes: true,
@@ -581,6 +565,7 @@ class SwipeBoard extends React.Component {
             this.updateLike(this.state.nearbyResult[0]);
         }
 
+        // remove the first place in the nearbyResult
         nearbyResult.shift();
 
         this.setState({
@@ -614,8 +599,32 @@ class SwipeBoard extends React.Component {
         })
     }
 
-    setUUIDCookie = (uuid) => {
-        this.props.cookies.set(uuidCookieName, uuid, { path: '/', maxAge: uuidCookieMaxage });
+    // update the following values thats stored in the cookie
+    // uuid == group id
+    // current page
+    // current place
+    updateCookie = () => {
+        let state = this.state;
+        let uuidCookie = this.props.cookies.get(uuidCookieName);
+        let currentPageCookie = parseInt(this.props.cookies.get(currentPageCookieName));
+        let currentPlaceCookie = this.props.cookies.get(currentPlaceCookieName);
+
+        if (state.uuid && state.nearbyResult && state.nearbyResult.length > 0) {
+            // UUID
+            if (typeof uuidCookie === 'undefined' || state.uuid.toString() !== uuidCookie.toString()) {
+                this.props.cookies.set(uuidCookieName, state.uuid, { path: '/', maxAge: cookieMaxage });
+            }
+
+            // current page
+            if (typeof currentPageCookie === 'undefined' || state.currentPage !== currentPageCookie) {
+                this.props.cookies.set(currentPageCookieName, state.currentPage, { path: '/', maxAge: cookieMaxage });
+            }
+
+            // current place
+            if (typeof currentPlaceCookie === 'undefined' || state.nearbyResult[0].place_id !== currentPlaceCookie) {
+                this.props.cookies.set(currentPlaceCookieName, state.nearbyResult[0].place_id, { path: '/', maxAge: cookieMaxage });
+            }
+        }
     }
 
     render() {
