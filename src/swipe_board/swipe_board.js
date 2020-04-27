@@ -431,10 +431,10 @@ class SwipeBoard extends React.Component {
         // when done swiping
         if (state.finalPlaceId && !state.mostLiked) {
             this.showResult();
+        } else {
+            // update cookies
+            this.updateCookies();
         }
-
-        // update cookies
-        this.updateCookie();
     }
 
     resetBoard = () => {
@@ -462,11 +462,11 @@ class SwipeBoard extends React.Component {
             placeId: this.state.finalPlaceId
         }, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                this.setToastMessage('success', 'a place has been selected');
-
                 this.setState({
                     mostLiked: place
                 });
+                this.updateCookies();
+                this.setToastMessage('success', 'a place has been selected');
             }
         });
     }
@@ -639,26 +639,46 @@ class SwipeBoard extends React.Component {
     // uuid == group id
     // current page
     // current place
-    updateCookie = () => {
+    updateCookies = () => {
         let state = this.state;
-        let uuidCookie = this.props.cookies.get(uuidCookieName);
-        let currentPageCookie = parseInt(this.props.cookies.get(currentPageCookieName));
-        let currentPlaceCookie = this.props.cookies.get(currentPlaceCookieName);
 
-        if (state.uuid && state.nearbyResult && state.nearbyResult.length > 0) {
-            // UUID
-            if (typeof uuidCookie === 'undefined' || state.uuid.toString() !== uuidCookie.toString()) {
-                this.props.cookies.set(uuidCookieName, state.uuid, { path: '/', maxAge: cookieMaxage });
+        let cookies = this.props.cookies;
+        let uuidCookie = cookies.get(uuidCookieName);
+        let currentPageCookie = cookies.get(currentPageCookieName);
+        let currentPlaceCookie = cookies.get(currentPlaceCookieName);
+
+        if (state.finalPlaceId && state.mostLiked) {
+            let options = { path: "/", domain: window.location.hostname };
+
+            if (typeof uuidCookie !== 'undefined') {
+                cookies.remove(uuidCookieName, options);
             }
 
-            // current page
-            if (typeof currentPageCookie === 'undefined' || state.currentPage !== currentPageCookie) {
-                this.props.cookies.set(currentPageCookieName, state.currentPage, { path: '/', maxAge: cookieMaxage });
+            if (typeof currentPageCookie !== 'undefined') {
+                cookies.remove(currentPageCookieName, options);
             }
 
-            // current place
-            if (typeof currentPlaceCookie === 'undefined' || state.nearbyResult[0].place_id !== currentPlaceCookie) {
-                this.props.cookies.set(currentPlaceCookieName, state.nearbyResult[0].place_id, { path: '/', maxAge: cookieMaxage });
+            if (typeof currentPlaceCookie !== 'undefined') {
+                cookies.remove(currentPlaceCookieName, options);
+            }
+        } else {
+            let options = { path: '/', maxAge: cookieMaxage };
+
+            if (state.uuid && state.nearbyResult && state.nearbyResult.length > 0) {
+                // UUID
+                if (typeof uuidCookie === 'undefined' || state.uuid.toString() !== uuidCookie.toString()) {
+                    cookies.set(uuidCookieName, state.uuid, options);
+                }
+
+                // current page
+                if (typeof currentPageCookie === 'undefined' || state.currentPage !== parseInt(currentPageCookie)) {
+                    cookies.set(currentPageCookieName, state.currentPage, options);
+                }
+
+                // current place
+                if (typeof currentPlaceCookie === 'undefined' || state.nearbyResult[0].place_id !== currentPlaceCookie) {
+                    cookies.set(currentPlaceCookieName, state.nearbyResult[0].place_id, options);
+                }
             }
         }
     }
