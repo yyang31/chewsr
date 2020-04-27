@@ -393,11 +393,30 @@ class SwipeBoard extends React.Component {
             showToast: false,
             ToastMessageType: '',
             ToastMessage: '',
+            listenerLoaded: false,
         }
     };
 
     componentDidUpdate = () => {
         let state = this.state;
+
+        // try to load the firebase listener for when selection is done
+        if (!state.listenerLoaded && state.uuid) {
+            let ref = Firebase.database().ref("/" + this.state.uuid);
+            ref.child('finalPlaceId').on('value', snap => {
+                if (snap.val()) {
+                    this.toggleLoadingOverlay(true);
+
+                    this.setState({
+                        finalPlaceId: snap.val()
+                    })
+                }
+            });
+
+            this.setState({
+                listenerLoaded: true
+            });
+        }
 
         if (
             (state.nearbyResult && state.nearbyResult.length === 0)
@@ -410,8 +429,8 @@ class SwipeBoard extends React.Component {
         }
 
         // when done swiping
-        if (state.likedPlaces && state.mostLiked == null) {
-            this.getResult();
+        if (state.finalPlaceId && !state.mostLiked) {
+            this.showResult();
         }
 
         // update cookies
@@ -435,31 +454,16 @@ class SwipeBoard extends React.Component {
         });
     }
 
-    getResult = () => {
-        let likedPlaces = this.state.likedPlaces;
-        let mostLikes = 0;
-        let mostLikedPlaces = [];
-
-        // go through all places and get the all the ones with the most likes
-        Object.keys(likedPlaces).forEach((k, v) => {
-            if (v.likes > mostLikes) {
-                mostLikedPlaces = [];
-                mostLikes = v.likes;
-            }
-
-            mostLikedPlaces[k] = v;
-        });
-
-        // get a random place from the mostLikedPlaces
-        var keys = Object.keys(mostLikedPlaces);
-        let mostLikedID = keys[Math.floor(keys.length * Math.random())];
-
+    showResult = () => {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+
         service.getDetails({
             key: GOOGLE_API_KEY,
-            placeId: mostLikedID
+            placeId: this.state.finalPlaceId
         }, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                this.setToastMessage('success', 'a place has been selected');
+
                 this.setState({
                     mostLiked: place
                 });
@@ -474,9 +478,27 @@ class SwipeBoard extends React.Component {
         ref.once('value', function (snapshot) {
             let likedPlaces = snapshot.val().places;
             if (likedPlaces) {
-                reactScope.setState({
-                    likedPlaces: likedPlaces
-                })
+                let mostLikes = 0;
+                let mostLikedPlaces = [];
+
+                // go through all places and get the all the ones with the most likes
+                Object.keys(likedPlaces).forEach((k, v) => {
+                    if (v.likes > mostLikes) {
+                        mostLikedPlaces = [];
+                        mostLikes = v.likes;
+                    }
+
+                    mostLikedPlaces[k] = v;
+                });
+
+                // get a random place from the mostLikedPlaces
+                var keys = Object.keys(mostLikedPlaces);
+                let mostLikedID = keys[Math.floor(keys.length * Math.random())];
+
+                let ref2 = Firebase.database().ref(reactScope.state.uuid);
+                ref2.set({
+                    finalPlaceId: mostLikedID
+                });
             }
         });
     }
@@ -597,13 +619,16 @@ class SwipeBoard extends React.Component {
     }
 
     toggleLoadingOverlay = (show) => {
-        this.setState({
-            showLoading: show
-        });
+        if (this.state.showLoading !== show) {
+            this.setState({
+                showLoading: show
+            });
+        }
     }
 
     setToastMessage = (messageType, message) => {
         this.setState({
+            showLoading: false,
             showToast: (this.state.showToast && message == null) ? false : true,
             ToastMessageType: messageType,
             ToastMessage: message,

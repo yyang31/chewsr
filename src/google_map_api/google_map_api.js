@@ -103,7 +103,6 @@ class CurrentLocation extends React.Component {
     }
 
     accessDenied = () => {
-        this.props.toggleLoadingOverlay(false);
         this.props.setToastMessage('error', 'access to location denied')
     }
 
@@ -241,6 +240,8 @@ class NearbySearch extends React.Component {
     }
 
     fetchNearby = (value, lat, lng, groupPlacesRequest = null, groupID = null) => {
+        this.props.toggleLoadingOverlay(true);
+
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         const google = window.google;
         let placesRequest = groupPlacesRequest ? groupPlacesRequest : this.props.placesRequest;
