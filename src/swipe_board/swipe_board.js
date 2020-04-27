@@ -409,6 +409,11 @@ class SwipeBoard extends React.Component {
             });
         }
 
+        // when done swiping
+        if (state.likedPlaces && state.mostLiked == null) {
+            this.getResult();
+        }
+
         // update cookies
         this.updateCookie();
     }
@@ -432,21 +437,27 @@ class SwipeBoard extends React.Component {
 
     getResult = () => {
         let likedPlaces = this.state.likedPlaces;
-        let mostLiked = likedPlaces[Object.keys(likedPlaces)[0]];
-        let mostLikedPlaceId = Object.keys(likedPlaces)[0];
+        let mostLikes = 0;
+        let mostLikedPlaces = [];
 
-        Object.keys(likedPlaces).forEach((k) => {
-            let place = likedPlaces[k];
-
-            if (place.likes > mostLiked.likes) {
-                mostLikedPlaceId = k;
+        // go through all places and get the all the ones with the most likes
+        Object.keys(likedPlaces).forEach((k, v) => {
+            if (v.likes > mostLikes) {
+                mostLikedPlaces = [];
+                mostLikes = v.likes;
             }
+
+            mostLikedPlaces[k] = v;
         });
+
+        // get a random place from the mostLikedPlaces
+        var keys = Object.keys(mostLikedPlaces);
+        let mostLikedID = keys[Math.floor(keys.length * Math.random())];
 
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         service.getDetails({
             key: GOOGLE_API_KEY,
-            placeId: mostLikedPlaceId
+            placeId: mostLikedID
         }, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                 this.setState({
