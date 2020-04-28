@@ -319,6 +319,10 @@ class SwipeCard extends React.Component {
 }
 
 class Cards extends React.Component {
+    componentDidMount = () => {
+
+    }
+
     render() {
         let selectedNearbyResult = [];
         let nearbyResult = this.props.nearbyResult;
@@ -424,7 +428,7 @@ class SwipeBoard extends React.Component {
         ) {
             this.setState({
                 currentPage: state.currentPage + 1,
-                nearbyResult: state.pagination.nextPage()
+                nearbyResult: state.pagination.nextPage(),
             });
         }
 
@@ -465,7 +469,7 @@ class SwipeBoard extends React.Component {
                 this.setState({
                     mostLiked: place
                 });
-                this.updateCookies();
+                this.showLoading(false);
                 this.setToastMessage('success', 'a place has been selected');
             }
         });
@@ -628,14 +632,13 @@ class SwipeBoard extends React.Component {
 
     setToastMessage = (messageType, message) => {
         this.setState({
-            showLoading: false,
             showToast: (this.state.showToast && message == null) ? false : true,
             ToastMessageType: messageType,
             ToastMessage: message,
         })
     }
 
-    // update the following values thats stored in the cookie
+    // update or remove the following values thats stored in the cookie
     // uuid == group id
     // current page
     // current place
@@ -647,19 +650,10 @@ class SwipeBoard extends React.Component {
         let currentPageCookie = cookies.get(currentPageCookieName);
         let currentPlaceCookie = cookies.get(currentPlaceCookieName);
 
-        if (state.finalPlaceId && state.mostLiked) {
-            let options = { path: "/", domain: window.location.hostname };
-
+        if (state.finalPlaceId) {
+            // only need to delete uuid
             if (typeof uuidCookie !== 'undefined') {
-                cookies.remove(uuidCookieName, options);
-            }
-
-            if (typeof currentPageCookie !== 'undefined') {
-                cookies.remove(currentPageCookieName, options);
-            }
-
-            if (typeof currentPlaceCookie !== 'undefined') {
-                cookies.remove(currentPlaceCookieName, options);
+                cookies.remove(uuidCookieName, { path: "/" });
             }
         } else {
             let options = { path: '/', maxAge: cookieMaxage };
