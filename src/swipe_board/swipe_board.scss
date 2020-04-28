@@ -1,4 +1,5 @@
 @import '../common/_color';
+@import '../common/grid';
 
 #board {
     flex-grow: 1;
@@ -6,6 +7,12 @@
     flex-flow: column;
     height: 100%;
     padding: 10px;
+    max-width: $sm;
+    margin: auto;
+
+    @media (min-width: $sm) {
+        max-height: $lg;
+    }
 }
 
 #cardLoader,

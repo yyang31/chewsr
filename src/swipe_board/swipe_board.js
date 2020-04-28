@@ -469,7 +469,7 @@ class SwipeBoard extends React.Component {
                 this.setState({
                     mostLiked: place
                 });
-                this.showLoading(false);
+                this.toggleLoadingOverlay(false);
                 this.setToastMessage('success', 'a place has been selected');
             }
         });
