@@ -91,6 +91,7 @@ class CurrentLocation extends React.Component {
             this.props.toggleLoadingOverlay(true);
             navigator.geolocation.getCurrentPosition(this.showPosition, this.accessDenied);
         } else {
+            this.props.toggleLoadingOverlay(false);
             this.props.setToastMessage('error', 'geolocation is not supported by this browser');
         }
     }
@@ -103,6 +104,7 @@ class CurrentLocation extends React.Component {
     }
 
     accessDenied = () => {
+        this.props.toggleLoadingOverlay(false);
         this.props.setToastMessage('error', 'access to location denied')
     }
 
