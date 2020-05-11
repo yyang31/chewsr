@@ -11,7 +11,7 @@ Chewsr is an web app that helps a user or groups of people decide on where dine 
 * when done swiping, click on the 'done' button
 * a restaurant will be selected with buttons for phone call or direction to the restaurant
 
-**optional**
+#### optional
 before the search started, click on the 'hamburger' button on the top right to apply search filters. filters includes:
 * restaurant type
 * price range
