@@ -221,6 +221,7 @@
     border-radius: 10px;
     overflow: hidden;
     background-color: rgba($light_gray, 0.4);
+    z-index: 1;
 
     &>.col {
         padding: 10px;
