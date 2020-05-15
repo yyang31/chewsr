@@ -2,7 +2,8 @@
 Check the live site at [Chewsr.net](https://www.chewsr.net).
 
 ## What is Chewsr
-Chewsr is a web app that helps a user or groups of people to decide on where to dine when going out. The app uses fun and user-friendly swiping gesture to navigate through restaurants.
+Chewsr is a modern web app created to solve the modern problem of not being able to decide where to eat. The app uses fun and user-friendly swiping gesture to navigate through restaurants.
+Any number of users can join a swiping session on their device in helping to narrow down the restaurant options.
 
 ## How to use Chewsr
 * enter the location or use 'Locate Me' button to start the search
