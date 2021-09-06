@@ -1,49 +1,66 @@
-import React from "react"
-import './swipe_board.scss'
+import React from "react";
+import "./swipe_board.scss";
 
 import Firebase from "firebase";
 import firebaseConfig from "../config";
 
-import CustomNavbar from '../navbar/navbar';
+import CustomNavbar from "../navbar/navbar";
 
-import NearbySearch from '../google_map_api/google_map_api';
-import Hammer from 'hammerjs'
+import NearbySearch from "../google_map_api/google_map_api";
+import Hammer from "hammerjs";
 import ReactDOM from "react-dom";
-import $ from 'jquery';
+import $ from "jquery";
 
 // react bootstrap
-import Spinner from 'react-bootstrap/Spinner';
-import { Row, Col } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast';
+import Spinner from "react-bootstrap/Spinner";
+import { Row, Col } from "react-bootstrap";
+import Toast from "react-bootstrap/Toast";
 
 // font awsome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsDown, faThumbsUp, faCookieBite, faCheck, faAngleDoubleRight, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faThumbsDown,
+    faThumbsUp,
+    faCookieBite,
+    faCheck,
+    faAngleDoubleRight,
+    faPhoneAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 // google constants
-const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk"
+const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk";
 
 // cookie constants
-const uuidCookieName = 'group_uuid';
-const currentPageCookieName = 'current_page';
-const currentPlaceCookieName = 'current_place';
-const cookieMaxage = 1800;      // max age is in seconds, 1800 = 30 minutes
+const uuidCookieName = "group_uuid";
+const currentPageCookieName = "current_page";
+const currentPlaceCookieName = "current_place";
+const cookieMaxage = 1800; // max age is in seconds, 1800 = 30 minutes
 
 // constants
-const numLoad = 3;                  // number of photos or cards loads at a time
-const photoSwitchTime = 4000;       // 4 second
-const swipeThreshold = 150;         // x distance need to move for the card to register as a like or dislike
-const swipeDistance = 600;          // distance to manually trigger swipe when click on like or dislike buttons
+const numLoad = 3; // number of photos or cards loads at a time
+const photoSwitchTime = 4000; // 4 second
+const swipeThreshold = 150; // x distance need to move for the card to register as a like or dislike
+const swipeDistance = 600; // distance to manually trigger swipe when click on like or dislike buttons
 
 class ToastMessage extends React.Component {
     render() {
         return (
-            <Toast className={this.props.messageType} onClose={() => { this.props.setToastMessage() }} show={this.props.show} delay={3000} autohide >
+            <Toast
+                className={this.props.messageType}
+                onClose={() => {
+                    this.props.setToastMessage();
+                }}
+                show={this.props.show}
+                delay={3000}
+                autohide
+            >
                 <Toast.Header>
-                    <strong className="mr-auto">{this.props.messageType}</strong>
+                    <strong className="mr-auto">
+                        {this.props.messageType}
+                    </strong>
                 </Toast.Header>
                 <Toast.Body>{this.props.message}</Toast.Body>
-            </Toast >
+            </Toast>
         );
     }
 }
@@ -56,11 +73,11 @@ class LoadingOverlay extends React.Component {
         } else {
             overlay.fadeOut();
         }
-    }
+    };
 
     render() {
         return (
-            <Row id="loadingOverlay" className="no-gutters" >
+            <Row id="loadingOverlay" className="no-gutters">
                 <Col>
                     <Row>
                         <Col>
@@ -72,30 +89,38 @@ class LoadingOverlay extends React.Component {
                     </Row>
                 </Col>
             </Row>
-        )
+        );
     }
 }
 
 class MostLikedPlace extends React.Component {
     componentDidMount = () => {
-        setTimeout(() => { this.photoSwitch() }, photoSwitchTime);
-    }
+        setTimeout(() => {
+            this.photoSwitch();
+        }, photoSwitchTime);
+    };
 
     photoSwitch = () => {
-        let curPhoto = $('.place-photo img.show');
-        let nextPhoto = curPhoto.next().length === 0 ? $('.place-photo img').first() : curPhoto.next();
+        let curPhoto = $(".place-photo img.show");
+        let nextPhoto =
+            curPhoto.next().length === 0
+                ? $(".place-photo img").first()
+                : curPhoto.next();
         let nextNextPhoto = curPhoto.next().next();
 
-        curPhoto.fadeOut().removeClass('show');
-        nextPhoto.fadeIn().addClass('show');
+        curPhoto.fadeOut().removeClass("show");
+        nextPhoto.fadeIn().addClass("show");
 
-        if (!nextNextPhoto.hasClass('loaded')) {
-            nextNextPhoto.attr('src', nextNextPhoto.data('src'))
-                .addClass('loaded');
+        if (!nextNextPhoto.hasClass("loaded")) {
+            nextNextPhoto
+                .attr("src", nextNextPhoto.data("src"))
+                .addClass("loaded");
         }
 
-        setTimeout(() => { this.photoSwitch() }, photoSwitchTime);
-    }
+        setTimeout(() => {
+            this.photoSwitch();
+        }, photoSwitchTime);
+    };
 
     render() {
         return (
@@ -108,9 +133,12 @@ class MostLikedPlace extends React.Component {
                                 return (
                                     <img
                                         key={i}
-                                        src={i < numLoad ? photo.getUrl() : ''}
+                                        src={i < numLoad ? photo.getUrl() : ""}
                                         alt={this.props.mostLiked.name}
-                                        className={(i < numLoad ? 'loaded' : '') + (i === 0 ? ' show' : '')}
+                                        className={
+                                            (i < numLoad ? "loaded" : "") +
+                                            (i === 0 ? " show" : "")
+                                        }
                                         data-src={photo.getUrl()}
                                     />
                                 );
@@ -118,37 +146,47 @@ class MostLikedPlace extends React.Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col className="place-name">{this.props.mostLiked.name}</Col>
+                        <Col className="place-name">
+                            {this.props.mostLiked.name}
+                        </Col>
                     </Row>
 
                     {/* Phone Number */}
                     {this.props.mostLiked.formatted_phone_number ? (
                         <Row className="place-phone-number">
-                            <Col>
-                            </Col>
+                            <Col></Col>
                         </Row>
-                    ) : (
-                            null
-                        )}
+                    ) : null}
 
                     <Row className="result-bottom-sec">
                         <Col>
                             {/* Phone Number */}
-                            <a href={"tel:" + this.props.mostLiked.formatted_phone_number}
-                                className="btn btn-primary cursor-pointer phone-number">
+                            <a
+                                href={
+                                    "tel:" +
+                                    this.props.mostLiked.formatted_phone_number
+                                }
+                                className="btn btn-primary cursor-pointer phone-number"
+                            >
                                 <FontAwesomeIcon icon={faPhoneAlt} />
                             </a>
 
                             {/* Address */}
-                            <a href={"http://maps.apple.com/?address=" + this.props.mostLiked.formatted_address}
-                                className="btn btn-primary cursor-pointer">
-                                <span className="colored-text">direction</span><FontAwesomeIcon icon={faAngleDoubleRight} />
+                            <a
+                                href={
+                                    "http://maps.apple.com/?address=" +
+                                    this.props.mostLiked.formatted_address
+                                }
+                                className="btn btn-primary cursor-pointer"
+                            >
+                                <span className="colored-text">direction</span>
+                                <FontAwesomeIcon icon={faAngleDoubleRight} />
                             </a>
                         </Col>
                     </Row>
                 </Col>
             </Row>
-        )
+        );
     }
 }
 
@@ -156,22 +194,34 @@ class BoardControl extends React.Component {
     render() {
         return (
             <div id="boardControl" className={this.props.display}>
-                <div id="boardDislike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'left')}>
+                <div
+                    id="boardDislike"
+                    className="board-control-main-btn cursor-pointer"
+                    onClick={this.props.triggerSwipe.bind(this, "left")}
+                >
                     <FontAwesomeIcon icon={faThumbsDown} />
                 </div>
                 {this.props.hasLikes ? (
-                    <div id="boardDone" className="board-control-main-btn cursor-pointer" onClick={() => { this.props.doneSwipe() }}>
+                    <div
+                        id="boardDone"
+                        className="board-control-main-btn cursor-pointer"
+                        onClick={() => {
+                            this.props.doneSwipe();
+                        }}
+                    >
                         <span className="colored-text">done</span>
                     </div>
-                ) : (
-                        null
-                    )}
-                <div id="boardLike" className="board-control-main-btn cursor-pointer" onClick={this.props.triggerSwipe.bind(this, 'right')}>
+                ) : null}
+                <div
+                    id="boardLike"
+                    className="board-control-main-btn cursor-pointer"
+                    onClick={this.props.triggerSwipe.bind(this, "right")}
+                >
                     <FontAwesomeIcon icon={faThumbsUp} />
                 </div>
             </div>
         );
-    };
+    }
 }
 
 class SwipeCard extends React.Component {
@@ -179,7 +229,7 @@ class SwipeCard extends React.Component {
         x: 0,
         y: 0,
         initialPosition: { x: 0, y: 0 },
-    }
+    };
 
     componentDidMount() {
         this.card = $(ReactDOM.findDOMNode(this));
@@ -189,93 +239,107 @@ class SwipeCard extends React.Component {
         this.hammer = new Hammer.Manager(ReactDOM.findDOMNode(this));
         this.hammer.add(new Hammer.Pan({ threshold: 2 }));
 
-        this.hammer.on('panmove panend', this.handlePan);
+        this.hammer.on("panmove panend", this.handlePan);
     }
 
     setInitialPosition = () => {
         const initialPosition = {
-            x: Math.round(($('#cards').innerWidth() - this.card.outerWidth(true)) / 2),
-            y: Math.round(($('#cards').innerHeight() - this.card.outerHeight(true)) / 2),
+            x: Math.round(
+                ($("#cards").innerWidth() - this.card.outerWidth(true)) / 2
+            ),
+            y: Math.round(
+                ($("#cards").innerHeight() - this.card.outerHeight(true)) / 2
+            ),
         };
 
         this.setState({ initialPosition });
-    }
+    };
 
     triggerSwipe = (direction) => {
         let ev = {
             type: "panend",
-            deltaX: direction === 'left' ? (-1 * swipeThreshold) : swipeThreshold,
-        }
+            deltaX: direction === "left" ? -1 * swipeThreshold : swipeThreshold,
+        };
 
         this.panend(ev);
-    }
+    };
 
     /*
      * pan handlers
-    */
+     */
     handlePan = (ev) => {
         ev.preventDefault();
         if (!this.swiping) {
             this[ev.type](ev);
         }
         return false;
-    }
+    };
 
     panend = (ev) => {
         // add smooth transition duration
-        this.card.css('transition-duration', '0.3s');
+        this.card.css("transition-duration", "0.3s");
 
         let xloc = ev.deltaX + this.state.initialPosition.x;
 
-        if (xloc >= swipeThreshold) {        // swipe right
+        if (xloc >= swipeThreshold) {
+            // swipe right
             this.updateTransform(swipeDistance, 0);
             this.card.fadeOut(() => {
                 this.props.placeSelection("right");
             });
-            this.card.css('transition-duration', '');
-        } else if (xloc <= (swipeThreshold * -1)) {      // swipe left
+            this.card.css("transition-duration", "");
+        } else if (xloc <= swipeThreshold * -1) {
+            // swipe left
             this.updateTransform(swipeDistance * -1, 0);
             this.card.fadeOut(() => {
                 this.props.placeSelection("left");
             });
-            this.card.css('transition-duration', '');
-        } else {        // center
+            this.card.css("transition-duration", "");
+        } else {
+            // center
             this.updateTransform(0, 0);
-            this.card.find('#boardControl').fadeIn();
+            this.card.find("#boardControl").fadeIn();
         }
-    }
+    };
 
     panmove = (ev) => {
         // remove transition duration
-        this.card.css('transition-duration', '');
+        this.card.css("transition-duration", "");
 
         this.updateTransform(ev.deltaX + this.state.initialPosition.x, 0);
-    }
+    };
 
     updateTransform = (x = 0, y = 0) => {
         // hide the button controls
-        this.card.find('#boardControl').fadeOut();
+        this.card.find("#boardControl").fadeOut();
 
         this.card.css({
-            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + (x / 10) + 'deg)',
+            transform:
+                "translate3d(" +
+                x +
+                "px, " +
+                y +
+                "px, 0) rotate(" +
+                x / 10 +
+                "deg)",
         });
 
-        this.card.find('.card-info').css({
-            'opacity': 1 - (Math.abs(x) / 100)
+        this.card.find(".card-info").css({
+            opacity: 1 - Math.abs(x) / 100,
         });
 
         // switch between like and dislike background
-        let swipe_direction_cont = this.card.find('.card-swipe-direction');
-        if (x > 0 && !swipe_direction_cont.hasClass('right')) {
+        let swipe_direction_cont = this.card.find(".card-swipe-direction");
+        if (x > 0 && !swipe_direction_cont.hasClass("right")) {
             swipe_direction_cont.removeClass("left");
-            swipe_direction_cont.addClass('right');
-        } else if (x < 0 && !swipe_direction_cont.hasClass('left')) {
+            swipe_direction_cont.addClass("right");
+        } else if (x < 0 && !swipe_direction_cont.hasClass("left")) {
             swipe_direction_cont.removeClass("right");
-            swipe_direction_cont.addClass('left');
+            swipe_direction_cont.addClass("left");
         } else if (x === 0) {
             swipe_direction_cont.removeClass("right left");
         }
-    }
+    };
 
     render() {
         return (
@@ -289,18 +353,23 @@ class SwipeCard extends React.Component {
 
                                 return (
                                     <div key={key} className="place-photo">
-                                        <img src={photo.getUrl()} alt={this.props.place.name} />
+                                        <img
+                                            src={photo.getUrl()}
+                                            alt={this.props.place.name}
+                                        />
                                     </div>
                                 );
                             })}
                         </div>
                     ) : (
-                            <div className="place-photos-cont no-image">
-                                <FontAwesomeIcon icon={faCookieBite} />
-                                no image avaiable
-                            </div>
-                        )}
-                    <div className="place-rating">{this.props.place.rating}</div>
+                        <div className="place-photos-cont no-image">
+                            <FontAwesomeIcon icon={faCookieBite} />
+                            no image avaiable
+                        </div>
+                    )}
+                    <div className="place-rating">
+                        {this.props.place.rating}
+                    </div>
 
                     <BoardControl
                         triggerSwipe={this.triggerSwipe}
@@ -310,8 +379,14 @@ class SwipeCard extends React.Component {
                 </div>
 
                 <div className="card-swipe-direction">
-                    <FontAwesomeIcon icon={faThumbsDown} className="direction-left" />
-                    <FontAwesomeIcon icon={faThumbsUp} className="direction-right" />
+                    <FontAwesomeIcon
+                        icon={faThumbsDown}
+                        className="direction-left"
+                    />
+                    <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        className="direction-right"
+                    />
                 </div>
             </div>
         );
@@ -319,45 +394,57 @@ class SwipeCard extends React.Component {
 }
 
 class Cards extends React.Component {
-    componentDidMount = () => {
-
-    }
+    componentDidMount = () => {};
 
     render() {
         let selectedNearbyResult = [];
         let nearbyResult = this.props.nearbyResult;
         if (nearbyResult && nearbyResult.length > 0) {
-            let loopTo = nearbyResult.length > numLoad ? numLoad : nearbyResult.length;
+            let loopTo =
+                nearbyResult.length > numLoad ? numLoad : nearbyResult.length;
 
             for (var i = 0; i < loopTo; i++) {
                 selectedNearbyResult.push(this.props.nearbyResult[i]);
             }
         }
 
-        if (this.props.uuid) {    // if swiping
-            if (selectedNearbyResult.length > 0) {  // if have cards to swipe
+        if (this.props.uuid) {
+            // if swiping
+            if (selectedNearbyResult.length > 0) {
+                // if have cards to swipe
                 return (
                     <div id="cards">
                         {selectedNearbyResult.map((place, index) => {
-                            return <SwipeCard
-                                key={place.place_id}
-                                place={place}
-                                index={this.props.indexCount + selectedNearbyResult.length - index}
-                                placeSelection={this.props.placeSelection}
-                                doneSwipe={this.props.doneSwipe}
-                                hasLikes={this.props.hasLikes}
-                            />
+                            return (
+                                <SwipeCard
+                                    key={place.place_id}
+                                    place={place}
+                                    index={
+                                        this.props.indexCount +
+                                        selectedNearbyResult.length -
+                                        index
+                                    }
+                                    placeSelection={this.props.placeSelection}
+                                    doneSwipe={this.props.doneSwipe}
+                                    hasLikes={this.props.hasLikes}
+                                />
+                            );
                         })}
                     </div>
                 );
-            } else if (this.props.pagination && this.props.pagination.hasNextPage) {  // if still have more pages
+            } else if (
+                this.props.pagination &&
+                this.props.pagination.hasNextPage
+            ) {
+                // if still have more pages
                 return (
                     <div id="cardLoader">
                         <Spinner animation="border" />
                         <div>loading more places</div>
                     </div>
                 );
-            } else { // no more card to swipe
+            } else {
+                // no more card to swipe
                 return (
                     <div id="noCards">
                         <FontAwesomeIcon icon={faCheck} />
@@ -384,22 +471,22 @@ class SwipeBoard extends React.Component {
             nearbyResult: [],
             indexCount: 1,
             placesRequest: {
-                type: ['restaurant'],
-                radius: 16093.4,        // 16093.4 meters ~ 10 miles
-                keyword: '',
+                type: ["restaurant"],
+                radius: 16093.4, // 16093.4 meters ~ 10 miles
+                keyword: "",
                 minprice: 0,
-                maxprice: 4,            // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
+                maxprice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
                 openNow: true,
             },
             mostLiked: null,
             hasLikes: false,
             showLoading: false,
             showToast: false,
-            ToastMessageType: '',
-            ToastMessage: '',
+            ToastMessageType: "",
+            ToastMessage: "",
             listenerLoaded: false,
-        }
-    };
+        };
+    }
 
     componentDidUpdate = () => {
         let state = this.state;
@@ -407,24 +494,26 @@ class SwipeBoard extends React.Component {
         // try to load the firebase listener for when selection is done
         if (!state.listenerLoaded && state.uuid) {
             let ref = Firebase.database().ref("/" + this.state.uuid);
-            ref.child('finalPlaceId').on('value', snap => {
+            ref.child("finalPlaceId").on("value", (snap) => {
                 if (snap.val()) {
                     this.toggleLoadingOverlay(true);
 
                     this.setState({
-                        finalPlaceId: snap.val()
-                    })
+                        finalPlaceId: snap.val(),
+                    });
                 }
             });
 
             this.setState({
-                listenerLoaded: true
+                listenerLoaded: true,
             });
         }
 
         if (
-            (state.nearbyResult && state.nearbyResult.length === 0)
-            && (state.pagination != null && state.pagination.hasNextPage)
+            state.nearbyResult &&
+            state.nearbyResult.length === 0 &&
+            state.pagination != null &&
+            state.pagination.hasNextPage
         ) {
             this.setState({
                 currentPage: state.currentPage + 1,
@@ -439,7 +528,7 @@ class SwipeBoard extends React.Component {
             // update cookies
             this.updateCookies();
         }
-    }
+    };
 
     resetBoard = () => {
         this.setState({
@@ -447,39 +536,49 @@ class SwipeBoard extends React.Component {
             nearbyResult: [],
             indexCount: 1,
             placesRequest: {
-                type: ['restaurant'],
-                radius: 16093.4,        // 16093.4 meters ~ 10 miles
-                keyword: '',
+                type: ["restaurant"],
+                radius: 16093.4, // 16093.4 meters ~ 10 miles
+                keyword: "",
                 minprice: 0,
                 maxprice: 4,
                 openNow: true,
             },
             pagination: null,
         });
-    }
+    };
 
     showResult = () => {
-        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        const service = new window.google.maps.places.PlacesService(
+            document.createElement("div")
+        );
 
-        service.getDetails({
-            key: GOOGLE_API_KEY,
-            placeId: this.state.finalPlaceId
-        }, (place, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                this.setState({
-                    mostLiked: place
-                });
-                this.toggleLoadingOverlay(false);
-                this.setToastMessage('success', 'a place has been selected');
+        service.getDetails(
+            {
+                key: GOOGLE_API_KEY,
+                placeId: this.state.finalPlaceId,
+            },
+            (place, status) => {
+                if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK
+                ) {
+                    this.setState({
+                        mostLiked: place,
+                    });
+                    this.toggleLoadingOverlay(false);
+                    this.setToastMessage(
+                        "success",
+                        "a place has been selected"
+                    );
+                }
             }
-        });
-    }
+        );
+    };
 
     doneSwipe = () => {
         let ref = Firebase.database().ref("/" + this.state.uuid);
         let reactScope = this;
 
-        ref.once('value', function (snapshot) {
+        ref.once("value", function (snapshot) {
             let likedPlaces = snapshot.val().places;
             if (likedPlaces) {
                 let mostLikes = 0;
@@ -501,18 +600,18 @@ class SwipeBoard extends React.Component {
 
                 let ref2 = Firebase.database().ref(reactScope.state.uuid);
                 ref2.set({
-                    finalPlaceId: mostLikedID
+                    finalPlaceId: mostLikedID,
                 });
             }
         });
-    }
+    };
 
     setGroupID = (lat, lng) => {
         let uuid = Math.floor(Math.random() * 90000) + 10000;
         let ref = Firebase.database().ref("/");
         let reactScope = this;
 
-        ref.child(uuid).once('value', function (snapshot) {
+        ref.child(uuid).once("value", function (snapshot) {
             if (snapshot.exists()) {
                 return reactScope.setGroupID(lat, lng);
             } else {
@@ -528,29 +627,42 @@ class SwipeBoard extends React.Component {
                     lat: lat,
                     lng: lng,
                     created_on: date.toLocaleString(),
-                    placesRequest: placesRequest
+                    placesRequest: placesRequest,
                 });
 
                 // return uuid;
                 reactScope.setState({
-                    uuid: uuid
-                })
+                    uuid: uuid,
+                });
             }
         });
-    }
+    };
 
-    updateNearbyResult = (lat, lng, result, pagination, placesRequest, groupID = null) => {
+    updateNearbyResult = (
+        lat,
+        lng,
+        result,
+        pagination,
+        placesRequest,
+        groupID = null
+    ) => {
         let newState = {
             nearbyResult: result,
             indexCount: this.state.indexCount + result.length,
-            pagination: pagination != null && pagination.hasNextPage ? pagination : null,
+            pagination:
+                pagination != null && pagination.hasNextPage
+                    ? pagination
+                    : null,
             placesRequest: placesRequest,
             showLoading: false,
         };
 
         if (groupID) {
             // add toaster message
-            this.setToastMessage('success', 'joined group with ID of ' + groupID);
+            this.setToastMessage(
+                "success",
+                "joined group with ID of " + groupID
+            );
             newState.uuid = groupID;
         } else {
             // generate new/unique uuid
@@ -558,14 +670,14 @@ class SwipeBoard extends React.Component {
         }
 
         this.setState(newState);
-    }
+    };
 
     updateLike = (place) => {
         let ref = Firebase.database().ref(this.state.uuid);
         let reactScope = this;
 
         if (ref) {
-            ref.once('value', snapshot => {
+            ref.once("value", (snapshot) => {
                 let val = snapshot.val();
                 let placeID = place.place_id;
 
@@ -593,7 +705,7 @@ class SwipeBoard extends React.Component {
                 }
             });
         }
-    }
+    };
 
     placeSelection = (swipe_direction) => {
         let nearbyResult = this.state.nearbyResult;
@@ -606,9 +718,9 @@ class SwipeBoard extends React.Component {
         nearbyResult.shift();
 
         this.setState({
-            nearbyResult: this.state.nearbyResult
+            nearbyResult: this.state.nearbyResult,
         });
-    }
+    };
 
     updateFilters = (filters = null) => {
         let placesRequest = this.state.placesRequest;
@@ -616,27 +728,27 @@ class SwipeBoard extends React.Component {
         placesRequest.keyword = filters.keyword;
 
         this.setState({
-            placesRequest: placesRequest
-        })
+            placesRequest: placesRequest,
+        });
 
-        this.setToastMessage('success', 'search filter updated');
-    }
+        this.setToastMessage("success", "search filter updated");
+    };
 
     toggleLoadingOverlay = (show) => {
         if (this.state.showLoading !== show) {
             this.setState({
-                showLoading: show
+                showLoading: show,
             });
         }
-    }
+    };
 
     setToastMessage = (messageType, message) => {
         this.setState({
-            showToast: (this.state.showToast && message == null) ? false : true,
+            showToast: this.state.showToast && message == null ? false : true,
             ToastMessageType: messageType,
             ToastMessage: message,
-        })
-    }
+        });
+    };
 
     // update or remove the following values thats stored in the cookie
     // uuid == group id
@@ -652,30 +764,51 @@ class SwipeBoard extends React.Component {
 
         if (state.finalPlaceId) {
             // only need to delete uuid
-            if (typeof uuidCookie !== 'undefined') {
+            if (typeof uuidCookie !== "undefined") {
                 cookies.remove(uuidCookieName, { path: "/" });
             }
         } else {
-            let options = { path: '/', maxAge: cookieMaxage };
+            let options = { path: "/", maxAge: cookieMaxage };
 
-            if (state.uuid && state.nearbyResult && state.nearbyResult.length > 0) {
+            if (
+                state.uuid &&
+                state.nearbyResult &&
+                state.nearbyResult.length > 0
+            ) {
                 // UUID
-                if (typeof uuidCookie === 'undefined' || state.uuid.toString() !== uuidCookie.toString()) {
+                if (
+                    typeof uuidCookie === "undefined" ||
+                    state.uuid.toString() !== uuidCookie.toString()
+                ) {
                     cookies.set(uuidCookieName, state.uuid, options);
                 }
 
                 // current page
-                if (typeof currentPageCookie === 'undefined' || state.currentPage !== parseInt(currentPageCookie)) {
-                    cookies.set(currentPageCookieName, state.currentPage, options);
+                if (
+                    typeof currentPageCookie === "undefined" ||
+                    state.currentPage !== parseInt(currentPageCookie)
+                ) {
+                    cookies.set(
+                        currentPageCookieName,
+                        state.currentPage,
+                        options
+                    );
                 }
 
                 // current place
-                if (typeof currentPlaceCookie === 'undefined' || state.nearbyResult[0].place_id !== currentPlaceCookie) {
-                    cookies.set(currentPlaceCookieName, state.nearbyResult[0].place_id, options);
+                if (
+                    typeof currentPlaceCookie === "undefined" ||
+                    state.nearbyResult[0].place_id !== currentPlaceCookie
+                ) {
+                    cookies.set(
+                        currentPlaceCookieName,
+                        state.nearbyResult[0].place_id,
+                        options
+                    );
                 }
             }
         }
-    }
+    };
 
     render() {
         return (
@@ -714,10 +847,10 @@ class SwipeBoard extends React.Component {
                         />
                     </>
                 ) : (
-                        <MostLikedPlace mostLiked={this.state.mostLiked} />
-                    )}
+                    <MostLikedPlace mostLiked={this.state.mostLiked} />
+                )}
             </div>
-        )
+        );
     }
 }
 

@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat');
-@import './common/_grid';
-@import './common/_color';
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+@import "./common/_grid";
+@import "./common/_color";
 
 * {
     outline-width: 0;
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
 }
 
 html {
@@ -36,71 +36,76 @@ body,
 }
 
 .colored-text {
-    background: -webkit-linear-gradient(145deg, rgba($dark_red, 1) 0%, rgba($dark_blue, 1) 100%);
+    background: -webkit-linear-gradient(
+        145deg,
+        rgba($dark_red, 1) 0%,
+        rgba($dark_blue, 1) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 /*********************** Bootstrap Redesign ************************/
-// btn
-.btn-primary,
-.btn-secondary {
-    margin: 5px auto;
-    width: 100%;
-    border-radius: 25px;
-    font-size: 18px;
-    padding: 9px;
-    border: none;
-    position: relative;
-
-    svg {
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-}
-
-.btn-primary {
-    background-color: $blue;
-
-    &:hover {
-        background-color: $dark_blue;
-        box-shadow: $shadow;
-    }
-}
-
-.btn-secondary {
-    background-color: $red;
-
-    &:hover {
-        background-color: $dark_red;
-        box-shadow: $shadow;
-    }
-}
-
 // input
 .text-input {
-    width: 100%;
-    border: 1px solid rgba($black, 0.2);
-    border-radius: 25px;
+    width: calc(100% - 60px);
     padding: 10px 20px;
-    color: $blue;
-    font-size: 18px;
-    margin: 5px auto;
+    margin: 0 30px;
+    color: $white;
     text-align: center;
     transition: 0.25s;
-    padding: 8px;
-    -webkit-appearance: none;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    font-size: 20px;
 
     &:hover,
     &:focus {
-        border-color: transparent;
-        box-shadow: 0 0 6px rgba($black, 0.2);
+        width: 100%;
+        margin: 0;
     }
 
     &::placeholder {
-        color: $blue;
+        color: inherit;
+    }
+}
+
+// dropdown
+.dropdown {
+    button {
+        width: calc(100% - 60px);
+        padding: 10px 20px;
+        margin: 0 30px;
+        color: $white;
+        text-align: center;
+        transition: 0.25s;
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid white;
+        font-size: 20px;
+        border-radius: 0;
+        position: relative;
+
+        &:hover,
+        &:focus,
+        &:active {
+            width: 100%;
+            margin: 0;
+            background-color: transparent !important;
+            border-color: $white !important;
+            box-shadow: none !important;
+        }
+
+        &::after {
+            position: absolute;
+            bottom: 20px;
+            right: 10px;
+        }
+    }
+
+    .dropdown-menu {
+        right: 0px;
+        background-color: rgba($white, 0.7);
     }
 }
 

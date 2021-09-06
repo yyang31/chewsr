@@ -1,0 +1,93 @@
+@import "../common/_grid";
+@import "../common/_color";
+
+#home {
+    padding: 20px;
+    position: relative;
+    height: 100%;
+
+    h1 {
+        font-size: 75px;
+        color: $white;
+        margin-top: 25px;
+        margin-bottom: 50px;
+
+        span {
+            color: $red;
+        }
+    }
+
+    .background-icons {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        .fa-utensils {
+            color: rgba($white, 0.1);
+            font-size: 300px;
+            position: absolute;
+            bottom: 150px;
+            left: -52px;
+            transform: rotate(-15deg);
+        }
+    }
+
+    #newSearch,
+    #menuOptions {
+        z-index: 1;
+        position: relative;
+    }
+
+    #menuOptions {
+        text-align: right;
+        position: absolute;
+        bottom: 25px;
+        right: 30px;
+
+        div {
+            font-size: 40px;
+            color: $white;
+            cursor: pointer;
+            transition: 0.25s;
+            margin-bottom: 50px;
+            position: relative;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -20px;
+                right: 0;
+                width: 0;
+                height: 2px;
+                background-color: $white;
+                transition: 0.25s;
+            }
+
+            &:hover {
+                font-size: 55px;
+                font-weight: bolder;
+
+                &::after {
+                    width: 175px;
+                }
+            }
+
+            span {
+                position: absolute;
+                bottom: -15px;
+                right: -20px;
+                font-size: 20px;
+                color: rgba($light_gray, 0.8);
+                font-weight: bold;
+            }
+        }
+    }
+
+    #newSearch {
+        #restaurant-type-button {
+            margin-top: 50px;
+        }
+    }
+}
