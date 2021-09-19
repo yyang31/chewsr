@@ -26,8 +26,67 @@ body,
     flex-grow: 1;
     background-color: $white;
     overflow: hidden;
-    background: $dark_blue;
     background: $colored_gradient;
+
+    #polygonBackground {
+        height: 100vh;
+        width: 1900px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+
+        & > div {
+            background: rgba($white, 0.1);
+            position: absolute;
+        }
+
+        #polygon1 {
+            height: 100%;
+            width: 700px;
+            clip-path: polygon(18% 2%, 100% 31%, 80% 77%, 0% 98%);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #polygon2 {
+            height: 100%;
+            width: 850px;
+            clip-path: polygon(0% 2%, 100% 2%, 94% 42%, -3% 1%);
+            left: 40%;
+        }
+
+        #polygon3 {
+            height: 75%;
+            width: 700px;
+            clip-path: polygon(57% 1%, 95% 19%, 96% 90%, 29% 90%);
+            left: 48%;
+            top: 31%;
+        }
+
+        #polygon4 {
+            height: 80%;
+            width: 450px;
+            clip-path: polygon(18% 2%, 99% 2%, 76% 100%, 0% 60%);
+            left: 14%;
+        }
+
+        #polygon5 {
+            height: 51%;
+            width: 450px;
+            clip-path: polygon(0% 2%, 75% 64%, 70% 97%, 7% 97%);
+            left: 14%;
+            bottom: 0;
+        }
+
+        #polygon6 {
+            height: 23%;
+            width: 600px;
+            clip-path: polygon(4% 98%, 97% 7%, 88% 93%, 7% 95%);
+            left: 46%;
+            transform: translateX(-50%);
+            bottom: 0;
+        }
+    }
 }
 
 /************************** Custom CSS *****************************/
@@ -106,6 +165,8 @@ body,
     .dropdown-menu {
         right: 0px;
         background-color: rgba($white, 0.7);
+        width: 100%;
+        transform: translate3d(0px, 101px, 0px) !important;
     }
 }
 

@@ -173,6 +173,11 @@ class NewSearch extends React.Component {
                         );
                     })}
                 </DropdownButton>
+                <div className="menu-options">
+                    <div onClick={() => this.props.selectMenuOption("")}>
+                        back<span>home</span>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -201,14 +206,18 @@ class Home extends React.Component {
                 </h1>
                 {(() => {
                     if (this.state.selectedMenuOption === "new") {
-                        return <NewSearch></NewSearch>;
+                        return (
+                            <NewSearch
+                                selectMenuOption={this.selectMenuOption}
+                            ></NewSearch>
+                        );
                     } else if (this.state.selectedMenuOption === "join") {
                         return <div>join</div>;
                     } else if (this.state.selectedMenuOption === "help") {
                         return <div>help</div>;
                     } else {
                         return (
-                            <div id="menuOptions">
+                            <div className="menu-options">
                                 <div
                                     onClick={() => this.selectMenuOption("new")}
                                 >

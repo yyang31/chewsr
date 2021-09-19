@@ -5,11 +5,13 @@
     padding: 20px;
     position: relative;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 
     h1 {
         font-size: 75px;
         color: $white;
-        margin-top: 25px;
+        margin-top: 15px;
         margin-bottom: 50px;
 
         span {
@@ -35,15 +37,15 @@
     }
 
     #newSearch,
-    #menuOptions {
+    .menu-options {
         z-index: 1;
         position: relative;
     }
 
-    #menuOptions {
+    .menu-options {
         text-align: right;
         position: absolute;
-        bottom: 25px;
+        bottom: 15px;
         right: 30px;
 
         div {
@@ -86,6 +88,8 @@
     }
 
     #newSearch {
+        height: 100%;
+
         #restaurant-type-button {
             margin-top: 50px;
         }

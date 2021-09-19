@@ -20,6 +20,14 @@ class App extends React.Component {
                 <Col sm={12} md={7} lg={4}>
                     <Home></Home>
                 </Col>
+                <div id="polygonBackground">
+                    <div id="polygon1"></div>
+                    <div id="polygon2"></div>
+                    <div id="polygon3"></div>
+                    <div id="polygon4"></div>
+                    <div id="polygon5"></div>
+                    <div id="polygon6"></div>
+                </div>
             </Row>
         );
     }
