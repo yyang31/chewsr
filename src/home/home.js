@@ -2,7 +2,7 @@ import React from "react";
 import "./home.scss";
 
 // bootstrap
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton, Button } from "react-bootstrap";
 
 // google map/places api
 import ReactGoogleMapLoader from "react-google-maps-loader";
@@ -10,7 +10,11 @@ import ReactGooglePlacesSuggest from "react-google-places-suggest";
 
 // font awsome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+import {
+    faUtensils,
+    faPen,
+    faLocationArrow,
+} from "@fortawesome/free-solid-svg-icons";
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk";
 
@@ -133,6 +137,16 @@ class NewSearch extends React.Component {
 
         this.state = {
             restaurantType: "all",
+            searchCurrentLocation: true,
+            placesRequest: {
+                location: null,
+                type: ["restaurant"],
+                radius: 16093.4, // 16093.4 meters ~ 10 miles
+                keyword: "",
+                minprice: 0,
+                maxprice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
+                openNow: true,
+            },
         };
 
         this.restaurantTypes = [
@@ -145,6 +159,86 @@ class NewSearch extends React.Component {
         ];
     }
 
+    componentDidMount() {
+        this.getCurrentLocation();
+    }
+
+    getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            // this.props.toggleLoadingOverlay(true);
+            navigator.geolocation.getCurrentPosition(
+                this.showPosition,
+                this.accessDenied
+            );
+        } else {
+            // this.props.toggleLoadingOverlay(false);
+            this.props.setToastMessage(
+                "error",
+                "geolocation is not supported by this browser"
+            );
+        }
+    };
+
+    showPosition = (position) => {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+
+        // this.fetchNearby("", lat, lng);
+    };
+
+    accessDenied = () => {
+        // this.props.toggleLoadingOverlay(false);
+        this.props.setToastMessage("error", "access to location denied");
+    };
+
+    // fetchNearby = (
+    //     value,
+    //     lat,
+    //     lng,
+    // ) => {
+    //     // this.props.toggleLoadingOverlay(true);
+
+    //     const service = new window.google.maps.places.PlacesService(
+    //         document.createElement("div")
+    //     );
+    //     const google = window.google;
+    //     let placesRequest : google.maps.places.PlaceSearchRequest = {
+    //         location = new window.google.maps.LatLng(lat, lng)
+    //     }
+
+    //     service.nearbySearch(placesRequest, (response, status, pagination) => {
+    //         response.forEach((element, index) => {
+    //             // deleting open_now, becuase it is deprecated as of November 2019
+    //             if (element.opening_hours) {
+    //                 delete element.opening_hours.open_now;
+    //             }
+
+    //             // remove all results that does not have a photo
+    //             if (!element.photos) {
+    //                 response.splice(index, 1);
+    //             }
+    //         });
+
+    //         if (status === google.maps.places.PlacesServiceStatus.OK) {
+    //             this.setState({
+    //                 value: value,
+    //                 lat: lat,
+    //                 lng: lng,
+    //                 nearbyResult: response,
+    //                 pagination: pagination.hasNextPage ? pagination : null,
+    //                 groupID: groupID,
+    //                 getGroup: false,
+    //                 placesRequest: placesRequest,
+    //             });
+    //         } else {
+    //             this.props.setToastMessage(
+    //                 "error",
+    //                 "GOOGLE_MAP_API ERROR: " + status
+    //             );
+    //         }
+    //     });
+    // };
+
     selectRestaurantType = (selection) => {
         this.setState({
             restaurantType: selection,
@@ -153,32 +247,61 @@ class NewSearch extends React.Component {
 
     render() {
         return (
-            <div id="newSearch">
-                <GoogleSuggest
-                    fetchNearby={this.fetchNearby}
-                    setToastMessage={this.props.setToastMessage}
-                />
-                <DropdownButton
-                    id="restaurant-type-button"
-                    title={this.state.restaurantType}
-                >
-                    {this.restaurantTypes.map((type, i) => {
-                        return (
-                            <Dropdown.Item
-                                key={i}
-                                onClick={() => this.selectRestaurantType(type)}
-                            >
-                                {type}
-                            </Dropdown.Item>
-                        );
-                    })}
-                </DropdownButton>
+            <span>
+                <div id="newSearch">
+                    <div id="locationSearchContainer">
+                        {(() => {
+                            if (this.state.searchCurrentLocation) {
+                                return (
+                                    <span>
+                                        <div>
+                                            {" "}
+                                            <FontAwesomeIcon
+                                                icon={faLocationArrow}
+                                            />
+                                            current location
+                                        </div>
+                                        <Button variant="primary">
+                                            <FontAwesomeIcon icon={faPen} />
+                                        </Button>
+                                    </span>
+                                );
+                            } else {
+                                return (
+                                    <GoogleSuggest
+                                        fetchNearby={this.fetchNearby}
+                                        setToastMessage={
+                                            this.props.setToastMessage
+                                        }
+                                    />
+                                );
+                            }
+                        })()}
+                    </div>
+                    <DropdownButton
+                        id="restaurantTypeButton"
+                        title={this.state.restaurantType}
+                    >
+                        {this.restaurantTypes.map((type, i) => {
+                            return (
+                                <Dropdown.Item
+                                    key={i}
+                                    onClick={() =>
+                                        this.selectRestaurantType(type)
+                                    }
+                                >
+                                    {type}
+                                </Dropdown.Item>
+                            );
+                        })}
+                    </DropdownButton>
+                </div>
                 <div className="menu-options">
                     <div onClick={() => this.props.selectMenuOption("")}>
                         back<span>home</span>
                     </div>
                 </div>
-            </div>
+            </span>
         );
     }
 }
