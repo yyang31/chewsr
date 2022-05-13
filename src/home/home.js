@@ -3,6 +3,8 @@ import "./home.scss";
 
 // bootstrap
 import { Dropdown, DropdownButton, Button } from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 // google map/places api
 import ReactGoogleMapLoader from "react-google-maps-loader";
@@ -10,11 +12,7 @@ import ReactGooglePlacesSuggest from "react-google-places-suggest";
 
 // font awsome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faUtensils,
-    faPen,
-    faLocationArrow,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPen, faLocationArrow } from "@fortawesome/free-solid-svg-icons";
 
 const GOOGLE_API_KEY = "AIzaSyCFDZdtTK1ZsatLNERYCI2U_yoXcZIXeDk";
 
@@ -321,12 +319,22 @@ class Home extends React.Component {
         });
     };
 
+    homePicture = () => {
+        const pictures = [
+            "burger-combo.svg",
+            "whole-chicken.svg",
+            "pizza.svg",
+            "nachos.svg",
+            "breakfast-combo.svg",
+            "onion-ring-combo.svg",
+        ];
+
+        return pictures[Math.floor(Math.random() * pictures.length)];
+    };
+
     render() {
         return (
-            <div id="home">
-                <h1>
-                    chews<span>r</span>
-                </h1>
+            <Row id="home" className="justify-content-md-center no-gutters">
                 {(() => {
                     if (this.state.selectedMenuOption === "new") {
                         return (
@@ -340,34 +348,60 @@ class Home extends React.Component {
                         return <div>help</div>;
                     } else {
                         return (
-                            <div className="menu-options">
-                                <div
-                                    onClick={() => this.selectMenuOption("new")}
+                            <Col id="landing">
+                                <Row
+                                    id="landingImage"
+                                    className="justify-content-md-center no-gutters"
                                 >
-                                    new<span>search</span>
-                                </div>
-                                <div
-                                    onClick={() =>
-                                        this.selectMenuOption("join")
-                                    }
+                                    <img
+                                        src={require("./images/" +
+                                            this.homePicture())}
+                                    />
+                                </Row>
+                                <Row
+                                    id="landingButtons"
+                                    className="justify-content-md-center no-gutters"
                                 >
-                                    join<span>group</span>
-                                </div>
-                                <div
-                                    onClick={() =>
-                                        this.selectMenuOption("help")
-                                    }
-                                >
-                                    help<span>learn</span>
-                                </div>
-                            </div>
+                                    <Col md={10} className="p-3">
+                                        <Row
+                                            className="button"
+                                            onClick={() =>
+                                                this.selectMenuOption("new")
+                                            }
+                                        >
+                                            new
+                                        </Row>
+                                        <Row>
+                                            <Col className="bottom-buttons">
+                                                <div
+                                                    className="button"
+                                                    onClick={() =>
+                                                        this.selectMenuOption(
+                                                            "join"
+                                                        )
+                                                    }
+                                                >
+                                                    join
+                                                </div>
+                                                <div
+                                                    className="button-circle"
+                                                    onClick={() =>
+                                                        this.selectMenuOption(
+                                                            "help"
+                                                        )
+                                                    }
+                                                >
+                                                    ?
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </Col>
                         );
                     }
                 })()}
-                <span className="background-icons">
-                    <FontAwesomeIcon icon={faUtensils} />
-                </span>
-            </div>
+            </Row>
         );
     }
 }

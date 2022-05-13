@@ -9,13 +9,13 @@ $light_white: #f7f7f7;
 
 // gray
 $dark_gray: #616060;
-$gray: #7C7C7C;
-$light_gray: #C7C7C7;
+$gray: #7c7c7c;
+$light_gray: #c7c7c7;
 
 // blue
 $dark_blue: #1488fc;
-$blue: #3a9bfc;
-$light_blue: #84B4FF;
+$blue: #88abe3;
+$light_blue: #84b4ff;
 
 // green
 $dark_green: #2fb551;
@@ -62,4 +62,8 @@ $shadow: 0 3px 6px rgba($black, 0.2);
 $deep_shadow: 0 5px 10px rgba($black, 0.4);
 
 /******************** Gradient ************************/
-$colored_gradient: linear-gradient(145deg, rgba($dark_blue, 1) 0%, rgba($dark_red, 1) 100%)
+$colored_gradient: linear-gradient(
+    145deg,
+    rgba($dark_blue, 1) 0%,
+    rgba($dark_red, 1) 100%
+);
