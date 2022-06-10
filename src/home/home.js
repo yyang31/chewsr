@@ -364,36 +364,28 @@ class Home extends React.Component {
                                 >
                                     <Col md={10} className="p-3">
                                         <Row
-                                            className="button"
+                                            className="button green"
                                             onClick={() =>
                                                 this.selectMenuOption("new")
                                             }
                                         >
                                             new
                                         </Row>
-                                        <Row>
-                                            <Col className="bottom-buttons">
-                                                <div
-                                                    className="button"
-                                                    onClick={() =>
-                                                        this.selectMenuOption(
-                                                            "join"
-                                                        )
-                                                    }
-                                                >
-                                                    join
-                                                </div>
-                                                <div
-                                                    className="button-circle"
-                                                    onClick={() =>
-                                                        this.selectMenuOption(
-                                                            "help"
-                                                        )
-                                                    }
-                                                >
-                                                    ?
-                                                </div>
-                                            </Col>
+                                        <Row
+                                            className="button"
+                                            onClick={() =>
+                                                this.selectMenuOption("join")
+                                            }
+                                        >
+                                            join
+                                        </Row>
+                                        <Row
+                                            className="button"
+                                            onClick={() =>
+                                                this.selectMenuOption("help")
+                                            }
+                                        >
+                                            help
                                         </Row>
                                     </Col>
                                 </Row>

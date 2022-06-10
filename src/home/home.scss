@@ -9,10 +9,10 @@
 }
 
 #landing {
-    height: 100%;
+    height: calc(100% - #{$top_spacing});
 
     #landingImage {
-        height: calc(#{$background_top} - #{$top_nav});
+        height: calc(#{$background_top_vh} - #{$top_nav});
         width: 100%;
         padding: 1rem;
 
@@ -28,13 +28,5 @@
         height: $background_bottom;
         justify-content: center;
         align-items: center;
-
-        .bottom-buttons {
-            display: flex;
-
-            .button-circle {
-                margin-left: 1rem;
-            }
-        }
     }
 }
