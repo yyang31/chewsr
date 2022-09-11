@@ -371,6 +371,11 @@ class Home extends React.Component {
                                         >
                                             new
                                         </Row>
+                                        <Row className="or-divider">
+                                            or
+                                            <hr className="left" />
+                                            <hr className="right" />
+                                        </Row>
                                         <Row
                                             className="button"
                                             onClick={() =>
@@ -379,14 +384,14 @@ class Home extends React.Component {
                                         >
                                             join
                                         </Row>
-                                        <Row
+                                        {/* <Row
                                             className="button"
                                             onClick={() =>
                                                 this.selectMenuOption("help")
                                             }
                                         >
                                             help
-                                        </Row>
+                                        </Row> */}
                                     </Col>
                                 </Row>
                             </Col>

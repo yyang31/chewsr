@@ -28,5 +28,25 @@
         height: $background_bottom;
         justify-content: center;
         align-items: center;
+
+        .or-divider {
+            justify-content: center;
+
+            hr {
+                position: absolute;
+                width: 30%;
+                top: 50%;
+                transform: translateY(-50%);
+                margin: 0;
+
+                &.left {
+                    left: 10%;
+                }
+
+                &.right {
+                    right: 10%;
+                }
+            }
+        }
     }
 }
