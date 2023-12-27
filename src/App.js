@@ -74,6 +74,16 @@ class App extends React.Component {
             ToastMessageType: "",
             ToastMessage: "",
             showLoading: false,
+            placesRequest: {
+                lat: 0,
+                lng: 0,
+                type: ["restaurant"],
+                radius: 16093.4, // 16093.4 meters ~ 10 miles
+                keyword: "",
+                minprice: 0,
+                maxprice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
+                openNow: true,
+            },
         };
     }
 
@@ -93,13 +103,17 @@ class App extends React.Component {
         });
     };
 
+    setPlacesRequest = (placesRequest) => {
+        this.setState({
+            placesRequest: placesRequest,
+        });
+
+        console.log(placesRequest);
+    };
+
     render() {
         return (
-            <Row className="App justify-content-md-center no-gutters">
-                <div id="background">
-                    <div className="top"></div>
-                    <div className="bottom"></div>
-                </div>
+            <Row className="App no-gutters">
                 <LoadingOverlay showLoading={this.state.showLoading} />
                 <ToastMessage
                     show={this.state.showToast}
@@ -107,15 +121,12 @@ class App extends React.Component {
                     message={this.state.ToastMessage}
                     setToastMessage={this.setToastMessage}
                 />
-                <Col sm={12} md={7} lg={4} className="p-3">
-                    <Row id="topNav">
-                        <Col>
-                            chews<span>r</span>
-                        </Col>
-                    </Row>
+                <Col>
                     <Home
+                        placesRequest={this.state.placesRequest}
                         setToastMessage={this.setToastMessage}
                         toggleLoadingOverlay={this.toggleLoadingOverlay}
+                        setPlacesRequest={this.setPlacesRequest}
                     ></Home>
                 </Col>
             </Row>

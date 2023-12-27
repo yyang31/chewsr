@@ -1,4 +1,4 @@
-@import '../common/_color';
+@import "../common/_color";
 
 #NearbySearch {
     margin-top: 10%;
@@ -10,8 +10,8 @@
         margin-bottom: 20px;
     }
 
-    input[type=text],
-    input[type=number] {
+    input[type="text"],
+    input[type="number"] {
         background-color: transparent;
         border-color: $white;
         color: $white;
@@ -36,7 +36,7 @@
 
             &.invalid {
                 .sc-htpNat {
-                    color: $dark_red;
+                    color: $red;
                 }
             }
 

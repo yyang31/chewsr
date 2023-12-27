@@ -1,5 +1,5 @@
-@import '../common/_grid';
-@import '../common/_color';
+@import "../common/_grid";
+@import "../common/_color";
 
 .navbar {
     padding: 10px 15px;
@@ -79,7 +79,7 @@
         text-align: center;
         overflow-y: scroll;
 
-        &>.row>div:not(:last-child) {
+        & > .row > div:not(:last-child) {
             margin-bottom: 40px;
         }
 
@@ -192,7 +192,7 @@
                         }
 
                         &.dollar-4 {
-                            color: $dark_red;
+                            color: $red;
                         }
                     }
                 }
@@ -261,7 +261,6 @@
                     position: absolute;
                     top: 50%;
                     transform: translateY(-50%);
-                    ;
                 }
             }
         }

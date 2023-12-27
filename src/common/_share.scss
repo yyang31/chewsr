@@ -1,0 +1,13 @@
+@import "_color";
+
+.neumorphic {
+    box-shadow: 6px 6px 24px 0 rgba($black, 0.2),
+        -6px -6px 24px 0 rgba($white, 0.2), inset 0 0 0 0 rgba($black, 0),
+        inset 0 0 0 0 rgba($white, 0);
+}
+
+.neumorphic--pressed {
+    box-shadow: 0 0 0 0 rgba($black, 0), 0 0 0 0 rgba($white, 0),
+        inset 3px 3px 10px 0 rgba($black, 0.2),
+        inset -6px -6px 10px 0 rgba($white, 0.2);
+}
