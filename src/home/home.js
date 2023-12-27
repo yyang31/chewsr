@@ -58,6 +58,7 @@ class GoogleSuggest extends React.Component {
         });
         this.props.toggleLoadingOverlay(true);
         this.props.setPlacesRequestLocation(
+            geocodedPrediction.formatted_address,
             geocodedPrediction.geometry.location.lat(),
             geocodedPrediction.geometry.location.lng()
         );
@@ -145,11 +146,10 @@ class Home extends React.Component {
     };
 
     setLocation = (position) => {
-        console.log(position);
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
 
-        this.setPlacesRequestLocation(lat, lng);
+        this.setPlacesRequestLocation("", lat, lng);
     };
 
     accessDenied = () => {
@@ -157,9 +157,12 @@ class Home extends React.Component {
         this.props.toggleLoadingOverlay(false);
     };
 
-    setPlacesRequestLocation = (lat, lng) => {
-        this.props.placesRequest.lat = lat;
-        this.props.placesRequest.lng = lng;
+    setPlacesRequestLocation = (formattedAddress, lat, lng) => {
+        this.props.placesRequest.formattedAddress = formattedAddress;
+        this.props.placesRequest.location = new window.google.maps.LatLng(
+            lat,
+            lng
+        );
         this.props.setPlacesRequest(this.props.placesRequest);
         this.props.toggleLoadingOverlay(false);
     };

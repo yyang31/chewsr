@@ -2,6 +2,7 @@ import React from "react";
 import "./App.scss";
 
 import Home from "./home/home";
+import SwipeBoard from "./swipe_board_2/swipe_board_2";
 
 import ReactDOM from "react-dom";
 import $ from "jquery";
@@ -74,12 +75,13 @@ class App extends React.Component {
             ToastMessageType: "",
             ToastMessage: "",
             showLoading: false,
+            groupCode: "",
             placesRequest: {
-                lat: 0,
-                lng: 0,
+                formattedAddress: "",
+                location: "",
                 type: ["restaurant"],
                 radius: 16093.4, // 16093.4 meters ~ 10 miles
-                keyword: "",
+                keyword: "", // The text string on which to search, for example: "restaurant" or "123 Main Street".
                 minprice: 0,
                 maxprice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
                 openNow: true,
@@ -106,9 +108,8 @@ class App extends React.Component {
     setPlacesRequest = (placesRequest) => {
         this.setState({
             placesRequest: placesRequest,
+            groupCode: Math.floor(Math.random() * 90000) + 10000,
         });
-
-        console.log(placesRequest);
     };
 
     render() {
@@ -121,14 +122,35 @@ class App extends React.Component {
                     message={this.state.ToastMessage}
                     setToastMessage={this.setToastMessage}
                 />
-                <Col>
-                    <Home
-                        placesRequest={this.state.placesRequest}
-                        setToastMessage={this.setToastMessage}
-                        toggleLoadingOverlay={this.toggleLoadingOverlay}
-                        setPlacesRequest={this.setPlacesRequest}
-                    ></Home>
-                </Col>
+                {(() => {
+                    if (this.state.groupCode) {
+                        return (
+                            <Col>
+                                <SwipeBoard
+                                    placesRequest={this.state.placesRequest}
+                                    setToastMessage={this.setToastMessage}
+                                    toggleLoadingOverlay={
+                                        this.toggleLoadingOverlay
+                                    }
+                                    setPlacesRequest={this.setPlacesRequest}
+                                ></SwipeBoard>
+                            </Col>
+                        );
+                    } else {
+                        return (
+                            <Col>
+                                <Home
+                                    placesRequest={this.state.placesRequest}
+                                    setToastMessage={this.setToastMessage}
+                                    toggleLoadingOverlay={
+                                        this.toggleLoadingOverlay
+                                    }
+                                    setPlacesRequest={this.setPlacesRequest}
+                                ></Home>
+                            </Col>
+                        );
+                    }
+                })()}
             </Row>
         );
     }
