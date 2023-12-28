@@ -1,0 +1,113 @@
+@import "../common/_color";
+@import "../common/_share";
+
+#board {
+    width: 100%;
+    height: 100%;
+}
+
+#menuBar {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: rgba($light_gray, 0.8);
+    box-shadow: 0 3px 10px rgba($light_gray, 0.2);
+
+    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+        background-color: rgba($light_gray, 0.2);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    #logo {
+        color: $blue;
+    }
+
+    #settingButton {
+        font-size: 25px;
+        color: $blue;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        transition: box-shadow 0.25s;
+        border-radius: 50%;
+
+        &:hover {
+            @extend .neumorphic--pressed;
+        }
+
+        svg {
+            margin: auto;
+        }
+    }
+}
+
+#cardContainer {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.card-placeholder {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    background-color: $light_blue;
+}
+
+#controlBar {
+    z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height: 90px;
+    bottom: 0;
+    left: 0;
+    background-color: rgba($light_gray, 0.8);
+    box-shadow: 0 3px 10px rgba($light_gray, 0.2);
+
+    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+        background-color: rgba($light_gray, 0.2);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    .button {
+        margin: 10px auto;
+        width: 70px;
+        height: 70px;
+        font-size: 25px;
+        background-color: $white;
+
+        // dislike
+        &:first-of-type {
+            color: $red;
+            margin-right: 30px;
+
+            &:hover {
+                background-color: $red;
+                color: $white;
+            }
+        }
+
+        // like
+        &:last-of-type {
+            color: $blue;
+            margin-left: 30px;
+
+            &:hover {
+                background-color: $blue;
+                color: $white;
+            }
+        }
+    }
+}

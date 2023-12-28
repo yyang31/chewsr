@@ -2,7 +2,7 @@ import React from "react";
 import "./App.scss";
 
 import Home from "./home/home";
-import SwipeBoard from "./swipe_board_2/swipe_board_2";
+import Board from "./board/board";
 
 import ReactDOM from "react-dom";
 import $ from "jquery";
@@ -110,6 +110,7 @@ class App extends React.Component {
             placesRequest: placesRequest,
             groupCode: Math.floor(Math.random() * 90000) + 10000,
         });
+        console.log(this.state.placesRequest);
     };
 
     render() {
@@ -126,14 +127,14 @@ class App extends React.Component {
                     if (this.state.groupCode) {
                         return (
                             <Col>
-                                <SwipeBoard
+                                <Board
                                     placesRequest={this.state.placesRequest}
                                     setToastMessage={this.setToastMessage}
                                     toggleLoadingOverlay={
                                         this.toggleLoadingOverlay
                                     }
                                     setPlacesRequest={this.setPlacesRequest}
-                                ></SwipeBoard>
+                                ></Board>
                             </Col>
                         );
                     } else {

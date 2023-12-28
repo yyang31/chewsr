@@ -364,7 +364,7 @@ class SwipeCard extends React.Component {
                     ) : (
                         <div className="place-photos-cont no-image">
                             <FontAwesomeIcon icon={faCookieBite} />
-                            no image avaiable
+                            no image available
                         </div>
                     )}
                     <div className="place-rating">
