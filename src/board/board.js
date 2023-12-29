@@ -6,7 +6,7 @@ import Card from "../card/card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-// font awsome
+// font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsDown, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
@@ -20,6 +20,7 @@ class Board extends React.Component {
         this.state = {
             nearbyResult: null,
             pagination: null,
+            showDetail: false,
         };
     }
 
@@ -29,6 +30,12 @@ class Board extends React.Component {
         }
         console.log(this.state.nearbyResult);
     }
+
+    toggleShowDetail = () => {
+        this.setState({
+            showDetail: !this.state.showDetail,
+        });
+    };
 
     fetchNearby = () => {
         this.props.toggleLoadingOverlay(true);
@@ -90,6 +97,14 @@ class Board extends React.Component {
                                                     <Card
                                                         place={place}
                                                         key={place.place_id}
+                                                        showDetail={
+                                                            this.state
+                                                                .showDetail
+                                                        }
+                                                        toggleShowDetail={
+                                                            this
+                                                                .toggleShowDetail
+                                                        }
                                                     />
                                                 );
                                             })}
