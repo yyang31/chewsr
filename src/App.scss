@@ -112,12 +112,20 @@ body {
     background-color: $white;
     color: $blue;
 
+    &:hover {
+        background-color: $dark_white;
+    }
+
     &.blue {
         background-color: $blue;
         color: $white;
+
+        &:hover {
+            background-color: $dark_blue;
+        }
     }
 
-    &:hover {
+    &:active {
         @extend .neumorphic--pressed;
     }
 }

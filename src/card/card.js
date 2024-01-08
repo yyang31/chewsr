@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import "./card.scss";
 
 import Row from "react-bootstrap/Row";
@@ -10,8 +11,41 @@ import { faDollarSign } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 
 class Card extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            placeNameOverflowed: undefined,
+        };
+    }
+
+    componentDidMount() {
+        var placeNameDom =
+            ReactDOM.findDOMNode(this).getElementsByClassName("place-name")[0];
+
+        this.setState({
+            placeNameOverflowed:
+                placeNameDom.offsetWidth < placeNameDom.scrollWidth,
+        });
+    }
+
+    componentDidUpdate() {
+        if (this.props.isTop && this.state.placeNameOverflowed) {
+            console.log("set");
+
+            var placeNameDom =
+                ReactDOM.findDOMNode(this).getElementsByClassName(
+                    "place-name"
+                )[0];
+
+            document.documentElement.style.setProperty(
+                "--place-name-scroll-width",
+                placeNameDom.scrollWidth + "px"
+            );
+        }
+    }
+
     render() {
-        console.log(this.props.place.name);
         return (
             <Row className="card no-gutters">
                 {(() => {
@@ -34,40 +68,42 @@ class Card extends React.Component {
                         );
                     }
                 })()}
-                <Col
-                    className="show-detail-button button blue"
-                    onClick={() => this.props.toggleShowDetail()}
-                >
-                    detail
+                <Col className="place-detail">
+                    <Row className="no-gutters">
+                        <Col className="place-detail-right-container">
+                            <div
+                                className={
+                                    "place-name" +
+                                    (this.props.isTop &&
+                                    this.state.placeNameOverflowed
+                                        ? " horizontal-scroll"
+                                        : "")
+                                }
+                            >
+                                {this.props.place.name}
+                            </div>
+                        </Col>
+                        <Col className="place-detail-left-container">
+                            <Row className="place-price no-gutters">
+                                {[...Array(this.props.place.price_level)].map(
+                                    (elementInArray, index) => (
+                                        <FontAwesomeIcon
+                                            key={
+                                                this.props.place.place_id +
+                                                index
+                                            }
+                                            icon={faDollarSign}
+                                        />
+                                    )
+                                )}
+                            </Row>
+                            <Row className="place-rating no-gutters">
+                                {this.props.place.rating}
+                                <FontAwesomeIcon icon={faStar} />
+                            </Row>
+                        </Col>
+                    </Row>
                 </Col>
-                {(() => {
-                    if (this.props.showDetail) {
-                        return (
-                            <Col className="place-detail">
-                                <Row className="place-name no-gutters">
-                                    {this.props.place.name}
-                                </Row>
-                                <Row className="place-price no-gutters">
-                                    {[
-                                        ...Array(this.props.place.price_level),
-                                    ].map((elementInArray, index) => (
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                    ))}
-                                </Row>
-                                <Row className="place-review no-gutters">
-                                    <div className="place-rating">
-                                        {this.props.place.rating}
-                                        <FontAwesomeIcon icon={faStar} />
-                                    </div>
-                                    <div className="place-rating-count">
-                                        {this.props.place.user_ratings_total}{" "}
-                                        reviews
-                                    </div>
-                                </Row>
-                            </Col>
-                        );
-                    }
-                })()}
             </Row>
         );
     }

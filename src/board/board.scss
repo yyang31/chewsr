@@ -76,14 +76,14 @@
     height: $control_height;
     bottom: 0;
     left: 0;
-    background-color: rgba($light_gray, 0.8);
-    box-shadow: 0 3px 10px rgba($light_gray, 0.2);
+    // background-color: rgba($light_gray, 0.8);
+    // box-shadow: 0 3px 10px rgba($light_gray, 0.2);
 
-    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-        background-color: rgba($light_gray, 0.2);
-        -webkit-backdrop-filter: blur(2px);
-        backdrop-filter: blur(2px);
-    }
+    // @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    //     background-color: rgba($light_gray, 0.05);
+    //     -webkit-backdrop-filter: blur(2px);
+    //     backdrop-filter: blur(2px);
+    // }
 
     .button {
         margin: 10px auto;

@@ -49,6 +49,10 @@
     transition: box-shadow 0.25s;
 
     &:hover {
+        background-color: $dark_blue;
+    }
+
+    &:active {
         @extend .neumorphic--pressed;
     }
 
