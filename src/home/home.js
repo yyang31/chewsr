@@ -3,8 +3,7 @@ import "./home.scss";
 
 // bootstrap
 import { Dropdown, DropdownButton, Button } from "react-bootstrap";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
 
 // google map/places api
 import ReactGoogleMapLoader from "react-google-maps-loader";
@@ -169,41 +168,53 @@ class Home extends React.Component {
 
     render() {
         return (
-            <Row id="home" className="no-gutters">
-                <Col id="landing">
-                    <Row id="homeTop" className="no-gutters">
-                        <div id="siteName">chewsr</div>
-                    </Row>
-                    <Row id="homeButton" className="no-gutters">
-                        <Col className="p-3">
-                            <Row className="input-wrapper">
-                                <GoogleSuggest
-                                    toggleLoadingOverlay={
-                                        this.props.toggleLoadingOverlay
+            <Container fluid id="home">
+                <Row>
+                    <Col id="landing">
+                        <Row id="homeTop">
+                            <Col>
+                                <div id="siteName">chewsr</div>
+                            </Col>
+                        </Row>
+                        <Row id="homeButton">
+                            <Col className="p-3">
+                                <Row className="input-wrapper">
+                                    <GoogleSuggest
+                                        toggleLoadingOverlay={
+                                            this.props.toggleLoadingOverlay
+                                        }
+                                        setToastMessage={
+                                            this.props.setToastMessage
+                                        }
+                                        setPlacesRequestLocation={
+                                            this.setPlacesRequestLocation
+                                        }
+                                    />
+                                    <div
+                                        id="currentLocationButton"
+                                        onClick={() =>
+                                            this.getCurrentLocation()
+                                        }
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faLocationArrow}
+                                        />
+                                    </div>
+                                </Row>
+                                <hr />
+                                <Row
+                                    className="button blue"
+                                    onClick={() =>
+                                        this.selectMenuOption("join")
                                     }
-                                    setToastMessage={this.props.setToastMessage}
-                                    setPlacesRequestLocation={
-                                        this.setPlacesRequestLocation
-                                    }
-                                />
-                                <div
-                                    id="currentLocationButton"
-                                    onClick={() => this.getCurrentLocation()}
                                 >
-                                    <FontAwesomeIcon icon={faLocationArrow} />
-                                </div>
-                            </Row>
-                            <hr />
-                            <Row
-                                className="button blue"
-                                onClick={() => this.selectMenuOption("join")}
-                            >
-                                join with code
-                            </Row>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
+                                    join with code
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }

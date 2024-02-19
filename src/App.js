@@ -8,10 +8,7 @@ import ReactDOM from "react-dom";
 import $ from "jquery";
 
 // react bootstrap
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Toast from "react-bootstrap/Toast";
-import Spinner from "react-bootstrap/Spinner";
+import { Container, Row, Col, Toast, Spinner } from "react-bootstrap";
 
 import { withCookies } from "react-cookie";
 
@@ -50,18 +47,20 @@ class LoadingOverlay extends React.Component {
 
     render() {
         return (
-            <Row id="loadingOverlay" className="no-gutters">
-                <Col>
-                    <Row>
-                        <Col>
-                            <Spinner animation="border" />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>loading</Col>
-                    </Row>
-                </Col>
-            </Row>
+            <Container fluid id="loadingOverlay">
+                <Row>
+                    <Col>
+                        <Row>
+                            <Col>
+                                <Spinner animation="border" />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>loading</Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }
@@ -115,44 +114,46 @@ class App extends React.Component {
 
     render() {
         return (
-            <Row className="App no-gutters">
-                <LoadingOverlay showLoading={this.state.showLoading} />
-                <ToastMessage
-                    show={this.state.showToast}
-                    messageType={this.state.ToastMessageType}
-                    message={this.state.ToastMessage}
-                    setToastMessage={this.setToastMessage}
-                />
-                {(() => {
-                    if (this.state.groupCode) {
-                        return (
-                            <Col>
-                                <Board
-                                    placesRequest={this.state.placesRequest}
-                                    setToastMessage={this.setToastMessage}
-                                    toggleLoadingOverlay={
-                                        this.toggleLoadingOverlay
-                                    }
-                                    setPlacesRequest={this.setPlacesRequest}
-                                ></Board>
-                            </Col>
-                        );
-                    } else {
-                        return (
-                            <Col>
-                                <Home
-                                    placesRequest={this.state.placesRequest}
-                                    setToastMessage={this.setToastMessage}
-                                    toggleLoadingOverlay={
-                                        this.toggleLoadingOverlay
-                                    }
-                                    setPlacesRequest={this.setPlacesRequest}
-                                ></Home>
-                            </Col>
-                        );
-                    }
-                })()}
-            </Row>
+            <Container fluid>
+                <Row className="App">
+                    <LoadingOverlay showLoading={this.state.showLoading} />
+                    <ToastMessage
+                        show={this.state.showToast}
+                        messageType={this.state.ToastMessageType}
+                        message={this.state.ToastMessage}
+                        setToastMessage={this.setToastMessage}
+                    />
+                    {(() => {
+                        if (this.state.groupCode) {
+                            return (
+                                <Col>
+                                    <Board
+                                        placesRequest={this.state.placesRequest}
+                                        setToastMessage={this.setToastMessage}
+                                        toggleLoadingOverlay={
+                                            this.toggleLoadingOverlay
+                                        }
+                                        setPlacesRequest={this.setPlacesRequest}
+                                    ></Board>
+                                </Col>
+                            );
+                        } else {
+                            return (
+                                <Col>
+                                    <Home
+                                        placesRequest={this.state.placesRequest}
+                                        setToastMessage={this.setToastMessage}
+                                        toggleLoadingOverlay={
+                                            this.toggleLoadingOverlay
+                                        }
+                                        setPlacesRequest={this.setPlacesRequest}
+                                    ></Home>
+                                </Col>
+                            );
+                        }
+                    })()}
+                </Row>
+            </Container>
         );
     }
 }

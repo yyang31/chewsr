@@ -3,8 +3,7 @@ import "./board.scss";
 
 import Card from "../card/card";
 
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -74,89 +73,102 @@ class Board extends React.Component {
     };
 
     render() {
-        let renderedNearbyResult = [];
-        let nearbyResult = this.state.nearbyResult;
-        if (nearbyResult && nearbyResult.length > 0) {
-            for (var i = 0; i < nearbyResult.length; i++) {
-                renderedNearbyResult.push(nearbyResult[i]);
-            }
-        }
-
         return (
-            <Row id="board" className="no-gutters">
-                {(() => {
-                    if (this.state.nearbyResult) {
-                        return (
-                            <Col>
-                                <Row id="menuBar" className="no-gutters">
-                                    <Col id="logo">chewsr</Col>
-                                    <Col id="settingButton">
-                                        <FontAwesomeIcon icon={faSlidersH} />
-                                    </Col>
-                                </Row>
-                                <Row id="cardContainer" className="no-gutters">
-                                    {(() => {
-                                        if (renderedNearbyResult.length > 0) {
-                                            return (
-                                                <Col className="card-placeholder">
-                                                    {renderedNearbyResult
-                                                        .reverse()
-                                                        .map((place, index) => {
-                                                            return (
-                                                                <Card
-                                                                    place={
-                                                                        place
-                                                                    }
-                                                                    key={
-                                                                        place.place_id
-                                                                    }
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                    isTop={
-                                                                        index ==
-                                                                        renderedNearbyResult.length -
-                                                                            1
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                />
-                                                            );
-                                                        })}
-                                                </Col>
-                                            );
-                                        } else {
-                                            return (
-                                                <Col className="card-placeholder">
-                                                    loading places
-                                                </Col>
-                                            );
-                                        }
-                                    })()}
-                                </Row>
-                                <Row id="controlBar" className="no-gutters">
-                                    <div
-                                        className="button"
-                                        onClick={() =>
-                                            this.selectionMade(false)
-                                        }
-                                    >
-                                        <FontAwesomeIcon icon={faThumbsDown} />
-                                    </div>
-                                    <div
-                                        className="button"
-                                        onClick={() => this.selectionMade(true)}
-                                    >
-                                        <FontAwesomeIcon icon={faThumbsUp} />
-                                    </div>
-                                </Row>
-                            </Col>
-                        );
-                    } else {
-                        return <div></div>;
-                    }
-                })()}
-            </Row>
+            <Container fluid id="board">
+                <Row>
+                    {(() => {
+                        if (this.state.nearbyResult) {
+                            return (
+                                <Col>
+                                    <Row id="menuBar">
+                                        <Col id="logo">chewsr</Col>
+                                        <Col id="settingButton">
+                                            <FontAwesomeIcon
+                                                icon={faSlidersH}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row id="cardContainer">
+                                        {(() => {
+                                            if (
+                                                this.state.nearbyResult.length >
+                                                0
+                                            ) {
+                                                return (
+                                                    <Col className="card-placeholder">
+                                                        {this.state.nearbyResult
+                                                            .reverse()
+                                                            .map(
+                                                                (
+                                                                    place,
+                                                                    index
+                                                                ) => {
+                                                                    return (
+                                                                        <Card
+                                                                            place={
+                                                                                place
+                                                                            }
+                                                                            key={
+                                                                                place.place_id
+                                                                            }
+                                                                            index={
+                                                                                index
+                                                                            }
+                                                                            isTop={
+                                                                                index ===
+                                                                                this
+                                                                                    .state
+                                                                                    .nearbyResult
+                                                                                    .length -
+                                                                                    1
+                                                                                    ? true
+                                                                                    : false
+                                                                            }
+                                                                        />
+                                                                    );
+                                                                }
+                                                            )}
+                                                    </Col>
+                                                );
+                                            } else {
+                                                return (
+                                                    <Col className="card-placeholder">
+                                                        loading places
+                                                    </Col>
+                                                );
+                                            }
+                                        })()}
+                                    </Row>
+                                    <Row id="controlBar">
+                                        <div
+                                            className="button"
+                                            onClick={() =>
+                                                this.selectionMade(false)
+                                            }
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faThumbsDown}
+                                            />
+                                        </div>
+                                        <div
+                                            className="button"
+                                            onClick={() =>
+                                                this.selectionMade(true)
+                                            }
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faThumbsUp}
+                                            />
+                                        </div>
+                                    </Row>
+                                </Col>
+                            );
+                        } else {
+                            return <div></div>;
+                        }
+                    })()}
+                </Row>
+            </Container>
         );
     }
 }
