@@ -19,6 +19,7 @@ class Board extends React.Component {
         this.state = {
             nearbyResult: null,
             pagination: null,
+            showSettings: false,
         };
     }
 
@@ -26,8 +27,13 @@ class Board extends React.Component {
         if (!this.state.nearbyResult) {
             this.fetchNearby();
         }
-        console.log(this.state.nearbyResult);
     }
+
+    toggleSettings = (show = false) => {
+        this.setState({
+            showSettings: show,
+        });
+    };
 
     fetchNearby = () => {
         this.props.toggleLoadingOverlay(true);
@@ -82,7 +88,12 @@ class Board extends React.Component {
                                 <Col>
                                     <Row id="menuBar">
                                         <Col id="logo">chewsr</Col>
-                                        <Col id="settingButton">
+                                        <Col
+                                            id="settingButton"
+                                            onClick={() =>
+                                                this.toggleSettings()
+                                            }
+                                        >
                                             <FontAwesomeIcon
                                                 icon={faSlidersH}
                                             />

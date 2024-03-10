@@ -130,13 +130,12 @@
 
             .place-price {
                 color: $white;
-                display: flex;
-                justify-content: center;
                 font-size: 15px;
                 margin-bottom: 2px;
 
                 .col {
                     display: flex;
+                    justify-content: center;
                 }
             }
 

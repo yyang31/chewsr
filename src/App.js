@@ -11,6 +11,7 @@ import $ from "jquery";
 import { Container, Row, Col, Toast, Spinner } from "react-bootstrap";
 
 import { withCookies } from "react-cookie";
+import { upsertPlaceGroup, getPlaceGroupByGroupCode } from "./common/_firebase";
 
 class ToastMessage extends React.Component {
     render() {
@@ -81,8 +82,8 @@ class App extends React.Component {
                 type: ["restaurant"],
                 radius: 16093.4, // 16093.4 meters ~ 10 miles
                 keyword: "", // The text string on which to search, for example: "restaurant" or "123 Main Street".
-                minprice: 0,
-                maxprice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
+                minPrice: 0,
+                maxPrice: 4, // price range from 0 ~ 4, with 0 been most affordable and 4 been most expensive
                 openNow: true,
             },
         };
@@ -104,12 +105,46 @@ class App extends React.Component {
         });
     };
 
+    generateGroupCode = (length) => {
+        let result = "";
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength)
+            );
+            counter += 1;
+        }
+        return result;
+    };
+
     setPlacesRequest = (placesRequest) => {
+        let groupCode = this.state.groupCode;
+        if (groupCode === "") {
+            groupCode = this.generateGroupCode(
+                process.env.REACT_APP_GROUP_CODE_MAX_LENGTH
+            );
+
+            this.setState({
+                placesRequest: placesRequest,
+                groupCode: groupCode,
+            });
+        } else {
+            this.setState({
+                placesRequest: placesRequest,
+            });
+        }
+
+        upsertPlaceGroup(groupCode, placesRequest);
+    };
+
+    setGroupCode = async (groupCode) => {
+        let placeGroup = await getPlaceGroupByGroupCode(groupCode);
         this.setState({
-            placesRequest: placesRequest,
-            groupCode: Math.floor(Math.random() * 90000) + 10000,
+            placesRequest: placeGroup.placesRequest,
+            groupCode: placeGroup.groupCode,
         });
-        console.log(this.state.placesRequest);
     };
 
     render() {
@@ -147,6 +182,7 @@ class App extends React.Component {
                                             this.toggleLoadingOverlay
                                         }
                                         setPlacesRequest={this.setPlacesRequest}
+                                        setGroupCode={this.setGroupCode}
                                     ></Home>
                                 </Col>
                             );

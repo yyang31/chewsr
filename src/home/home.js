@@ -2,7 +2,6 @@ import React from "react";
 import "./home.scss";
 
 // bootstrap
-import { Dropdown, DropdownButton, Button } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
 
 // google map/places api
@@ -84,7 +83,7 @@ class GoogleSuggest extends React.Component {
             <ReactGoogleMapLoader
                 params={{
                     key: GOOGLE_API_KEY,
-                    libraries: "places,geocoded",
+                    libraries: "places, geocode",
                 }}
                 render={(googleMaps) =>
                     googleMaps && (
@@ -124,9 +123,10 @@ class GoogleSuggest extends React.Component {
 }
 
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+    state = {
+        joinWithCode: false,
+        groupCodeInput: "",
+    };
 
     getCurrentLocation = () => {
         this.props.toggleLoadingOverlay(true);
@@ -158,12 +158,22 @@ class Home extends React.Component {
 
     setPlacesRequestLocation = (formattedAddress, lat, lng) => {
         this.props.placesRequest.formattedAddress = formattedAddress;
-        this.props.placesRequest.location = new window.google.maps.LatLng(
-            lat,
-            lng
-        );
+        this.props.placesRequest.location = { lat: lat, lng: lng };
+
         this.props.setPlacesRequest(this.props.placesRequest);
         this.props.toggleLoadingOverlay(false);
+    };
+
+    toggleJoinWithCode = () => {
+        this.setState({
+            joinWithCode: !this.state.joinWithCode,
+        });
+    };
+
+    handleGroupCodeChange = (e) => {
+        this.setState({
+            groupCodeInput: e.target.value,
+        });
     };
 
     render() {
@@ -177,40 +187,81 @@ class Home extends React.Component {
                             </Col>
                         </Row>
                         <Row id="homeButton">
-                            <Col className="p-3">
-                                <Row className="input-wrapper">
-                                    <GoogleSuggest
-                                        toggleLoadingOverlay={
-                                            this.props.toggleLoadingOverlay
-                                        }
-                                        setToastMessage={
-                                            this.props.setToastMessage
-                                        }
-                                        setPlacesRequestLocation={
-                                            this.setPlacesRequestLocation
-                                        }
-                                    />
-                                    <div
-                                        id="currentLocationButton"
-                                        onClick={() =>
-                                            this.getCurrentLocation()
-                                        }
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faLocationArrow}
-                                        />
-                                    </div>
-                                </Row>
-                                <hr />
-                                <Row
-                                    className="button blue"
-                                    onClick={() =>
-                                        this.selectMenuOption("join")
-                                    }
-                                >
-                                    join with code
-                                </Row>
-                            </Col>
+                            {(() => {
+                                if (this.state.joinWithCode) {
+                                    return (
+                                        <Col className="p-3">
+                                            <Row className="input-wrapper">
+                                                <input
+                                                    type="text"
+                                                    className="text-input"
+                                                    placeholder="group code"
+                                                    onChange={(e) =>
+                                                        this.handleGroupCodeChange(
+                                                            e
+                                                        )
+                                                    }
+                                                    maxLength={
+                                                        process.env
+                                                            .REACT_APP_GROUP_CODE_MAX_LENGTH
+                                                    }
+                                                ></input>
+                                            </Row>
+                                            <Row
+                                                className="button blue"
+                                                onClick={() =>
+                                                    this.props.setGroupCode(
+                                                        this.state
+                                                            .groupCodeInput
+                                                    )
+                                                }
+                                            >
+                                                join
+                                            </Row>
+                                        </Col>
+                                    );
+                                } else {
+                                    return (
+                                        <Col className="p-3">
+                                            <Row className="input-wrapper">
+                                                <GoogleSuggest
+                                                    toggleLoadingOverlay={
+                                                        this.props
+                                                            .toggleLoadingOverlay
+                                                    }
+                                                    setToastMessage={
+                                                        this.props
+                                                            .setToastMessage
+                                                    }
+                                                    setPlacesRequestLocation={
+                                                        this
+                                                            .setPlacesRequestLocation
+                                                    }
+                                                />
+                                                <div
+                                                    id="currentLocationButton"
+                                                    onClick={() =>
+                                                        this.getCurrentLocation()
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faLocationArrow}
+                                                    />
+                                                </div>
+                                            </Row>
+                                            <hr />
+                                            <Row
+                                                className="button blue"
+                                                onClick={() =>
+                                                    this.toggleJoinWithCode()
+                                                }
+                                            >
+                                                join with code
+                                            </Row>
+                                        </Col>
+                                    );
+                                }
+                            })()}
                         </Row>
                     </Col>
                 </Row>
