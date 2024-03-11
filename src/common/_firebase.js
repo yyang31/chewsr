@@ -2,11 +2,14 @@ import { initializeApp } from "firebase/app";
 import {
     getFirestore,
     collection,
+    doc,
     getDocs,
     addDoc,
+    updateDoc,
     query,
     where,
     Query,
+    DocumentReference,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -22,29 +25,56 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const col = collection(db, process.env.REACT_APP_COLLECTION_NAME);
 
-const upsert = async (payload) => {
-    await addDoc(col, payload);
+const add = async (payload) => {
+    return await addDoc(col, payload);
 };
 
-const upsertPlaceGroup = (groupCode, placesRequest) => {
+const addPlaceGroup = async (groupCode, placesRequest) => {
     let now = new Date();
-
-    upsert({
+    let docRef = await add({
         groupCode: groupCode,
         placesRequest: placesRequest,
         expirationDate: new Date(now.setDate(now.getDate() + 7)), // set expiration date to 7 days from creation
     });
+
+    return {
+        error: null,
+        id: docRef.id,
+        data: placesRequest,
+    };
+};
+
+const update = async (docRef, payload) => {
+    await updateDoc(docRef, payload);
+};
+
+const updatePlaceGroupLikes = async (groupCode, placeId) => {
+    // let docRef = doc(
+    //     db,
+    //     process.env.REACT_APP_COLLECTION_NAME,
+    //     auth.currentUser.uid
+    // );
 };
 
 const get = async (query) => {
-    return (await getDocs(query)).docs.map((doc) => doc.data());
+    let docsResult = await getDocs(query);
+    return docsResult.docs;
 };
 
 const getPlaceGroupByGroupCode = async (groupCode) => {
     let q = query(col, where("groupCode", "==", groupCode));
-    let result = await get(q);
+    let docResult = await get(q);
 
-    return result[0];
+    let errorMsg = null;
+    if (docResult.length == 0) {
+        errorMsg = `groupCode of ${groupCode} can not be found.`;
+    }
+
+    return {
+        error: errorMsg,
+        id: docResult[0].id,
+        data: docResult[0].data(),
+    };
 };
 
-export { upsertPlaceGroup, getPlaceGroupByGroupCode };
+export { addPlaceGroup, getPlaceGroupByGroupCode };

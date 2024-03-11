@@ -11,7 +11,7 @@ import $ from "jquery";
 import { Container, Row, Col, Toast, Spinner } from "react-bootstrap";
 
 import { withCookies } from "react-cookie";
-import { upsertPlaceGroup, getPlaceGroupByGroupCode } from "./common/_firebase";
+import { addPlaceGroup, getPlaceGroupByGroupCode } from "./common/_firebase";
 
 class ToastMessage extends React.Component {
     render() {
@@ -75,11 +75,12 @@ class App extends React.Component {
             ToastMessageType: "",
             ToastMessage: "",
             showLoading: false,
+            docId: "",
             groupCode: "",
             placesRequest: {
                 formattedAddress: "",
                 location: "",
-                type: ["restaurant"],
+                type: ["restaurant", "bar", "cafe"],
                 radius: 16093.4, // 16093.4 meters ~ 10 miles
                 keyword: "", // The text string on which to search, for example: "restaurant" or "123 Main Street".
                 minPrice: 0,
@@ -119,31 +120,33 @@ class App extends React.Component {
         return result;
     };
 
-    setPlacesRequest = (placesRequest) => {
+    setPlacesRequest = async (placesRequest) => {
         let groupCode = this.state.groupCode;
         if (groupCode === "") {
             groupCode = this.generateGroupCode(
                 process.env.REACT_APP_GROUP_CODE_MAX_LENGTH
             );
-
-            this.setState({
-                placesRequest: placesRequest,
-                groupCode: groupCode,
-            });
-        } else {
-            this.setState({
-                placesRequest: placesRequest,
-            });
         }
+        let placeGroup = await addPlaceGroup(groupCode, placesRequest);
 
-        upsertPlaceGroup(groupCode, placesRequest);
+        this.setState({
+            docId: placeGroup.id,
+            placesRequest: placesRequest,
+            groupCode: groupCode,
+        });
     };
 
     setGroupCode = async (groupCode) => {
         let placeGroup = await getPlaceGroupByGroupCode(groupCode);
+
+        if (placeGroup.error) {
+            // error handling
+        }
+
         this.setState({
-            placesRequest: placeGroup.placesRequest,
-            groupCode: placeGroup.groupCode,
+            docId: placeGroup.id,
+            placesRequest: placeGroup.data.placesRequest,
+            groupCode: groupCode,
         });
     };
 
